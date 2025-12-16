@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_PATH || '/api';
+// Get the backend API URL from environment variables
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+// In production, use the full backend URL. In development, use /api with proxy
+const isDevelopment = import.meta.env.DEV;
+const API_BASE_URL = isDevelopment 
+  ? (import.meta.env.VITE_API_BASE_PATH || '/api')
+  : API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
