@@ -9,8 +9,8 @@ const cleanApiUrl = API_URL.replace(/\/$/, '');
 // Check if API_URL is a full URL (starts with http:// or https://)
 const isFullUrl = cleanApiUrl.startsWith('http://') || cleanApiUrl.startsWith('https://');
 
-// If a full URL is provided, use it directly. Otherwise, use static '/api' path with proxy
-const API_BASE_URL = isFullUrl ? cleanApiUrl : '/api';
+// If a full URL is provided, append '/api' to it. Otherwise, use static '/api' path with proxy
+const API_BASE_URL = isFullUrl ? `${cleanApiUrl}/api` : '/api';
 
 // Debug logging
 console.log('🔧 API Configuration:', {
