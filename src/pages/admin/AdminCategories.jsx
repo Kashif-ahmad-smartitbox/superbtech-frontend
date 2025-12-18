@@ -322,7 +322,7 @@ const AdminCategories = () => {
                   placeholder="Category description"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Image URL</label>
                 <input
                   type="url"
@@ -332,7 +332,7 @@ const AdminCategories = () => {
                   className="input-field"
                   placeholder="https://example.com/image.jpg"
                 />
-              </div>
+              </div> */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Order</label>
