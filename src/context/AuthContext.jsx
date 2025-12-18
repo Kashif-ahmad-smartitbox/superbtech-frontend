@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/me');
+      const response = await axios.get('http://localhost:5000/api/auth/me');
       setUser(response.data);
     } catch (error) {
       localStorage.removeItem('adminToken');
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const response = await axios.post('/api/auth/login', { email, password });
+    const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
     const { token, ...userData } = response.data;
     localStorage.setItem('adminToken', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;

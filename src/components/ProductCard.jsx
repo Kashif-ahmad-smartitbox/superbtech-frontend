@@ -11,68 +11,76 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
     setShowModal(true);
   };
-
   return (
     <>
-      <div className="group relative card hover:-translate-y-3 hover:shadow-2xl border-2 border-transparent hover:border-blue-200 transition-all duration-500">
-        {/* Gradient Overlay on Hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5 rounded-xl transition-all duration-500 pointer-events-none"></div>
-        
-        <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 via-blue-50 to-indigo-50 rounded-t-xl">
+      <div className="group relative bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col h-full">
+        {/* Image Section */}
+        <div className="relative aspect-square overflow-hidden bg-gray-50 border-b border-gray-50">
           {product.images && product.images.length > 0 ? (
             <img 
               src={getImageUrl(product.images[0])} 
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-700"
+              className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
             </div>
           )}
-          {product.featured && (
-            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-xl flex items-center gap-1">
-              <span>⭐</span> Featured
+          {product.category?.name && (
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm border border-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold shadow-sm uppercase tracking-wide">
+              {product.category.name}
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          {product.featured && (
+            <div className="absolute top-3 right-3 bg-yellow-400 text-white p-1 rounded-full shadow-md z-10" title="Featured">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            </div>
+          )}
         </div>
-        <div className="relative p-6 flex flex-col flex-grow">
-          <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-            Order Code: {product.orderCode}
-          </div>
-          <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 min-h-[3.5rem] group-hover:text-blue-600 transition-colors">
+        
+        {/* Content Section */}
+        <div className="p-4 flex flex-col flex-1">
+          <h3 className="text-gray-900 font-bold text-sm leading-tight mb-2 min-h-[2rem] line-clamp-2 group-hover:text-blue-600 transition-colors">
             {product.name}
           </h3>
-          <p className="text-gray-600 text-sm mb-5 line-clamp-3 flex-grow leading-relaxed">
-            {product.description.length > 100
-              ? `${product.description.substring(0, 100)}...`
-              : product.description}
-          </p>
-          <div className="flex gap-3 mt-auto">
-            <Link 
-              to={`/products/${product._id}`} 
-              className="btn btn-primary flex-1 text-center text-sm py-3 group/btn relative overflow-hidden"
-            >
-              <span className="relative z-10">View Detail</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
-            </Link>
-            <button
-              className="btn btn-secondary flex-1 text-sm py-3 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group/btn"
-              onClick={handleDownloadBrochure}
-              disabled={!product.brochure?.path}
-            >
-              <span className="relative z-10">Get now</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
-            </button>
+          
+          <div className="flex items-center gap-2 mb-3">
+             <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+             <span className="text-xs text-gray-400 font-mono tracking-wide">{product.orderCode || 'N/A'}</span>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-3 gap-2">
+            <div>
+              <div className="flex items-baseline gap-1">
+                 <span className="text-lg font-bold text-emerald-600">₹{product.price || '0'}</span>
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+               <Link 
+                to={`/products/${product._id}`} 
+                className="px-3 py-1.5 bg-gray-50 hover:bg-white text-gray-600 hover:text-blue-600 text-xs font-semibold rounded-lg transition-all border border-gray-200 hover:border-blue-200 shadow-sm hover:shadow whitespace-nowrap"
+              >
+                View
+              </Link>
+              <button
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white text-xs font-bold rounded-lg transition-all border border-blue-100 hover:border-blue-600 shadow-sm hover:shadow flex items-center gap-1 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleDownloadBrochure}
+                disabled={!product.brochure}
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Get Now
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      
       {showModal && (
         <EnquiryModal
           product={product}
