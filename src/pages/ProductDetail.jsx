@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom"; // Added useNavigate
 import api, { getImageUrl } from "../utils/api";
 import EnquiryModal from "../components/EnquiryModal";
 import {
@@ -9,10 +9,12 @@ import {
   FiPhone,
   FiCheck,
   FiInfo,
+  FiArrowLeft, // Added back arrow icon
 } from "react-icons/fi";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Added for navigation
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +33,11 @@ const ProductDetail = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle back navigation
+  const handleBack = () => {
+    navigate(-1); // Go back to previous page
   };
 
   if (loading) {
@@ -63,7 +70,7 @@ const ProductDetail = () => {
             to="/products"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
-            <FiChevronRight className="rotate-180" />
+            <FiArrowLeft className="rotate-180" />
             Back to Products
           </Link>
         </div>
@@ -74,39 +81,50 @@ const ProductDetail = () => {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-b from-white to-primary-50 flex flex-col">
-        {/* Breadcrumb */}
-        <div className="container mx-auto px-4 py-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link to="/" className="hover:text-primary-700 transition-colors">
-              Home
-            </Link>
-            <FiChevronRight className="w-4 h-4 text-gray-400" />
-            <Link
-              to="/products"
-              className="hover:text-primary-700 transition-colors"
+        <div className="container mx-auto px-4 pt-4">
+          <div className="flex items-center justify-between">
+            {/* Back Button */}
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:-translate-x-1 group"
             >
-              Products
-            </Link>
-            {product.category && (
-              <>
-                <FiChevronRight className="w-4 h-4 text-gray-400" />
-                <Link
-                  to={`/category/${product.category.slug}`}
-                  className="hover:text-primary-700 transition-colors"
-                >
-                  {product.category.name}
-                </Link>
-              </>
-            )}
-            <FiChevronRight className="w-4 h-4 text-gray-400" />
-            <span className="text-primary-900 font-semibold truncate max-w-xs">
-              {product.name}
-            </span>
-          </nav>
+              <FiArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+
+            {/* Breadcrumb Navigation */}
+            <nav className="flex items-center space-x-2 text-sm text-gray-600">
+              <Link to="/" className="hover:text-primary-700 transition-colors">
+                Home
+              </Link>
+              <FiChevronRight className="w-4 h-4 text-gray-400" />
+              <Link
+                to="/products"
+                className="hover:text-primary-700 transition-colors"
+              >
+                Products
+              </Link>
+              {product.category && (
+                <>
+                  <FiChevronRight className="w-4 h-4 text-gray-400" />
+                  <Link
+                    to={`/category/${product.category.slug}`}
+                    className="hover:text-primary-700 transition-colors"
+                  >
+                    {product.category.name}
+                  </Link>
+                </>
+              )}
+              <FiChevronRight className="w-4 h-4 text-gray-400" />
+              <span className="text-primary-900 font-semibold truncate max-w-xs">
+                {product.name}
+              </span>
+            </nav>
+          </div>
         </div>
 
         <div className="container mx-auto px-4 py-4 flex-grow">
-          <div className="bg-white rounded-2xl border border-primary-100 overflow-hidden">
+          <div className="bg-white overflow-hidden">
             <div className="flex flex-col lg:flex-row h-full">
               {/* Left Column: Images */}
               <div className="lg:w-2/5 border-r border-primary-100 p-6">

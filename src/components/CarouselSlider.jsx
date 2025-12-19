@@ -45,6 +45,7 @@ const CarouselSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [loadedImages, setLoadedImages] = useState({});
 
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
@@ -73,17 +74,33 @@ const CarouselSlider = () => {
 
     const interval = setInterval(() => {
       nextSlide();
-    }, 3000);
+    }, 4000); // Increased interval for better viewing
 
     return () => clearInterval(interval);
   }, [isAutoPlaying, nextSlide]);
 
-  // Preload images
+  // Preload and track image loading
   useEffect(() => {
-    slides.forEach((slide) => {
-      const img = new Image();
-      img.src = slide.image;
-    });
+    const loadImages = async () => {
+      const promises = slides.map((slide) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = slide.image;
+          img.onload = () => {
+            setLoadedImages((prev) => ({ ...prev, [slide.id]: true }));
+            resolve();
+          };
+          img.onerror = () => {
+            console.error(`Failed to load image: ${slide.image}`);
+            resolve();
+          };
+        });
+      });
+
+      await Promise.all(promises);
+    };
+
+    loadImages();
   }, []);
 
   return (
@@ -93,7 +110,7 @@ const CarouselSlider = () => {
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
       {/* Slides Container */}
-      <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
+      <div className="relative h-[70vh] min-h-[500px] md:h-[80vh] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -108,39 +125,50 @@ const CarouselSlider = () => {
               transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
-            {/* Background Image with Subtle Zoom */}
+            {/* Background Image with Optimized Loading */}
             <div className="absolute inset-0">
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className={`w-full h-full object-cover transition-transform duration-[10000ms] ${
-                  index === currentSlide ? "scale-105" : "scale-100"
-                }`}
-                loading="eager"
-              />
-
-              {/* Professional Gradient Overlay with Primary Color */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-900/80 via-primary-800/50 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-900/30 to-primary-950/60" />
+              {loadedImages[slide.id] ? (
+                <>
+                  {/* High quality image with proper sizing */}
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className={`w-full h-full object-cover transition-transform duration-[15000ms] ${
+                      index === currentSlide ? "scale-105" : "scale-100"
+                    }`}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchpriority={index === 0 ? "high" : "low"}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px"
+                    style={{
+                      imageRendering: loadedImages[slide.id]
+                        ? "crisp-edges"
+                        : "auto",
+                    }}
+                  />
+                </>
+              ) : (
+                // Loading placeholder
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-900 to-primary-800 animate-pulse" />
+              )}
             </div>
 
             {/* Content - Positioned on Right for Better Balance */}
             <div className="relative h-full flex items-center">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                <div className="max-w-xl lg:max-w-2xl ml-auto">
-                  <div className="bg-gradient-to-r from-primary-900/40 to-primary-800/20 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-white/10">
+                <div className="max-w-xl lg:max-w-2xl ml-auto animate-fade-in">
+                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/20 shadow-2xl">
                     {/* Badge - Using Secondary Color */}
-                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-secondary-700/50 px-3 py-1.5 rounded-full mb-6">
+                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-gradient-to-r from-secondary-600 to-secondary-700 px-4 py-2 rounded-full mb-6 shadow-lg">
                       {slide.badge}
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
                       {slide.title}
                     </h1>
 
                     {/* Description */}
-                    <p className="text-base md:text-lg text-white/90 mb-8 max-w-lg">
+                    <p className="text-base md:text-lg text-white/90 mb-8 max-w-lg leading-relaxed drop-shadow-md">
                       {slide.description}
                     </p>
 
@@ -148,13 +176,13 @@ const CarouselSlider = () => {
                     <div className="flex flex-wrap gap-4">
                       <Link
                         to={slide.ctaLink}
-                        className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 min-w-[160px] hover:shadow-primary-500/30"
+                        className="inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[160px] hover:shadow-primary-500/40 active:scale-95"
                       >
-                        {slide.ctaText}
+                        <span className="drop-shadow-sm">{slide.ctaText}</span>
                       </Link>
                       <Link
                         to="/quote"
-                        className="inline-flex items-center justify-center px-6 py-3 bg-transparent text-white font-medium rounded-lg border-2 border-white/30 hover:border-secondary-400 hover:bg-secondary-900/20 transition-all duration-300 min-w-[160px] hover:text-secondary-50"
+                        className="inline-flex items-center justify-center px-6 py-3.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95"
                       >
                         Request Quote
                       </Link>
@@ -170,34 +198,34 @@ const CarouselSlider = () => {
         <button
           onClick={prevSlide}
           disabled={isTransitioning}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/60 hover:bg-primary-800/80 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-400/50 z-20"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Previous slide"
         >
-          <HiChevronLeft size={24} />
+          <HiChevronLeft size={26} className="drop-shadow-sm" />
         </button>
 
         <button
           onClick={nextSlide}
           disabled={isTransitioning}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/60 hover:bg-primary-800/80 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-400/50 z-20"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Next slide"
         >
-          <HiChevronRight size={24} />
+          <HiChevronRight size={26} className="drop-shadow-sm" />
         </button>
 
         {/* Bottom Controls Container */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-20">
           {/* Dots Indicator */}
-          <div className="flex items-center gap-2 bg-primary-900/60 backdrop-blur-sm px-4 py-2 rounded-full border border-primary-400/20">
+          <div className="flex items-center gap-2 bg-primary-900/70 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 shadow-xl">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 disabled={isTransitioning}
-                className={`w-2 h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-primary-300 disabled:opacity-50 ${
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 ${
                   index === currentSlide
-                    ? "bg-secondary-400 scale-125"
-                    : "bg-white/50 hover:bg-secondary-300"
+                    ? "bg-secondary-400 scale-125 shadow-lg"
+                    : "bg-white/60 hover:bg-secondary-300 hover:scale-110"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -205,31 +233,35 @@ const CarouselSlider = () => {
           </div>
 
           {/* Slide Counter & Play/Pause */}
-          <div className="flex items-center gap-3 bg-primary-900/60 backdrop-blur-sm px-3 py-2 rounded-full border border-primary-400/20">
-            <span className="text-sm text-white">
-              <span className="font-medium">{currentSlide + 1}</span>
-              <span className="text-white/60">/{slides.length}</span>
+          <div className="flex items-center gap-3 bg-primary-900/70 backdrop-blur-sm px-4 py-2.5 rounded-full border border-white/20 shadow-xl">
+            <span className="text-sm text-white font-medium drop-shadow-sm">
+              <span className="text-white">{currentSlide + 1}</span>
+              <span className="text-white/70">/{slides.length}</span>
             </span>
 
-            <div className="w-px h-4 bg-primary-300/30"></div>
+            <div className="w-px h-4 bg-white/30"></div>
 
             <button
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-              className="text-white hover:text-secondary-300 transition-colors"
+              className="text-white hover:text-secondary-300 transition-colors p-1"
               aria-label={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
             >
-              {isAutoPlaying ? <FiPause size={16} /> : <FiPlay size={16} />}
+              {isAutoPlaying ? (
+                <FiPause size={18} className="drop-shadow-sm" />
+              ) : (
+                <FiPlay size={18} className="drop-shadow-sm" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Progress Bar - Using Gradient from Primary to Secondary */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary-900/30 z-10">
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary-900/40 z-10">
           <div
-            className="h-full bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-100"
+            className="h-full bg-gradient-to-r from-primary-500 via-primary-400 to-secondary-500 transition-all duration-100"
             style={{
               width: isAutoPlaying ? "100%" : "0%",
-              animation: isAutoPlaying ? "progress 6s linear forwards" : "none",
+              animation: isAutoPlaying ? "progress 4s linear forwards" : "none",
             }}
           />
         </div>
@@ -238,17 +270,12 @@ const CarouselSlider = () => {
       {/* Custom Animation */}
       <style jsx>{`
         @keyframes progress {
-          from {
+          0% {
             width: 0%;
           }
-          to {
+          100% {
             width: 100%;
           }
-        }
-
-        /* Fade-in animation for content */
-        .slide-content {
-          animation: fadeInUp 0.8s ease-out 0.3s both;
         }
 
         @keyframes fadeInUp {
@@ -260,6 +287,26 @@ const CarouselSlider = () => {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        .animate-fade-in {
+          animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        /* Improve image rendering */
+        img {
+          -webkit-backface-visibility: hidden;
+          -moz-backface-visibility: hidden;
+          -webkit-transform: translateZ(0) scale(1, 1);
+          -moz-transform: translateZ(0) scale(1, 1);
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: crisp-edges;
+        }
+
+        /* Prevent blur on scale animation */
+        .scale-105 {
+          transform: scale(1.05);
+          transform-origin: center;
         }
       `}</style>
     </div>

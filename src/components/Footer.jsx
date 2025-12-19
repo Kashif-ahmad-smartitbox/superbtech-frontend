@@ -136,7 +136,7 @@ const Footer = () => {
                   </svg>
                 </div>
                 <span className="text-sm text-gray-300">
-                  Indore, Madhya Pradesh
+                  Ambala - 134003 Haryana, India
                 </span>
               </div>
             </div>
@@ -153,11 +153,26 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 animate-pulse"></div>
-            <span className="text-gray-400 text-sm">
-              Excellence in Laboratory Equipment
-            </span>
+          {/* Replaced "Excellence in Laboratory Equipment" with the credit line */}
+          <div className="flex flex-col items-center md:items-end gap-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500"></div>
+              <span className="text-xs text-gray-500">
+                Designed with ❤️ and crafted with care by
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://smartitbox.in/"
+                className="text-sm font-medium bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent"
+              >
+                Team SMART ITBOX
+              </a>
+              <span className="text-gray-400 text-sm">•</span>
+              <span className="text-xs text-gray-400">
+                Your Business Automation Partner
+              </span>
+            </div>
           </div>
         </div>
 

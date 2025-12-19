@@ -12,9 +12,16 @@ import {
   FiUser,
   FiGrid,
   FiBookOpen,
+  FiMessageSquare,
+  FiStar,
+  FiChevronRight,
+  FiGlobe,
+  FiHelpCircle,
+  FiDownload,
 } from "react-icons/fi";
 import { HiOutlineArrowRight, HiOutlineExternalLink } from "react-icons/hi";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
+import { FaWhatsapp } from "react-icons/fa"; // Added WhatsApp icon
 import api from "../utils/api";
 import logo from "../assests/super-logo.jpeg";
 
@@ -49,6 +56,19 @@ const Header = () => {
     };
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [mobileMenuOpen]);
+
   const fetchCategories = async () => {
     try {
       const response = await api.get("/categories");
@@ -60,56 +80,114 @@ const Header = () => {
 
   const handleCatalog = () => {
     navigate("/catalog");
+    setMobileMenuOpen(false);
   };
 
   const isActive = (path) => {
     return location.pathname === path;
   };
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  // WhatsApp contact details
+  const whatsappNumber = "+919034815524";
+  const whatsappMessage =
+    "Hello, I'm interested in your laboratory equipment. Could you please provide more information?";
+  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(
+    /\D/g,
+    ""
+  )}?text=${encodeURIComponent(whatsappMessage)}`;
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "shadow-lg bg-white border-b border-primary-100/50 backdrop-blur-sm"
+          ? "shadow-xl bg-white/95 backdrop-blur-lg border-b border-primary-100"
           : "bg-white border-b border-gray-100"
       }`}
     >
-      {/* Top Announcement Bar - Hidden on Mobile */}
-      <div className="hidden sm:block bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%239C92AC%22%20fill-opacity%3D%220.05%22%20fill-rule%3D%22evenodd%22%3E%3Ccircle%20cx%3D%223%22%20cy%3D%223%22%20r%3D%223%22%2F%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2213%22%20r%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30"></div>
+      {/* Enhanced Top Announcement Bar - Hidden on Mobile */}
+      <div className="hidden lg:block bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white relative overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-secondary-500/10 to-primary-500/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 rounded-full translate-x-1/2 translate-y-1/2"></div>
+        </div>
+
         <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-2.5 text-sm">
-            <div className="flex items-center gap-6 mb-2 sm:mb-0">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-3">
+            {/* Enhanced Contact Info */}
+            <div className="flex items-center gap-1 mb-2 sm:mb-0">
+              {/* Email - More Prominent */}
               <a
                 href="mailto:info@superbtechnologies.in"
-                className="hover:text-primary-200 transition-all duration-300 flex items-center gap-2 group"
+                className="group flex items-center gap-3 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl backdrop-blur-sm transition-all duration-300 border border-white/20 hover:border-white/30"
               >
-                <div className="p-1.5 bg-primary-800/30 rounded-lg group-hover:bg-primary-700/50 transition-colors">
-                  <FiMail size={14} />
+                <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg shadow-lg group-hover:scale-110 transition-transform">
+                  <FiMail size={16} className="text-white" />
                 </div>
-                <span className="font-medium hidden sm:inline">
-                  info@superbtechnologies.in
-                </span>
+                <div className="text-left">
+                  <p className="text-xs text-primary-200 font-medium">
+                    Email Us
+                  </p>
+                  <p className="text-sm font-semibold text-white group-hover:text-secondary-200 transition-colors">
+                    info@superbtechnologies.in
+                  </p>
+                </div>
               </a>
+
+              {/* Phone - More Prominent */}
               <a
                 href="tel:+919829132777"
-                className="hover:text-secondary-300 transition-all duration-300 flex items-center gap-2 group"
+                className="group flex items-center gap-3 px-4 py-2 bg-secondary-900/30 hover:bg-secondary-800/40 rounded-xl backdrop-blur-sm transition-all duration-300 border border-secondary-500/30 hover:border-secondary-400/40"
               >
-                <div className="p-1.5 bg-secondary-800/30 rounded-lg group-hover:bg-secondary-700/50 transition-colors">
-                  <FiPhone size={14} />
+                <div className="p-2 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-lg shadow-lg group-hover:scale-110 transition-transform">
+                  <FiPhone size={16} className="text-white" />
                 </div>
-                <span className="font-medium">+91 98291 32777</span>
+                <div className="text-left">
+                  <p className="text-xs text-secondary-200 font-medium">
+                    Call Now
+                  </p>
+                  <p className="text-sm font-semibold text-white group-hover:text-secondary-200 transition-colors">
+                    +91 98291 32777
+                  </p>
+                </div>
+              </a>
+
+              {/* WhatsApp Contact - New */}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 px-4 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 rounded-xl backdrop-blur-sm transition-all duration-300 border border-[#25D366]/30 hover:border-[#25D366]/40"
+              >
+                <div className="p-2 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-lg shadow-lg group-hover:scale-110 transition-transform">
+                  <FaWhatsapp size={16} className="text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-[#25D366] font-medium">WhatsApp</p>
+                  <p className="text-sm font-semibold text-white group-hover:text-[#25D366] transition-colors">
+                    +91 90348 15524
+                  </p>
+                </div>
               </a>
             </div>
+
+            {/* Support Badge */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-gradient-to-r from-primary-800/40 to-primary-700/40 px-3 py-1.5 rounded-full border border-primary-700/30 backdrop-blur-sm">
+              <div className="flex items-center gap-3 bg-gradient-to-r from-primary-800/40 to-secondary-800/40 px-4 py-2 rounded-xl border border-white/20 backdrop-blur-sm shadow-lg">
                 <div className="relative">
-                  <div className="w-2 h-2 bg-secondary-500 rounded-full animate-pulse"></div>
-                  <div className="absolute inset-0 bg-secondary-500 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-3 h-3 bg-gradient-to-br from-secondary-400 to-secondary-500 rounded-full animate-pulse shadow-lg"></div>
+                  <div className="absolute inset-0 bg-secondary-500 rounded-full animate-ping opacity-50"></div>
                 </div>
-                <span className="text-xs font-semibold tracking-wide">
-                  24/7 Expert Support
-                </span>
+                <div>
+                  <span className="text-sm font-bold text-white">24/7</span>
+                  <span className="text-xs text-primary-200 ml-2">
+                    Expert Support
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -119,67 +197,95 @@ const Header = () => {
       {/* Main Navigation */}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo Section */}
+          {/* Enhanced Logo Section */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative">
-              <div className="relative p-1.5">
-                <img
-                  src={logo}
-                  alt="Superb Technologies Logo"
-                  className="h-10 lg:h-12 w-auto object-contain group-hover:scale-110 transition-transform duration-500 relative z-10"
-                />
-              </div>
+              <img
+                src={logo}
+                alt="Superb Technologies Logo"
+                className="h-10 lg:h-12 w-auto object-contain group-hover:scale-110 transition-transform duration-500 relative z-10"
+              />
             </div>
             <div className="hidden md:block">
-              <h1 className="text-sm lg:text-xl font-bold bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 bg-clip-text text-transparent tracking-tight">
+              <h1 className="text-xs lg:text-xl font-bold bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 bg-clip-text text-transparent tracking-tight">
                 Superb Technologies
               </h1>
-              <p className="text-[8px] text-gray-600 font-semibold tracking-[0.2em] uppercase mt-0.5">
-                Laboratory Equipment
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <FiStar
+                      key={i}
+                      className="w-2 h-2 text-secondary-500 fill-secondary-500"
+                    />
+                  ))}
+                </div>
+                <p className="text-[9px] text-gray-600 font-semibold tracking-wider uppercase">
+                  Laboratory Equipment Experts
+                </p>
+              </div>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          {/* Enhanced Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
             {/* Home Link */}
             <Link
               to="/"
               className={`px-5 py-2.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
                 isActive("/")
-                  ? "text-primary-700"
-                  : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-primary-100/50"
+                  ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
+                  : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 hover:shadow-sm hover:border hover:border-primary-100"
               }`}
             >
               <div className="flex items-center gap-2.5 relative z-10">
-                <FiHome
-                  size={17}
-                  className={
+                <div
+                  className={`p-1.5 rounded-lg ${
                     isActive("/")
-                      ? "text-primary-600"
-                      : "text-gray-500 group-hover:text-primary-600"
-                  }
-                />
+                      ? "bg-gradient-to-r from-primary-500 to-primary-600"
+                      : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                  } transition-all`}
+                >
+                  <FiHome
+                    size={16}
+                    className={
+                      isActive("/")
+                        ? "text-white"
+                        : "text-primary-600 group-hover:text-white transition-colors"
+                    }
+                  />
+                </div>
                 <span>Home</span>
               </div>
             </Link>
 
-            {/* Products Dropdown */}
+            {/* Enhanced Products Dropdown */}
             <div className="relative group" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="px-5 py-2.5 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/50 hover:to-primary-100/50 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative"
+                className="px-5 py-2.5 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-primary-100"
               >
                 <div className="relative">
-                  <FiPackage
-                    size={17}
-                    className="text-gray-500 group-hover:text-primary-600"
-                  />
+                  <div
+                    className={`p-1.5 rounded-lg ${
+                      dropdownOpen
+                        ? "bg-gradient-to-r from-primary-500 to-primary-600"
+                        : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                    } transition-all`}
+                  >
+                    <FiPackage
+                      size={16}
+                      className={
+                        dropdownOpen
+                          ? "text-white"
+                          : "text-primary-600 group-hover:text-white transition-colors"
+                      }
+                    />
+                  </div>
                   {dropdownOpen && (
-                    <div className="absolute -inset-1 bg-primary-200/30 rounded-full blur-sm"></div>
+                    <div className="absolute -inset-1 bg-primary-200/40 rounded-full blur-md"></div>
                   )}
                 </div>
-                <span>Products</span>
+                <span>Category</span>
                 <FiChevronDown
                   className={`transition-transform duration-300 ${
                     dropdownOpen
@@ -190,37 +296,44 @@ const Header = () => {
                 />
               </button>
               <div
-                className={`absolute left-0 top-full mt-1.5 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 origin-top ${
+                className={`absolute left-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 origin-top ${
                   dropdownOpen
                     ? "scale-100 opacity-100 visible translate-y-0"
                     : "scale-95 opacity-0 invisible -translate-y-2"
                 }`}
               >
-                <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-5 py-3.5 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative flex items-center gap-2.5">
-                    <TbBrandGoogleAnalytics
-                      className="text-white/90"
-                      size={20}
-                    />
-                    <p className="text-white font-bold text-sm tracking-wide">
-                      PRODUCT CATEGORIES
-                    </p>
+                {/* Enhanced Dropdown Header */}
+                <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-6 py-4 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary-500/20 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                  <div className="relative flex items-center gap-3">
+                    <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                      <TbBrandGoogleAnalytics
+                        className="text-white"
+                        size={22}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-white font-bold text-sm tracking-wide">
+                        PRODUCT CATEGORIES
+                      </p>
+                      <p className="text-primary-200 text-xs mt-0.5">
+                        Premium Laboratory Solutions
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-primary-200 text-xs mt-1 relative">
-                    Explore our laboratory equipment
-                  </p>
                 </div>
-                <div className="max-h-[28rem] overflow-y-auto custom-scrollbar">
+
+                {/* Enhanced Categories List */}
+                <div className="max-h-[28rem] overflow-y-auto custom-scrollbar p-2">
                   {categories.map((cat, index) => (
                     <Link
                       key={cat._id}
                       to={`/category/${cat.slug}`}
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center justify-between px-5 py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 border-b border-gray-100/50 last:border-0 group/item transition-all duration-300 hover:pl-6"
+                      className="flex items-center justify-between p-4 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 rounded-xl border border-transparent hover:border-primary-100 group/item transition-all duration-300 hover:shadow-sm"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/item:from-primary-200 group-hover/item:to-primary-300 transition-all">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/item:from-primary-200 group-hover/item:to-primary-300 transition-all shadow-sm">
                           <span className="text-xs font-bold text-primary-700">
                             {index + 1}
                           </span>
@@ -229,17 +342,23 @@ const Header = () => {
                           <span className="font-semibold text-gray-800 text-sm group-hover/item:text-primary-800">
                             {cat.name}
                           </span>
+                          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                            {cat.description || "Explore premium equipment"}
+                          </p>
                         </div>
                       </div>
                       <HiOutlineArrowRight className="text-gray-400 text-sm group-hover/item:text-primary-600 group-hover/item:translate-x-1.5 transition-all duration-300" />
                     </Link>
                   ))}
                 </div>
+
+                {/* Enhanced Footer */}
                 <Link
                   to="/products"
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center justify-center gap-3 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-5 py-3.5 text-sm font-semibold transition-all duration-300 group/cta shadow-lg"
+                  className="flex items-center justify-center gap-3 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-6 py-4 text-sm font-semibold transition-all duration-300 group/cta shadow-lg"
                 >
+                  <FiGrid size={16} />
                   <span>Browse All Products</span>
                   <HiOutlineArrowRight
                     size={16}
@@ -249,16 +368,21 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Catalogue Button */}
+            {/* Enhanced Catalogue Button */}
             <button
               onClick={handleCatalog}
-              className="px-5 py-2.5 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/50 hover:to-primary-100/50 rounded-xl transition-all duration-300 flex items-center gap-2.5 group"
+              className="px-5 py-2.5 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-primary-100"
             >
               <div className="relative">
-                <FiFileText size={17} className="text-primary-600" />
-                <div className="absolute -inset-1 bg-primary-200/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="p-1.5 rounded-lg bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600 transition-all">
+                  <FiFileText
+                    size={16}
+                    className="text-primary-600 group-hover:text-white transition-colors"
+                  />
+                </div>
+                <div className="absolute -inset-1 bg-primary-200/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <span>Catalogue</span>
+              <span>Products</span>
               <HiOutlineExternalLink
                 size={15}
                 className="text-gray-400 group-hover:text-primary-600 group-hover:translate-x-0.5 transition-all"
@@ -266,38 +390,60 @@ const Header = () => {
             </button>
           </nav>
 
-          {/* Right Side Actions */}
+          {/* Enhanced Right Side Actions */}
           <div className="flex items-center gap-3">
-            {/* Admin Button - Hidden on Mobile */}
+            {/* WhatsApp Button - Desktop */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-[#25D366]/40 group relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <FaWhatsapp size={16} className="relative z-10" />
+              <span className="relative z-10">Chat</span>
+            </a>
+
+            {/* Enhanced Admin Button */}
             <Link
               to="/admin/login"
-              className="hidden md:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-primary-900/30 group"
+              className="hidden md:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-primary-900/40 group relative overflow-hidden"
             >
-              <FiUser size={16} />
-              <span>Admin Portal</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-secondary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <FiUser size={16} className="relative z-10" />
+              <span className="relative z-10">Admin Portal</span>
             </Link>
 
-            {/* Mobile Contact Buttons - Only visible on mobile */}
+            {/* Enhanced Mobile Contact Buttons */}
             <div className="flex lg:hidden items-center gap-2">
               <a
                 href="tel:+919829132777"
-                className="p-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+                className="p-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg hover:scale-110 transition-all duration-300 shadow-md"
                 aria-label="Call"
               >
-                <FiPhone size={18} />
+                <FiPhone size={20} />
+              </a>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl hover:shadow-lg hover:scale-110 transition-all duration-300 shadow-md"
+                aria-label="WhatsApp"
+              >
+                <FaWhatsapp size={20} />
               </a>
               <a
                 href="mailto:info@superbtechnologies.in"
-                className="p-2 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+                className="p-2.5 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white rounded-xl hover:shadow-lg hover:scale-110 transition-all duration-300 shadow-md"
                 aria-label="Email"
               >
-                <FiMail size={18} />
+                <FiMail size={20} />
               </a>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Enhanced Mobile Menu Button */}
             <button
-              className="lg:hidden p-2.5 rounded-xl bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 hover:border-primary-300 transition-all duration-300 group"
+              className="lg:hidden p-2.5 rounded-xl bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 hover:border-primary-300 hover:shadow-md transition-all duration-300 group"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu"
             >
@@ -307,6 +453,7 @@ const Header = () => {
                     size={22}
                     className="text-primary-700 group-hover:text-primary-800 transition-colors"
                   />
+                  <div className="absolute inset-0 bg-primary-200/30 rounded-full blur-sm"></div>
                 </div>
               ) : (
                 <div className="relative">
@@ -314,6 +461,7 @@ const Header = () => {
                     size={22}
                     className="text-primary-700 group-hover:text-primary-800 transition-colors"
                   />
+                  <div className="absolute inset-0 bg-primary-200/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
               )}
             </button>
@@ -321,197 +469,250 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu - Improved Design */}
+      {/* Enhanced Mobile Menu with Scroll Lock */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 pt-16">
-          {/* Backdrop */}
+        <div className="lg:hidden fixed inset-0 z-50">
+          {/* Enhanced Backdrop with gradient */}
           <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-            onClick={() => setMobileMenuOpen(false)}
+            className="absolute inset-0 bg-gradient-to-br from-primary-900/40 to-secondary-900/20 backdrop-blur-md"
+            onClick={closeMobileMenu}
           />
 
-          {/* Menu Content */}
-          <div className="absolute right-0 top-0 w-full max-w-sm h-full bg-white shadow-2xl overflow-y-auto animate-slideIn">
-            {/* Header */}
-            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-primary-50 to-white">
-              <div className="flex items-center gap-3 mb-2">
-                <img
-                  src={logo}
-                  alt="Superb Technologies"
-                  className="h-10 w-auto object-contain"
-                />
-                <div>
-                  <h2 className="text-lg font-bold text-primary-900">
-                    Superb Technologies
-                  </h2>
-                  <p className="text-xs text-gray-600">Laboratory Equipment</p>
+          {/* Enhanced Menu Content */}
+          <div className="absolute right-0 top-0 w-full h-full bg-white shadow-2xl overflow-y-auto animate-slideIn">
+            {/* Enhanced Header with gradient */}
+            <div className="sticky top-0 z-10 bg-gradient-to-r from-primary-700 to-primary-800 text-white p-4 pb-6 shadow-lg">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white rounded-xl backdrop-blur-sm border border-white/20">
+                    <img
+                      src={logo}
+                      alt="Superb Technologies"
+                      className="h-8 w-auto object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">
+                      Superb Technologies
+                    </h2>
+                    <p className="text-xs text-primary-200 opacity-90">
+                      Laboratory Equipment Specialists
+                    </p>
+                  </div>
                 </div>
+                <button
+                  onClick={closeMobileMenu}
+                  className="p-2 bg-white/15 hover:bg-white/25 rounded-xl backdrop-blur-sm border border-white/20 hover:border-white/30 transition-all"
+                  aria-label="Close menu"
+                >
+                  <FiX size={22} className="text-white" />
+                </button>
+              </div>
+
+              {/* Quick Contact Bar */}
+              <div className="grid grid-cols-3 gap-2">
+                <a
+                  href="tel:+919829132777"
+                  className="flex flex-col items-center px-2 py-2.5 bg-white/15 hover:bg-white/25 rounded-xl backdrop-blur-sm border border-white/20 hover:border-white/30 transition-all group"
+                >
+                  <div className="p-1.5 bg-gradient-to-br from-primary-400 to-primary-500 rounded-lg mb-1">
+                    <FiPhone size={14} className="text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-white">Call</p>
+                    <p className="text-[10px] text-primary-100 mt-0.5">
+                      98291 32777
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center px-2 py-2.5 bg-[#25D366]/20 hover:bg-[#25D366]/30 rounded-xl backdrop-blur-sm border border-[#25D366]/30 hover:border-[#25D366]/40 transition-all group"
+                >
+                  <div className="p-1.5 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-lg mb-1">
+                    <FaWhatsapp size={14} className="text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-white">WhatsApp</p>
+                    <p className="text-[10px] text-[#25D366] mt-0.5">
+                      90348 15524
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:info@superbtechnologies.in"
+                  className="flex flex-col items-center px-2 py-2.5 bg-secondary-900/30 hover:bg-secondary-800/40 rounded-xl backdrop-blur-sm border border-secondary-500/30 hover:border-secondary-400/40 transition-all group"
+                >
+                  <div className="p-1.5 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-lg mb-1">
+                    <FiMail size={14} className="text-white" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-white">Email</p>
+                    <p className="text-[10px] text-secondary-100 mt-0.5">
+                      info@...
+                    </p>
+                  </div>
+                </a>
               </div>
             </div>
 
-            {/* Navigation Items */}
+            {/* Enhanced Navigation Items */}
             <div className="p-4 space-y-1">
               {/* Home */}
               <Link
                 to="/"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all ${
                   isActive("/")
-                    ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 font-semibold"
-                    : "text-gray-800 hover:bg-primary-50"
+                    ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 font-semibold border border-primary-200 shadow-sm"
+                    : "text-gray-800 hover:bg-primary-50 hover:border hover:border-primary-100"
                 }`}
               >
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                  <FiHome size={20} className="text-primary-600" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center shadow-sm">
+                  <FiHome size={22} className="text-primary-600" />
                 </div>
-                <span className="text-sm font-medium">Home</span>
+                <div>
+                  <span className="text-sm font-medium">Home</span>
+                  <p className="text-xs text-gray-500">
+                    Welcome to our platform
+                  </p>
+                </div>
+                {isActive("/") && (
+                  <div className="ml-auto w-2 h-2 rounded-full bg-primary-500 animate-pulse"></div>
+                )}
               </Link>
 
               {/* All Products */}
               <Link
                 to="/products"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-gray-800 hover:bg-primary-50 transition-all"
+                onClick={closeMobileMenu}
+                className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-gray-800 hover:bg-primary-50 hover:border hover:border-primary-100 transition-all group"
               >
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                  <FiGrid size={20} className="text-primary-600" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center shadow-sm group-hover:from-primary-200 group-hover:to-secondary-200 transition-all">
+                  <FiGrid
+                    size={22}
+                    className="text-primary-600 group-hover:text-primary-700"
+                  />
                 </div>
-                <span className="text-sm font-medium">All Products</span>
+                <div>
+                  <span className="text-sm font-medium">All Products</span>
+                  <p className="text-xs text-gray-500">
+                    Complete equipment range
+                  </p>
+                </div>
+                <FiChevronRight className="ml-auto text-gray-400 text-sm group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
               </Link>
 
               {/* Catalogue */}
               <button
-                onClick={() => {
-                  handleCatalog();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-gray-800 hover:bg-primary-50 transition-all"
+                onClick={handleCatalog}
+                className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-gray-800 hover:bg-primary-50 hover:border hover:border-primary-100 transition-all group"
               >
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                  <FiBookOpen size={20} className="text-primary-600" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary-100 to-primary-100 flex items-center justify-center shadow-sm group-hover:from-secondary-200 group-hover:to-primary-200 transition-all">
+                  <FiBookOpen
+                    size={22}
+                    className="text-secondary-600 group-hover:text-secondary-700"
+                  />
                 </div>
-                <span className="text-sm font-medium">Product Catalogue</span>
-                <HiOutlineExternalLink
-                  className="ml-auto text-gray-400"
-                  size={16}
-                />
+                <div className="flex-1 ">
+                  <span className="text-sm font-medium">Product Catalogue</span>
+                  <p className="text-xs text-gray-500">
+                    Browse organized collection
+                  </p>
+                </div>
+                <HiOutlineExternalLink className="text-gray-400 text-sm group-hover:text-primary-600 group-hover:scale-110 transition-all" />
               </button>
             </div>
 
-            {/* Categories Section */}
-            <div className="px-4 py-2">
-              <div className="flex items-center gap-2 mb-3 px-2">
-                <FiPackage className="text-primary-600" />
-                <h3 className="text-sm font-semibold text-gray-900">
-                  Categories
-                </h3>
+            {/* Enhanced Categories Section */}
+            <div className="px-4 py-2 mt-2">
+              <div className="flex items-center gap-3 mb-3 px-2">
+                <div className="p-2 bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg shadow-sm">
+                  <FiPackage className="text-primary-600" size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900">Categories</h3>
+                  <p className="text-xs text-gray-600">
+                    Browse by equipment type
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1 max-h-60 overflow-y-auto pr-1">
-                {categories.map((cat) => (
+              <div className="grid grid-cols-2 gap-2">
+                {categories.slice(0, 6).map((cat) => (
                   <Link
                     key={cat._id}
                     to={`/category/${cat.slug}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-2.5 rounded-lg hover:bg-primary-50 text-gray-700 hover:text-primary-800 transition-all"
+                    onClick={closeMobileMenu}
+                    className="block p-3 bg-gradient-to-br from-primary-50 to-white rounded-xl border border-primary-100 hover:border-primary-300 text-gray-700 hover:text-primary-800 hover:shadow-sm transition-all text-sm font-medium text-center group/cat"
                   >
-                    <span className="text-sm font-medium">{cat.name}</span>
-                    <HiOutlineArrowRight className="text-gray-400 text-sm" />
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/cat:from-primary-200 group-hover/cat:to-primary-300 transition-all mb-1">
+                        <FiPackage className="w-3 h-3 text-primary-600" />
+                      </div>
+                      <span className="text-xs line-clamp-2">{cat.name}</span>
+                    </div>
                   </Link>
                 ))}
+                <Link
+                  to="/products"
+                  onClick={closeMobileMenu}
+                  className="col-span-2 p-3 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl font-semibold text-center hover:shadow-lg transition-all mt-2 flex items-center justify-center gap-2 group"
+                >
+                  <FiGrid size={16} />
+                  <span>View All Categories</span>
+                  <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
             </div>
 
-            {/* Contact & Admin Section */}
-            <div className="mt-6 p-4 border-t border-gray-200">
+            {/* WhatsApp Button - Mobile */}
+            <div className="mt-4 px-4">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-3.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl font-bold text-center hover:shadow-xl transition-all duration-300 shadow-lg group relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="flex items-center justify-center gap-2.5 relative z-10">
+                  <FaWhatsapp size={18} />
+                  <span>Chat on WhatsApp</span>
+                </div>
+              </a>
+            </div>
+
+            {/* Enhanced Contact & Admin Section */}
+            <div className="mt-4 p-4 border-t border-gray-200">
               {/* Admin Button */}
               <Link
                 to="/admin/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block w-full mb-4 px-4 py-3.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl font-semibold text-center hover:shadow-xl transition-all duration-300 shadow-lg"
+                onClick={closeMobileMenu}
+                className="block w-full mb-4 px-4 py-3.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl font-bold text-center hover:shadow-xl transition-all duration-300 shadow-lg group relative overflow-hidden"
               >
-                <div className="flex items-center justify-center gap-2.5">
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="flex items-center justify-center gap-2.5 relative z-10">
                   <FiUser size={18} />
                   <span>Admin Portal</span>
                 </div>
               </Link>
+            </div>
 
-              {/* Contact Cards */}
-              <div className="grid grid-cols-1 gap-3">
-                <a
-                  href="mailto:info@superbtechnologies.in"
-                  className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-primary-50 to-white rounded-xl border border-primary-100 hover:border-primary-200 transition-all duration-300 group"
-                >
-                  <div className="p-2 bg-gradient-to-r from-primary-100 to-primary-200 rounded-lg">
-                    <FiMail className="text-primary-600" size={18} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">Email</p>
-                    <p className="text-xs text-gray-600">
-                      info@superbtechnologies.in
-                    </p>
-                  </div>
-                </a>
-                <a
-                  href="tel:+919829132777"
-                  className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-secondary-50 to-white rounded-xl border border-secondary-100 hover:border-secondary-200 transition-all duration-300 group"
-                >
-                  <div className="p-2 bg-gradient-to-r from-secondary-100 to-secondary-200 rounded-lg">
-                    <FiPhone className="text-secondary-600" size={18} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      Call Now
-                    </p>
-                    <p className="text-xs text-gray-600">+91 98291 32777</p>
-                  </div>
-                </a>
-              </div>
-
-              {/* Support Info */}
-              <div className="mt-4 p-3 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-100">
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <div className="w-2 h-2 bg-secondary-500 rounded-full animate-pulse"></div>
-                  </div>
-                  <span className="text-xs font-medium text-primary-800">
-                    24/7 Technical Support Available
-                  </span>
-                </div>
-              </div>
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-200 text-center">
+              <p className="text-xs text-gray-500">
+                © {new Date().getFullYear()} Superb Technologies
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Laboratory Equipment Manufacturing
+              </p>
             </div>
           </div>
         </div>
       )}
-
-      {/* Custom Styles */}
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f5f9;
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: linear-gradient(
-            to bottom,
-            var(--color-primary-600),
-            var(--color-primary-700)
-          );
-          border-radius: 4px;
-        }
-        @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-        .animate-slideIn {
-          animation: slideIn 0.3s ease-out;
-        }
-      `}</style>
     </header>
   );
 };

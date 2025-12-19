@@ -1,8 +1,18 @@
 import React from "react";
+import {
+  Users,
+  TrendingUp,
+  Calendar,
+  Globe,
+  Shield,
+  Award,
+  Target,
+  Eye,
+} from "lucide-react";
 
 const AboutSection = () => {
   return (
-    <section className="relative py-16 md:py-24 bg-gradient-to-b from-white to-primary-50">
+    <section className="relative py-16 md:py-24 bg-gradient-to-b from-white to-primary-50 overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-14">
@@ -65,19 +75,25 @@ const AboutSection = () => {
 
           {/* Right Stats & Trust */}
           <div className="space-y-8">
-            {/* Key Facts */}
+            {/* Key Facts with Icons */}
             <div className="grid grid-cols-2 gap-5">
-              <div className="border border-primary-200 rounded-lg p-6 text-center bg-white hover:bg-primary-50 transition-colors duration-300 shadow-sm hover:shadow-md">
-                <div className="text-2xl font-semibold text-primary-600">
-                  11–25
+              {/* Skilled Professionals */}
+              <div className="border border-primary-200 rounded-xl p-6 text-center bg-white hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-primary-100 to-primary-200 mb-3 group-hover:from-primary-200 group-hover:to-primary-300 transition-all">
+                  <Users className="text-primary-600" size={24} />
                 </div>
+                <div className="text-2xl font-bold text-primary-600">11–25</div>
                 <div className="mt-1 text-sm text-gray-600">
                   Skilled Professionals
                 </div>
               </div>
 
-              <div className="border border-primary-200 rounded-lg p-6 text-center bg-white hover:bg-primary-50 transition-colors duration-300 shadow-sm hover:shadow-md">
-                <div className="text-2xl font-semibold text-primary-600">
+              {/* Annual Turnover */}
+              <div className="border border-primary-200 rounded-xl p-6 text-center bg-white hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-secondary-100 to-secondary-200 mb-3 group-hover:from-secondary-200 group-hover:to-secondary-300 transition-all">
+                  <TrendingUp className="text-secondary-600" size={24} />
+                </div>
+                <div className="text-2xl font-bold text-primary-600">
                   ₹5–25 Cr
                 </div>
                 <div className="mt-1 text-sm text-gray-600">
@@ -85,44 +101,53 @@ const AboutSection = () => {
                 </div>
               </div>
 
-              <div className="border border-primary-200 rounded-lg p-6 text-center bg-white hover:bg-primary-50 transition-colors duration-300 shadow-sm hover:shadow-md">
-                <div className="text-2xl font-semibold text-primary-600">
-                  2015
+              {/* Year of Establishment */}
+              <div className="border border-primary-200 rounded-xl p-6 text-center bg-white hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-primary-100 to-secondary-100 mb-3 group-hover:from-primary-200 group-hover:to-secondary-200 transition-all">
+                  <Calendar className="text-primary-600" size={24} />
                 </div>
+                <div className="text-2xl font-bold text-primary-600">2015</div>
                 <div className="mt-1 text-sm text-gray-600">
                   Year of Establishment
                 </div>
               </div>
 
-              <div className="border border-primary-200 rounded-lg p-6 text-center bg-white hover:bg-primary-50 transition-colors duration-300 shadow-sm hover:shadow-md">
-                <div className="text-2xl font-semibold text-primary-600">
-                  IEC
+              {/* Export Enabled */}
+              <div className="border border-primary-200 rounded-xl p-6 text-center bg-white hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-secondary-100 to-primary-100 mb-3 group-hover:from-secondary-200 group-hover:to-primary-200 transition-all">
+                  <Globe className="text-secondary-600" size={24} />
                 </div>
+                <div className="text-2xl font-bold text-primary-600">IEC</div>
                 <div className="mt-1 text-sm text-gray-600">Export Enabled</div>
               </div>
             </div>
 
             {/* Trust & Compliance */}
-            <div className="border border-primary-200 rounded-lg p-6 bg-gradient-to-br from-primary-50 to-secondary-50">
-              <h4 className="font-semibold text-primary-800 mb-3">
-                Trust, Compliance & Recognition
-              </h4>
+            <div className="border border-primary-200 rounded-xl p-6 bg-gradient-to-br from-primary-50 to-secondary-50">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
+                  <Shield className="text-white" size={20} />
+                </div>
+                <h4 className="font-bold text-primary-800 text-lg">
+                  Trust, Compliance & Recognition
+                </h4>
+              </div>
               <ul className="text-sm text-gray-700 space-y-2">
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-secondary-500 rounded-full mr-2"></span>
-                  IndiaMART Trust Seal Verified Supplier
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-secondary-500 flex-shrink-0"></div>
+                  <span>IndiaMART Trust Seal Verified Supplier</span>
                 </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-secondary-500 rounded-full mr-2"></span>
-                  IndiaMART Verified Exporter
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-secondary-500 flex-shrink-0"></div>
+                  <span>IndiaMART Verified Exporter</span>
                 </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-secondary-500 rounded-full mr-2"></span>
-                  GST Registered Partnership Firm
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-secondary-500 flex-shrink-0"></div>
+                  <span>GST Registered Partnership Firm</span>
                 </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-secondary-500 rounded-full mr-2"></span>
-                  Consistent Supplier to Educational Institutions
+                <li className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-secondary-500 flex-shrink-0"></div>
+                  <span>Consistent Supplier to Educational Institutions</span>
                 </li>
               </ul>
             </div>
@@ -142,23 +167,36 @@ const AboutSection = () => {
           </p>
 
           {/* Mission/Vision Box */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg border border-primary-200">
+          <div className="mt-8 p-6 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold text-primary-800 mb-2">
-                  Our Mission
-                </h4>
-                <p className="text-sm text-gray-700">
+              {/* Mission */}
+              <div className="p-4 bg-white/50 rounded-lg border border-primary-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
+                    <Target className="text-white" size={20} />
+                  </div>
+                  <h4 className="font-bold text-primary-800 text-lg">
+                    Our Mission
+                  </h4>
+                </div>
+                <p className="text-sm text-gray-700 pl-1">
                   To provide high-quality, reliable laboratory equipment that
                   enhances technical education and industrial research
                   capabilities.
                 </p>
               </div>
-              <div>
-                <h4 className="font-semibold text-primary-800 mb-2">
-                  Our Vision
-                </h4>
-                <p className="text-sm text-gray-700">
+
+              {/* Vision */}
+              <div className="p-4 bg-white/50 rounded-lg border border-primary-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-secondary-500 to-secondary-600 flex items-center justify-center">
+                    <Eye className="text-white" size={20} />
+                  </div>
+                  <h4 className="font-bold text-primary-800 text-lg">
+                    Our Vision
+                  </h4>
+                </div>
+                <p className="text-sm text-gray-700 pl-1">
                   To become the most trusted manufacturer of scientific
                   equipment in India, recognized for excellence in quality and
                   innovation.
