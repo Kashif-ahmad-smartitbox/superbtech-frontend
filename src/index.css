@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 @layer base {
   body {
     @apply font-sans antialiased;
   }
-  
+
   * {
     @apply scroll-smooth;
   }
@@ -18,23 +18,23 @@
   .btn {
     @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95;
   }
-  
+
   .btn-primary {
     @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:shadow-blue-500/50;
   }
-  
+
   .btn-secondary {
     @apply bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 hover:from-gray-200 hover:to-gray-300 shadow-md hover:shadow-lg;
   }
-  
+
   .card {
     @apply bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100;
   }
-  
+
   .input-field {
     @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white text-gray-800 placeholder-gray-400;
   }
-  
+
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -42,31 +42,35 @@
 
 @layer utilities {
   .bg-grid-pattern {
-    background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px
+      ),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 50px 50px;
   }
-  
+
   .animate-blob {
     animation: blob 7s infinite;
   }
-  
+
   .animation-delay-2000 {
     animation-delay: 2s;
   }
-  
+
   .animation-delay-4000 {
     animation-delay: 4s;
   }
-  
+
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
   }
-  
+
   @keyframes blob {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate(0, 0) scale(1);
     }
     33% {
@@ -76,37 +80,38 @@
       transform: translate(-20px, 20px) scale(0.9);
     }
   }
-  
+
   @keyframes gradient {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     50% {
       background-position: 100% 50%;
     }
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 0.8s ease-out forwards;
     opacity: 0;
   }
-  
+
   .animation-delay-300 {
     animation-delay: 0.3s;
   }
-  
+
   .animation-delay-500 {
     animation-delay: 0.5s;
   }
-  
+
   .animation-delay-700 {
     animation-delay: 0.7s;
   }
-  
+
   .animation-delay-1000 {
     animation-delay: 1s;
   }
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -118,4 +123,3 @@
     }
   }
 }
-
