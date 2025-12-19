@@ -199,7 +199,7 @@ const AdminEnquiries = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           {enquiry.downloadedBrochure ? (
                             <>
@@ -217,6 +217,18 @@ const AdminEnquiries = () => {
                           <span className="text-xs text-gray-500">
                             {formatDate(enquiry.downloadTimestamp)}
                           </span>
+                        )}
+                        {enquiry.product?.brochure?.path && (
+                          <a
+                            href={enquiry.product.brochure.path}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-xs font-semibold transition-colors"
+                            title={enquiry.product.brochure.originalName || 'Download Brochure'}
+                          >
+                            <FiDownload className="w-3 h-3" />
+                            Download Brochure
+                          </a>
                         )}
                       </div>
                     </td>
