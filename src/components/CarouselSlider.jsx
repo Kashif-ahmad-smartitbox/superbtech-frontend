@@ -4,9 +4,10 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/01.jpeg";
-import slide2 from "../assests/02.jpeg";
-import slide3 from "../assests/03.jpeg";
+import slide1 from "../assests/asset1.jpeg";
+import slide2 from "../assests/asset2.jpeg";
+import slide3 from "../assests/asset3.jpeg";
+import slide4 from "../assests/asset4.jpeg";
 
 const CarouselSlider = () => {
   const slides = [
@@ -30,16 +31,26 @@ const CarouselSlider = () => {
       ctaLink: "/catalog",
       badge: "Education",
     },
-    {
-      id: 3,
-      image: slide3,
-      title: "Industrial Testing Solutions",
-      description:
-        "Reliable equipment for quality control & research facilities",
-      ctaText: "Contact Experts",
-      ctaLink: "/contact",
-      badge: "Industrial",
-    },
+      {
+        id: 3,
+        image: slide3,
+        title: "Industrial Testing Solutions",
+        description:
+          "Reliable equipment for quality control & research facilities",
+        ctaText: "Contact Experts",
+        ctaLink: "/contact",
+        badge: "Industrial",
+      },
+      {
+        id: 4,
+        image: slide4,
+        title: "Medical Equipment Solutions",
+        description:
+          "Advanced medical devices for diagnosis & treatment",
+        ctaText: "View Products",
+        ctaLink: "/products",
+        badge: "Medical",
+      },
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
