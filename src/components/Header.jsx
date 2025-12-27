@@ -30,13 +30,16 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState(new Set());
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchCategories();
+  }, [location.pathname]);
 
+  useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -73,6 +76,22 @@ const Header = () => {
     try {
       const response = await api.get("/categories");
       setCategories(response.data);
+      
+      // Auto-expand parent category if current route is a subcategory
+      const currentPath = location.pathname;
+      if (currentPath.startsWith('/category/')) {
+        const slug = currentPath.replace('/category/', '');
+        // Find if this slug belongs to a subcategory
+        for (const cat of response.data) {
+          if (cat.subcategories) {
+            const subcat = cat.subcategories.find(sub => sub.slug === slug);
+            if (subcat) {
+              setExpandedCategories(new Set([cat._id]));
+              break;
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -296,27 +315,27 @@ const Header = () => {
                 />
               </button>
               <div
-                className={`absolute left-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 origin-top ${
+                className={`absolute left-0 top-full mt-2 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 origin-top ${
                   dropdownOpen
                     ? "scale-100 opacity-100 visible translate-y-0"
                     : "scale-95 opacity-0 invisible -translate-y-2"
                 }`}
               >
                 {/* Enhanced Dropdown Header */}
-                <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-6 py-4 relative overflow-hidden">
+                <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-4 py-3 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary-500/20 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
-                  <div className="relative flex items-center gap-3">
-                    <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                  <div className="relative flex items-center gap-2">
+                    <div className="p-1.5 bg-white/10 rounded-lg backdrop-blur-sm">
                       <TbBrandGoogleAnalytics
                         className="text-white"
-                        size={22}
+                        size={18}
                       />
                     </div>
                     <div>
-                      <p className="text-white font-bold text-sm tracking-wide">
+                      <p className="text-white font-bold text-xs tracking-wide">
                         PRODUCT CATEGORIES
                       </p>
-                      <p className="text-primary-200 text-xs mt-0.5">
+                      <p className="text-primary-200 text-[10px] mt-0.5">
                         Premium Laboratory Solutions
                       </p>
                     </div>
@@ -324,44 +343,103 @@ const Header = () => {
                 </div>
 
                 {/* Enhanced Categories List */}
-                <div className="max-h-[28rem] overflow-y-auto custom-scrollbar p-2">
-                  {categories.map((cat, index) => (
-                    <Link
-                      key={cat._id}
-                      to={`/category/${cat.slug}`}
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center justify-between p-4 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 rounded-xl border border-transparent hover:border-primary-100 group/item transition-all duration-300 hover:shadow-sm"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/item:from-primary-200 group-hover/item:to-primary-300 transition-all shadow-sm">
-                          <span className="text-xs font-bold text-primary-700">
-                            {index + 1}
-                          </span>
+                <div className="max-h-[28rem] overflow-y-auto custom-scrollbar p-1">
+                  {categories.map((cat, index) => {
+                    const hasSubcategories = cat.subcategories && cat.subcategories.length > 0;
+                    const isExpanded = expandedCategories.has(cat._id);
+                    
+                    return (
+                      <div key={cat._id}>
+                        <div className="flex items-center gap-1">
+                          {hasSubcategories && (
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setExpandedCategories(prev => {
+                                  const newSet = new Set(prev);
+                                  if (newSet.has(cat._id)) {
+                                    newSet.delete(cat._id);
+                                  } else {
+                                    newSet.add(cat._id);
+                                  }
+                                  return newSet;
+                                });
+                              }}
+                              className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
+                            >
+                              <FiChevronRight
+                                className={`text-gray-400 text-xs transition-transform duration-200 ${
+                                  isExpanded ? 'rotate-90' : ''
+                                }`}
+                                size={12}
+                              />
+                            </button>
+                          )}
+                          <Link
+                            to={`/category/${cat.slug}`}
+                            onClick={() => setDropdownOpen(false)}
+                            className={`flex items-center justify-between p-2 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 rounded-lg border border-transparent hover:border-primary-100 group/item transition-all duration-300 hover:shadow-sm flex-1 ${
+                              hasSubcategories ? '' : 'ml-6'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/item:from-primary-200 group-hover/item:to-primary-300 transition-all shadow-sm flex-shrink-0">
+                                <span className="text-xs font-bold text-primary-700">
+                                  {index + 1}
+                                </span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="font-semibold text-gray-800 text-xs group-hover/item:text-primary-800 block truncate">
+                                  {cat.name}
+                                </span>
+                                {cat.description && (
+                                  <p className="text-xs text-gray-500 mt-0.5 line-clamp-1 truncate">
+                                    {cat.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            {!hasSubcategories && (
+                              <HiOutlineArrowRight className="text-gray-400 text-xs group-hover/item:text-primary-600 group-hover/item:translate-x-1 transition-all duration-300 flex-shrink-0 ml-2" />
+                            )}
+                          </Link>
                         </div>
-                        <div>
-                          <span className="font-semibold text-gray-800 text-sm group-hover/item:text-primary-800">
-                            {cat.name}
-                          </span>
-                          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                            {cat.description || "Explore premium equipment"}
-                          </p>
-                        </div>
+                        {/* Subcategories - Only show when expanded */}
+                        {hasSubcategories && isExpanded && (
+                          <div className="ml-4 pl-2 border-l-2 border-primary-100 mt-1 mb-1">
+                            {cat.subcategories.map((subcat) => (
+                              <Link
+                                key={subcat._id}
+                                to={`/category/${subcat.slug}`}
+                                onClick={() => setDropdownOpen(false)}
+                                className="flex items-center justify-between p-1.5 hover:bg-primary-50 rounded-md group/sub transition-all duration-200"
+                              >
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-primary-400 flex-shrink-0"></div>
+                                  <span className="font-medium text-gray-700 text-xs group-hover/sub:text-primary-700 truncate">
+                                    {subcat.name}
+                                  </span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <HiOutlineArrowRight className="text-gray-400 text-sm group-hover/item:text-primary-600 group-hover/item:translate-x-1.5 transition-all duration-300" />
-                    </Link>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Enhanced Footer */}
                 <Link
                   to="/products"
                   onClick={() => setDropdownOpen(false)}
-                  className="flex items-center justify-center gap-3 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-6 py-4 text-sm font-semibold transition-all duration-300 group/cta shadow-lg"
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-4 py-2.5 text-xs font-semibold transition-all duration-300 group/cta shadow-lg"
                 >
-                  <FiGrid size={16} />
+                  <FiGrid size={14} />
                   <span>Browse All Products</span>
                   <HiOutlineArrowRight
-                    size={16}
+                    size={14}
                     className="group-hover/cta:translate-x-1.5 transition-transform"
                   />
                 </Link>

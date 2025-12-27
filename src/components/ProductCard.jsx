@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
     <>
       <div className="group relative bg-white rounded-xl border border-primary-100 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col h-full hover:-translate-y-1">
         {/* Image Section */}
-        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-primary-50 to-secondary-50">
+        <div className="relative aspect-square overflow-hidden bg-white">
           {!imageError && product.images && product.images.length > 0 ? (
             <img
               src={getImageUrl(product.images[0])}
@@ -99,7 +99,8 @@ const ProductCard = ({ product }) => {
           {product.description && (
             <div className="mb-3 flex-grow">
               <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
-                {product.description}
+                {product.description.replace(/<[^>]*>/g, '').substring(0, 100)}
+                {product.description.replace(/<[^>]*>/g, '').length > 100 ? '...' : ''}
               </p>
             </div>
           )}

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import api, { getImageUrl } from '../../utils/api';
 import { FiEdit, FiTrash2, FiPlus, FiUpload, FiX, FiImage, FiSearch } from 'react-icons/fi';
 
@@ -18,6 +20,10 @@ const AdminProducts = () => {
     specifications: '',
     category: '',
     featured: false,
+    new: false,
+    bestSeller: false,
+    experimentation: '',
+    servicesRequired: '',
     isActive: true,
     order: 0
   });
@@ -62,6 +68,13 @@ const AdminProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate description (Quill returns empty as '<p><br></p>')
+    if (!formData.description || formData.description === '<p><br></p>' || formData.description.trim() === '') {
+      alert('Description is required');
+      return;
+    }
+    
     try {
       const submitData = new FormData();
       Object.keys(formData).forEach(key => {
@@ -136,7 +149,11 @@ const AdminProducts = () => {
       description: product.description,
       specifications: product.specifications || '',
       category: product.category._id || product.category,
-      featured: product.featured,
+      featured: product.featured || false,
+      new: product.new || false,
+      bestSeller: product.bestSeller || false,
+      experimentation: product.experimentation || '',
+      servicesRequired: product.servicesRequired || '',
       isActive: product.isActive,
       order: product.order || 0
     });
@@ -172,6 +189,10 @@ const AdminProducts = () => {
       specifications: '',
       category: '',
       featured: false,
+      new: false,
+      bestSeller: false,
+      experimentation: '',
+      servicesRequired: '',
       isActive: true,
       order: 0
     });
@@ -329,11 +350,23 @@ const AdminProducts = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {product.featured && (
                           <span className="text-yellow-500" title="Featured">⭐</span>
                         )}
                         <span className="font-semibold text-gray-800">{product.name}</span>
+                        <div className="flex items-center gap-1">
+                          {product.new && (
+                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200" title="New Product">
+                              NEW
+                            </span>
+                          )}
+                          {product.bestSeller && (
+                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700 border border-orange-200" title="Best Seller">
+                              BEST SELLER
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">
@@ -341,7 +374,9 @@ const AdminProducts = () => {
                     </td>
                     <td className="px-4 py-3 text-gray-600 max-w-xs">
                       <div className="line-clamp-2">
-                        {product.description || 'No description'}
+                        {product.description 
+                          ? product.description.replace(/<[^>]*>/g, '').substring(0, 100) || 'No description'
+                          : 'No description'}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -356,6 +391,16 @@ const AdminProducts = () => {
                         {product.featured && (
                           <span className="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
                             Featured
+                          </span>
+                        )}
+                        {product.new && (
+                          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                            New
+                          </span>
+                        )}
+                        {product.bestSeller && (
+                          <span className="px-2 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
+                            Best Seller
                           </span>
                         )}
                       </div>
@@ -435,7 +480,7 @@ const AdminProducts = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">
-                    Category <span className="text-red-500">*</span>
+                    Category/Subcategory <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="category"
@@ -446,7 +491,14 @@ const AdminProducts = () => {
                   >
                     <option value="">Select Category</option>
                     {categories.map(cat => (
-                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                      <React.Fragment key={cat._id}>
+                        <option value={cat._id}>{cat.name}</option>
+                        {cat.subcategories && cat.subcategories.map(subcat => (
+                          <option key={subcat._id} value={subcat._id}>
+                            &nbsp;&nbsp;└ {subcat.name}
+                          </option>
+                        ))}
+                      </React.Fragment>
                     ))}
                   </select>
                 </div>
@@ -465,29 +517,90 @@ const AdminProducts = () => {
                   placeholder="Product name"
                 />
               </div>
+              {/* Description - Quill Editor */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
                   Description <span className="text-red-500">*</span>
                 </label>
+                <div className="bg-white rounded-lg border border-gray-300">
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.description}
+                    onChange={(value) => setFormData({ ...formData, description: value })}
+                    modules={{
+                      toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['link'],
+                        ['clean']
+                      ]
+                    }}
+                    formats={[
+                      'header', 'bold', 'italic', 'underline', 'strike',
+                      'list', 'bullet', 'color', 'background', 'link'
+                    ]}
+                    placeholder="Enter product description..."
+                    style={{ minHeight: '200px' }}
+                  />
+                </div>
+                {!formData.description || formData.description === '<p><br></p>' ? (
+                  <p className="text-xs text-red-500 mt-1">Description is required</p>
+                ) : null}
+              </div>
+
+              {/* Experimentation */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Experimentation</label>
                 <textarea
-                  name="description"
-                  value={formData.description}
+                  name="experimentation"
+                  value={formData.experimentation}
                   onChange={handleChange}
-                  rows="4"
-                  required
+                  rows="3"
                   className="input-field resize-none"
-                  placeholder="Product description"
+                  placeholder="Enter experimentation details (each line will be displayed separately)"
                 />
               </div>
+
+              {/* Specifications - Quill Editor */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Specifications</label>
+                <div className="bg-white rounded-lg border border-gray-300">
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.specifications}
+                    onChange={(value) => setFormData({ ...formData, specifications: value })}
+                    modules={{
+                      toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        ['link'],
+                        ['clean']
+                      ]
+                    }}
+                    formats={[
+                      'header', 'bold', 'italic', 'underline', 'strike',
+                      'list', 'bullet', 'color', 'background', 'link'
+                    ]}
+                    placeholder="Enter product specifications..."
+                    style={{ minHeight: '250px' }}
+                  />
+                </div>
+              </div>
+
+              {/* Services Required */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Services Required</label>
                 <textarea
-                  name="specifications"
-                  value={formData.specifications}
+                  name="servicesRequired"
+                  value={formData.servicesRequired}
                   onChange={handleChange}
-                  rows="6"
-                  className="input-field resize-none font-mono text-sm"
-                  placeholder="Enter specifications (HTML supported)"
+                  rows="3"
+                  className="input-field resize-none"
+                  placeholder="Enter services required (each line will be displayed separately)"
                 />
               </div>
               <div>
@@ -549,7 +662,7 @@ const AdminProducts = () => {
                   Upload a PDF brochure for this product
                 </small>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Order</label>
                   <input
@@ -571,6 +684,30 @@ const AdminProducts = () => {
                       className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
                     <span className="text-sm font-semibold text-gray-700">Featured</span>
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="new"
+                      checked={formData.new}
+                      onChange={handleChange}
+                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">New</span>
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="bestSeller"
+                      checked={formData.bestSeller}
+                      onChange={handleChange}
+                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Best Seller</span>
                   </label>
                 </div>
                 <div className="flex items-center">

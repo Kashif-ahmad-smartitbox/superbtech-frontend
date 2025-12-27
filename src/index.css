@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Quill Editor Styles */
+.quill {
+  @apply bg-white;
+}
+
+.quill .ql-container {
+  @apply border-gray-300 rounded-b-lg;
+  min-height: 200px;
+  font-size: 14px;
+}
+
+.quill .ql-editor {
+  @apply text-gray-800;
+  min-height: 200px;
+}
+
+.quill .ql-toolbar {
+  @apply border-gray-300 rounded-t-lg bg-gray-50;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.quill .ql-toolbar button {
+  @apply text-gray-700 hover:text-primary-600;
+}
+
+.quill .ql-toolbar button.ql-active {
+  @apply text-primary-600;
+}
+
+.quill .ql-stroke {
+  stroke: #374151;
+}
+
+.quill .ql-fill {
+  fill: #374151;
+}
+
+.quill .ql-picker-label {
+  @apply text-gray-700;
+}
+
 body {
   font-family: "Outfit", sans-serif;
 }

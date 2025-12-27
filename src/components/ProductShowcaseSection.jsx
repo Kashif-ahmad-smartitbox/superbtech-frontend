@@ -1,40 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   FiStar,
   FiCheckCircle,
   FiTrendingUp,
   FiSettings,
 } from "react-icons/fi";
-
-import img1 from "../assests/01.webp";
-import img2 from "../assests/02.jpg";
-import img3 from "../assests/03.webp";
-
-const products = [
-  {
-    image: img1,
-    title: "Industrial Training & Testing Setup",
-    desc: "Custom-built laboratory and industrial training systems designed for durability and accuracy.",
-    features: ["ISO Certified", "Custom Configurable", "Training Manuals"],
-    badge: "Best Seller",
-  },
-  {
-    image: img2,
-    title: "Three Phase Transmission Line Simulator",
-    desc: "Advanced electrical engineering trainer with real-time simulation and measurement panels.",
-    features: ["Real-time Data", "Safety Certified", "Digital Controls"],
-    badge: "Featured",
-  },
-  {
-    image: img3,
-    title: "Electrical & Machine Trainer Kits",
-    desc: "AC machine control panels and transformer trainer kits for engineering institutes.",
-    features: ["Academic Use", "Easy Maintenance", "Comprehensive Guide"],
-    badge: "New",
-  },
-];
+import api, { getImageUrl } from "../utils/api";
 
 const ProductShowcaseSection = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get("/products");
+      // Filter products that have new, bestSeller, or featured set to true
+      const filteredProducts = response.data
+        .filter(
+          (product) => product.new || product.bestSeller || product.featured
+        )
+        .slice(0, 6); // Limit to 6 products
+      setProducts(filteredProducts);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getBadge = (product) => {
+    if (product.bestSeller) return "Best Seller";
+    if (product.new) return "New";
+    if (product.featured) return "Featured";
+    return null;
+  };
+
+  if (loading) {
+    return (
+      <section className="relative py-16 md:py-24 bg-gradient-to-b from-white to-primary-50 overflow-hidden">
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-600"></div>
+            <p className="mt-4 text-primary-700 font-medium">Loading products...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return null;
+  }
+
   return (
     <section className="relative py-16 md:py-24 bg-gradient-to-b from-white to-primary-50 overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
@@ -54,94 +76,104 @@ const ProductShowcaseSection = () => {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((item, index) => (
-            <div
-              key={index}
-              className="group bg-white rounded-2xl border border-primary-100 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
-            >
-              {/* Image Container with Badge */}
-              <div className="relative h-64 bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-
-                {/* Badge */}
-                <div
-                  className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
-                    item.badge === "Best Seller"
-                      ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
-                      : item.badge === "Featured"
-                      ? "bg-gradient-to-r from-primary-500 to-primary-600"
-                      : "bg-gradient-to-r from-secondary-500 to-primary-500"
-                  }`}
-                >
-                  {item.badge}
-                </div>
-
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                {/* Title with Icon */}
-                <div className="flex items-start gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <FiSettings className="text-primary-600" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-primary-900 group-hover:text-primary-800 transition-colors">
-                      {item.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-600 leading-relaxed mb-4">
-                  {item.desc}
-                </p>
-
-                {/* Features List */}
-                <div className="space-y-2 mb-6">
-                  {item.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <FiCheckCircle
-                        className="text-secondary-500 flex-shrink-0"
-                        size={16}
-                      />
-                      <span className="text-sm text-gray-700">{feature}</span>
+          {products.map((product) => {
+            const badge = getBadge(product);
+            return (
+              <Link
+                key={product._id}
+                to={`/products/${product._id}`}
+                className="group bg-white rounded-2xl border border-primary-100 hover:-translate-y-2 transition-all duration-500 overflow-hidden block relative"
+              >
+                {/* Image Container with Badge */}
+                <div className="relative h-64 bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={getImageUrl(product.images[0])}
+                      alt={product.name}
+                      className="h-full w-full object-contain p-6 group-hover:scale-110 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center">
+                        <FiSettings className="text-primary-400" size={40} />
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  )}
 
-                {/* Quality Indicators */}
-                <div className="flex items-center justify-between pt-4 border-t border-primary-100">
-                  <div className="flex items-center gap-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <FiStar
-                          key={i}
-                          className="w-3 h-3 text-secondary-500 fill-secondary-500"
-                        />
-                      ))}
+                  {/* Badge */}
+                  {badge && (
+                    <div
+                      className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
+                        badge === "Best Seller"
+                          ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                          : badge === "Featured"
+                          ? "bg-gradient-to-r from-primary-500 to-primary-600"
+                          : "bg-gradient-to-r from-secondary-500 to-primary-500"
+                      }`}
+                    >
+                      {badge}
                     </div>
-                    <span className="text-xs text-gray-500 font-medium">
-                      Premium Quality
-                    </span>
+                  )}
+
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  {/* Title with Icon */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center flex-shrink-0 mt-1">
+                      <FiSettings className="text-primary-600" size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-primary-900 group-hover:text-primary-800 transition-colors">
+                        {product.name}
+                      </h3>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-primary-700 font-semibold">
-                    <FiTrendingUp className="text-secondary-500" />
-                    <span>Industry Grade</span>
+
+                  {/* Description */}
+                  <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                    {product.description}
+                  </p>
+
+                  {/* Product Code */}
+                  {product.orderCode && (
+                    <div className="flex items-center gap-2 mb-4 text-xs">
+                      <span className="text-primary-600 font-semibold bg-primary-50 px-2 py-1 rounded">
+                        {product.orderCode}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Quality Indicators */}
+                  <div className="flex items-center justify-between pt-4 border-t border-primary-100">
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <FiStar
+                            key={i}
+                            className="w-3 h-3 text-secondary-500 fill-secondary-500"
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-gray-500 font-medium">
+                        Premium Quality
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-primary-700 font-semibold">
+                      <FiTrendingUp className="text-secondary-500" />
+                      <span>Industry Grade</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Hover Border Effect */}
-              <div className="absolute inset-0 border-2 border-transparent group-hover:border-primary-300 rounded-2xl transition-all duration-500 pointer-events-none"></div>
-            </div>
-          ))}
+                {/* Hover Border Effect */}
+                <div className="absolute inset-0 border-2 border-transparent group-hover:border-primary-300 rounded-2xl transition-all duration-500 pointer-events-none"></div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

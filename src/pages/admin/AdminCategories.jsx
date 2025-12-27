@@ -13,7 +13,8 @@ const AdminCategories = () => {
     description: '',
     image: '',
     isActive: true,
-    order: 0
+    order: 0,
+    parent: ''
   });
 
   useEffect(() => {
@@ -32,7 +33,16 @@ const AdminCategories = () => {
   };
 
   const filteredCategories = useMemo(() => {
-    return categories.filter(category =>
+    // Flatten categories and subcategories for display
+    const allCategories = [];
+    categories.forEach(cat => {
+      allCategories.push(cat);
+      if (cat.subcategories && cat.subcategories.length > 0) {
+        allCategories.push(...cat.subcategories);
+      }
+    });
+    
+    return allCategories.filter(category =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
     );
@@ -61,7 +71,8 @@ const AdminCategories = () => {
         description: '',
         image: '',
         isActive: true,
-        order: 0
+        order: 0,
+        parent: ''
       });
       fetchCategories();
     } catch (error) {
@@ -76,7 +87,8 @@ const AdminCategories = () => {
       description: category.description || '',
       image: category.image || '',
       isActive: category.isActive,
-      order: category.order || 0
+      order: category.order || 0,
+      parent: category.parent?._id || category.parent || ''
     });
     setShowModal(true);
   };
@@ -100,7 +112,8 @@ const AdminCategories = () => {
       description: '',
       image: '',
       isActive: true,
-      order: 0
+      order: 0,
+      parent: ''
     });
     setShowModal(true);
   };
@@ -191,6 +204,9 @@ const AdminCategories = () => {
                     Category
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider border-b border-gray-200">
+                    Parent
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider border-b border-gray-200">
                     Description
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider border-b border-gray-200">
@@ -229,8 +245,20 @@ const AdminCategories = () => {
                             {category.name.charAt(0)}
                           </div>
                         )}
-                        <span className="font-semibold text-gray-800">{category.name}</span>
+                        <div>
+                          <span className="font-semibold text-gray-800 block">
+                            {category.parent ? '└ ' : ''}{category.name}
+                          </span>
+                          {category.subcategories && category.subcategories.length > 0 && (
+                            <span className="text-xs text-gray-500">
+                              {category.subcategories.length} subcategories
+                            </span>
+                          )}
+                        </div>
                       </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {category.parent?.name || category.parent || '-'}
                     </td>
                     <td className="px-4 py-3 text-gray-600 max-w-xs">
                       <div className="line-clamp-2">
@@ -321,6 +349,35 @@ const AdminCategories = () => {
                   className="input-field resize-none"
                   placeholder="Category description"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  Parent Category (Optional - Leave empty for main category)
+                </label>
+                <select
+                  name="parent"
+                  value={formData.parent}
+                  onChange={handleChange}
+                  className="input-field"
+                >
+                  <option value="">None (Main Category)</option>
+                  {categories
+                    .filter(cat => !cat.parent && (!editingCategory || cat._id !== editingCategory._id))
+                    .map(cat => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  {/* Also show subcategories that could become parents (for nested subcategories) */}
+                  {categories.flatMap(cat => 
+                    (cat.subcategories || []).filter(sub => !sub.parent && (!editingCategory || sub._id !== editingCategory._id))
+                      .map(sub => (
+                        <option key={sub._id} value={sub._id}>
+                          └ {sub.name}
+                        </option>
+                      ))
+                  )}
+                </select>
               </div>
               {/* <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Image URL</label>

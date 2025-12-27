@@ -174,7 +174,12 @@ const AdminLayout = () => {
               <p className="text-sm text-gray-500">Welcome back,</p>
               <p className="font-semibold text-gray-900">{user.name}</p>
             </div>
-            <Link to="/" className="btn btn-secondary flex items-center gap-2">
+            <Link 
+              to="/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary flex items-center gap-2"
+            >
               <svg
                 className="w-4 h-4"
                 fill="none"

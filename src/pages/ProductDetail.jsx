@@ -258,7 +258,12 @@ const ProductDetail = () => {
                       Description
                     </h2>
                     <div className="prose prose-sm prose-primary max-w-none text-gray-600 bg-primary-50 rounded-lg p-4 border border-primary-100">
-                      <p className="leading-relaxed">{product.description}</p>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: product.description,
+                        }}
+                        className="leading-relaxed"
+                      />
                     </div>
                   </div>
 
@@ -274,6 +279,38 @@ const ProductDetail = () => {
                           __html: product.specifications,
                         }}
                       />
+                    </div>
+                  )}
+
+                  {/* Experimentation */}
+                  {product.experimentation && (
+                    <div className="mb-6">
+                      <h2 className="text-lg font-bold text-primary-800 mb-3">
+                        Experimentation
+                      </h2>
+                      <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
+                        {product.experimentation.split('\n').filter(line => line.trim()).map((line, index) => (
+                          <div key={index} className="text-gray-600 mb-2">
+                            {line.trim()}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Services Required */}
+                  {product.servicesRequired && (
+                    <div className="mb-6">
+                      <h2 className="text-lg font-bold text-primary-800 mb-3">
+                        Services Required
+                      </h2>
+                      <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
+                        {product.servicesRequired.split('\n').filter(line => line.trim()).map((line, index) => (
+                          <div key={index} className="text-gray-600 mb-2">
+                            {line.trim()}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
 

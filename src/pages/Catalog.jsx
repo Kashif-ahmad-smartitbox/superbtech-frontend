@@ -13,22 +13,46 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("name-asc");
+  const [expandedCategories, setExpandedCategories] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
   }, []);
+  
+  // Auto-expand parent category when subcategory is selected
+  useEffect(() => {
+    if (selectedCategory && categories.length > 0) {
+      const parentCategory = categories.find(cat => 
+        cat.subcategories && cat.subcategories.some(sub => sub._id === selectedCategory)
+      );
+      if (parentCategory) {
+        setExpandedCategories(prev => new Set([...prev, parentCategory._id]));
+      }
+    }
+  }, [selectedCategory, categories]);
 
   useEffect(() => {
     let filtered = allProducts;
 
-    // Filter by category
+    // Filter by category (including subcategories)
     if (selectedCategory) {
-      filtered = filtered.filter(
-        (product) =>
-          product.category?._id === selectedCategory ||
-          product.category === selectedCategory
-      );
+      // Check if it's a main category - if so, include its subcategories
+      const category = categories.find(cat => cat._id === selectedCategory);
+      if (category && category.subcategories && category.subcategories.length > 0) {
+        const categoryIds = [selectedCategory, ...category.subcategories.map(sub => sub._id)];
+        filtered = filtered.filter(
+          (product) =>
+            categoryIds.includes(product.category?._id) ||
+            categoryIds.includes(product.category)
+        );
+      } else {
+        filtered = filtered.filter(
+          (product) =>
+            product.category?._id === selectedCategory ||
+            product.category === selectedCategory
+        );
+      }
     }
 
     // Filter by search term
@@ -164,7 +188,7 @@ const Catalog = () => {
                     <input
                       type="text"
                       placeholder="Search products..."
-                      className="w-full pl-10 pr-4 py-2.5 bg-primary-50 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all text-sm"
+                      className="w-full pl-10 pr-4 py-2.5 bg-primary-50 border border-primary-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all text-sm text-gray-800 placeholder:text-gray-400"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -218,36 +242,103 @@ const Catalog = () => {
                       </div>
                     </button>
 
-                    {categories.map((category) => (
-                      <button
-                        key={category._id}
-                        onClick={() => setSelectedCategory(category._id)}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
-                          selectedCategory === category._id
-                            ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-md"
-                            : "bg-primary-50 hover:bg-primary-100 text-gray-700 hover:text-primary-800"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{category.name}</span>
-                          {selectedCategory === category._id && (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                    {categories.map((category) => {
+                      const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+                      const isExpanded = expandedCategories.has(category._id);
+                      
+                      return (
+                        <div key={category._id}>
+                          <div className="flex items-center gap-1">
+                            {hasSubcategories && (
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setExpandedCategories(prev => {
+                                    const newSet = new Set(prev);
+                                    if (newSet.has(category._id)) {
+                                      newSet.delete(category._id);
+                                    } else {
+                                      newSet.add(category._id);
+                                    }
+                                    return newSet;
+                                  });
+                                }}
+                                className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
+                              >
+                                <svg
+                                  className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${
+                                    isExpanded ? 'rotate-90' : ''
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                  />
+                                </svg>
+                              </button>
+                            )}
+                            <button
+                              onClick={() => setSelectedCategory(category._id)}
+                              className={`w-full text-left px-3 py-2 rounded-lg transition-all text-sm ${
+                                selectedCategory === category._id
+                                  ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-md"
+                                  : "bg-primary-50 hover:bg-primary-100 text-gray-700 hover:text-primary-800"
+                              } ${hasSubcategories ? '' : 'ml-6'}`}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">{category.name}</span>
+                                {selectedCategory === category._id && !hasSubcategories && (
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                )}
+                              </div>
+                            </button>
+                          </div>
+                          {/* Subcategories - Only show when expanded */}
+                          {hasSubcategories && isExpanded && (
+                            <div className="ml-3 mt-1 space-y-1">
+                              {category.subcategories.map((subcat) => (
+                                <button
+                                  key={subcat._id}
+                                  onClick={() => {
+                                  setSelectedCategory(subcat._id);
+                                  // Ensure parent category is expanded
+                                  setExpandedCategories(prev => new Set([...prev, category._id]));
+                                }}
+                                  className={`w-full text-left px-3 py-1.5 rounded-md transition-all text-xs ${
+                                    selectedCategory === subcat._id
+                                      ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-md"
+                                      : "bg-primary-50/50 hover:bg-primary-100 text-gray-600 hover:text-primary-800"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-1 h-1 rounded-full bg-primary-400"></span>
+                                    <span className="font-medium">{subcat.name}</span>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
                           )}
                         </div>
-                      </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -288,35 +379,36 @@ const Catalog = () => {
           {/* Main Content */}
           <main className="flex-1">
             {/* Results Header */}
-            <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl shadow-sm border border-primary-200 p-4 mb-6">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <h2 className="text-lg font-bold text-primary-900">
+            <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg shadow-sm border border-primary-200 px-3 py-2 mb-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-sm font-bold text-primary-900">
                     Showing {filteredProducts.length} Products
                   </h2>
                   {(selectedCategory || searchTerm) && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {selectedCategory && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs rounded-full">
-                          Category:{" "}
-                          {
-                            categories.find((c) => c._id === selectedCategory)
-                              ?.name
-                          }
-                          <button
-                            onClick={() => setSelectedCategory("")}
-                            className="ml-1 hover:text-secondary-200"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      )}
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedCategory && (() => {
+                        const category = categories.find((c) => c._id === selectedCategory);
+                        const subcategory = categories.flatMap(c => c.subcategories || []).find(sub => sub._id === selectedCategory);
+                        const selected = category || subcategory;
+                        return selected && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-[10px] rounded-full">
+                            {selected.name}
+                            <button
+                              onClick={() => setSelectedCategory("")}
+                              className="ml-0.5 hover:text-secondary-200"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })()}
                       {searchTerm && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white text-xs rounded-full">
-                          Search: "{searchTerm}"
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white text-[10px] rounded-full">
+                          "{searchTerm}"
                           <button
                             onClick={() => setSearchTerm("")}
-                            className="ml-1 hover:text-primary-200"
+                            className="ml-0.5 hover:text-primary-200"
                           >
                             ×
                           </button>
@@ -326,11 +418,11 @@ const Catalog = () => {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="hidden sm:flex bg-primary-100 rounded-lg p-1 border border-primary-200">
-                    <button className="p-1.5 rounded-md bg-white shadow-sm text-primary-600">
+                <div className="flex items-center gap-2">
+                  <div className="hidden sm:flex bg-primary-100 rounded-md p-0.5 border border-primary-200">
+                    <button className="p-1 rounded bg-white shadow-sm text-primary-600">
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -343,9 +435,9 @@ const Catalog = () => {
                         />
                       </svg>
                     </button>
-                    <button className="p-1.5 rounded-md text-primary-400 hover:text-primary-600">
+                    <button className="p-1 rounded text-primary-400 hover:text-primary-600">
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
