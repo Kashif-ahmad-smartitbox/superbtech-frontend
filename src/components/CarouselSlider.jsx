@@ -4,13 +4,24 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/asset1.jpeg";
-import slide2 from "../assests/asset2.jpeg";
-import slide3 from "../assests/asset3.jpeg";
-import slide4 from "../assests/asset4.jpeg";
+import slide1 from "../assests/slider_asset5.jpg";
+import slide2 from "../assests/slider_asset2.jpg";
+import slide3 from "../assests/slider_asset6.jpg";
+import slide4 from "../assests/slider_asset4.jpg";
+import slide5 from "../assests/slider_collage.jpg";
 
 const CarouselSlider = () => {
   const slides = [
+    {
+        id: 5,
+        image: slide5,
+        title: "Our more Equipments",
+        description:
+          "Some more Equipments we provide in our company",
+        ctaText: "View Products",
+        ctaLink: "/products",
+        badge: "Equipments",
+      },
     {
       id: 1,
       image: slide1,
@@ -166,20 +177,20 @@ const CarouselSlider = () => {
             {/* Content - Positioned on Right for Better Balance */}
             <div className="relative h-full flex items-center">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                <div className="max-w-xl lg:max-w-2xl ml-auto animate-fade-in">
-                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl p-8 md:p-10 border border-white/20 shadow-2xl">
+                <div className="max-w-xl lg:max-w-xl ml-auto animate-fade-in">
+                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl py-5 px-6 md:py-6 md:px-7 border border-white/20 shadow-2xl">
                     {/* Badge - Using Secondary Color */}
-                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-gradient-to-r from-secondary-600 to-secondary-700 px-4 py-2 rounded-full mb-6 shadow-lg">
+                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-gradient-to-r from-secondary-600 to-secondary-700 px-4 py-2 rounded-full mb-3 shadow-lg">
                       {slide.badge}
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
+                    <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
                       {slide.title}
                     </h1>
 
                     {/* Description */}
-                    <p className="text-base md:text-lg text-white/90 mb-8 max-w-lg leading-relaxed drop-shadow-md">
+                    <p className="text-base md:text-lg text-white/90 mb-6 max-w-lg leading-relaxed drop-shadow-md">
                       {slide.description}
                     </p>
 
@@ -187,13 +198,13 @@ const CarouselSlider = () => {
                     <div className="flex flex-wrap gap-4">
                       <Link
                         to={slide.ctaLink}
-                        className="inline-flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[160px] hover:shadow-primary-500/40 active:scale-95"
+                        className="inline-flex items-center justify-center px-5 py-2.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[160px] hover:shadow-primary-500/40 active:scale-95"
                       >
                         <span className="drop-shadow-sm">{slide.ctaText}</span>
                       </Link>
                       <Link
                         to="/quote"
-                        className="inline-flex items-center justify-center px-6 py-3.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95"
+                        className="inline-flex items-center justify-center px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95"
                       >
                         Request Quote
                       </Link>
