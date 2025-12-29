@@ -346,24 +346,19 @@ const ProductDetail = () => {
                     </div>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col gap-4">
                       <button
-                        className="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
+                        className="w-full px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
                         onClick={() => setShowModal(true)}
                       >
                         <FiMail />
-                        Request Quote
+                        {product.brochure?.path ? "Request Quote & Download Brochure" : "Request Quote"}
                       </button>
                       {product.brochure?.path && (
-                        <button
-                          className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
-                          onClick={() =>
-                            window.open(product.brochure.path, "_blank")
-                          }
-                        >
-                          <FiDownload />
-                          Download Brochure
-                        </button>
+                        <p className="text-xs text-gray-600 text-center flex items-center justify-center gap-1">
+                          <FiInfo className="w-3 h-3" />
+                          Submit an enquiry to download the product brochure
+                        </p>
                       )}
                     </div>
 
