@@ -76,7 +76,7 @@ const AboutSection = () => {
           {/* Right Stats & Trust */}
           <div className="space-y-8">
             {/* Key Facts with Icons */}
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-4">
               {/* Skilled Professionals */}
               <div className="border border-primary-200 rounded-xl p-6 text-center bg-white hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1 group">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-primary-100 to-primary-200 mb-3 group-hover:from-primary-200 group-hover:to-primary-300 transition-all">

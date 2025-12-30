@@ -76,15 +76,15 @@ const Header = () => {
     try {
       const response = await api.get("/categories");
       setCategories(response.data);
-      
+
       // Auto-expand parent category if current route is a subcategory
       const currentPath = location.pathname;
-      if (currentPath.startsWith('/category/')) {
-        const slug = currentPath.replace('/category/', '');
+      if (currentPath.startsWith("/category/")) {
+        const slug = currentPath.replace("/category/", "");
         // Find if this slug belongs to a subcategory
         for (const cat of response.data) {
           if (cat.subcategories) {
-            const subcat = cat.subcategories.find(sub => sub.slug === slug);
+            const subcat = cat.subcategories.find((sub) => sub.slug === slug);
             if (subcat) {
               setExpandedCategories(new Set([cat._id]));
               break;
@@ -97,8 +97,8 @@ const Header = () => {
     }
   };
 
-  const handleCatalog = () => {
-    navigate("/catalog");
+  const handleNews = () => {
+    navigate("/news");
     setMobileMenuOpen(false);
   };
 
@@ -145,13 +145,10 @@ const Header = () => {
                 className="group flex items-center gap-3 px-4 py-2 bg-white/10 hover:bg-white/15 rounded-xl backdrop-blur-sm transition-all duration-300 border border-white/20 hover:border-white/30"
               >
                 <div className="p-2 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg shadow-lg group-hover:scale-110 transition-transform">
-                  <FiMail size={16} className="text-white" />
+                  <FiMail size={12} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-xs text-primary-200 font-medium">
-                    Email Us
-                  </p>
-                  <p className="text-sm font-semibold text-white group-hover:text-secondary-200 transition-colors">
+                  <p className="text-xs font-semibold text-white group-hover:text-secondary-200 transition-colors">
                     info@superbtechnologies.in
                   </p>
                 </div>
@@ -159,18 +156,15 @@ const Header = () => {
 
               {/* Phone - More Prominent */}
               <a
-                href="tel:+919829132777"
+                href="tel:+919896915524"
                 className="group flex items-center gap-3 px-4 py-2 bg-secondary-900/30 hover:bg-secondary-800/40 rounded-xl backdrop-blur-sm transition-all duration-300 border border-secondary-500/30 hover:border-secondary-400/40"
               >
                 <div className="p-2 bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-lg shadow-lg group-hover:scale-110 transition-transform">
-                  <FiPhone size={16} className="text-white" />
+                  <FiPhone size={12} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-xs text-secondary-200 font-medium">
-                    Call Now
-                  </p>
-                  <p className="text-sm font-semibold text-white group-hover:text-secondary-200 transition-colors">
-                    +91 98291 32777
+                  <p className="text-xs font-semibold text-white group-hover:text-secondary-200 transition-colors">
+                    +91 98969 15524
                   </p>
                 </div>
               </a>
@@ -183,11 +177,10 @@ const Header = () => {
                 className="group flex items-center gap-3 px-4 py-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 rounded-xl backdrop-blur-sm transition-all duration-300 border border-[#25D366]/30 hover:border-[#25D366]/40"
               >
                 <div className="p-2 bg-gradient-to-br from-[#25D366] to-[#128C7E] rounded-lg shadow-lg group-hover:scale-110 transition-transform">
-                  <FaWhatsapp size={16} className="text-white" />
+                  <FaWhatsapp size={12} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-xs text-[#25D366] font-medium">WhatsApp</p>
-                  <p className="text-sm font-semibold text-white group-hover:text-[#25D366] transition-colors">
+                  <p className="text-xs font-semibold text-white group-hover:text-[#25D366] transition-colors">
                     +91 90348 15524
                   </p>
                 </div>
@@ -226,7 +219,7 @@ const Header = () => {
               />
             </div>
             <div className="hidden md:block">
-              <h1 className="text-xs lg:text-xl font-bold bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 bg-clip-text text-transparent tracking-tight">
+              <h1 className="text-xs lg:text-lg font-bold bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 bg-clip-text text-transparent tracking-tight">
                 Superb Technologies
               </h1>
               <div className="flex items-center gap-2 mt-1">
@@ -345,9 +338,10 @@ const Header = () => {
                 {/* Enhanced Categories List */}
                 <div className="max-h-[28rem] overflow-y-auto custom-scrollbar p-1">
                   {categories.map((cat, index) => {
-                    const hasSubcategories = cat.subcategories && cat.subcategories.length > 0;
+                    const hasSubcategories =
+                      cat.subcategories && cat.subcategories.length > 0;
                     const isExpanded = expandedCategories.has(cat._id);
-                    
+
                     return (
                       <div key={cat._id}>
                         <div className="flex items-center gap-1">
@@ -356,7 +350,7 @@ const Header = () => {
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                setExpandedCategories(prev => {
+                                setExpandedCategories((prev) => {
                                   const newSet = new Set(prev);
                                   if (newSet.has(cat._id)) {
                                     newSet.delete(cat._id);
@@ -370,7 +364,7 @@ const Header = () => {
                             >
                               <FiChevronRight
                                 className={`text-gray-400 text-xs transition-transform duration-200 ${
-                                  isExpanded ? 'rotate-90' : ''
+                                  isExpanded ? "rotate-90" : ""
                                 }`}
                                 size={12}
                               />
@@ -380,7 +374,7 @@ const Header = () => {
                             to={`/category/${cat.slug}`}
                             onClick={() => setDropdownOpen(false)}
                             className={`flex items-center justify-between p-2 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100 rounded-lg border border-transparent hover:border-primary-100 group/item transition-all duration-300 hover:shadow-sm flex-1 ${
-                              hasSubcategories ? '' : 'ml-6'
+                              hasSubcategories ? "" : "ml-6"
                             }`}
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -446,9 +440,8 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Enhanced Catalogue Button */}
             <button
-              onClick={handleCatalog}
+              onClick={handleNews}
               className="px-5 py-2.5 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-primary-100"
             >
               <div className="relative">
@@ -460,7 +453,7 @@ const Header = () => {
                 </div>
                 <div className="absolute -inset-1 bg-primary-200/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              <span>Products</span>
+              <span>News</span>
               <HiOutlineExternalLink
                 size={15}
                 className="text-gray-400 group-hover:text-primary-600 group-hover:translate-x-0.5 transition-all"
@@ -470,32 +463,18 @@ const Header = () => {
 
           {/* Enhanced Right Side Actions */}
           <div className="flex items-center gap-3">
-            {/* WhatsApp Button - Desktop */}
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden lg:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-[#25D366]/40 group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <FaWhatsapp size={16} className="relative z-10" />
-              <span className="relative z-10">Chat</span>
-            </a>
-
-            {/* Enhanced Admin Button */}
             <Link
-              to="/admin/login"
+              to="/contact"
               className="hidden md:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-primary-900/40 group relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-secondary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <FiUser size={16} className="relative z-10" />
-              <span className="relative z-10">Admin Portal</span>
+              <span className="relative z-10">Contact Us</span>
             </Link>
 
             {/* Enhanced Mobile Contact Buttons */}
             <div className="flex lg:hidden items-center gap-2">
               <a
-                href="tel:+919829132777"
+                href="tel:+919896915524"
                 className="p-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:shadow-lg hover:scale-110 transition-all duration-300 shadow-md"
                 aria-label="Call"
               >
@@ -570,7 +549,7 @@ const Header = () => {
                     />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-sm font-bold text-white">
                       Superb Technologies
                     </h2>
                     <p className="text-xs text-primary-200 opacity-90">
@@ -747,34 +726,16 @@ const Header = () => {
               </div>
             </div>
 
-            {/* WhatsApp Button - Mobile */}
-            <div className="mt-4 px-4">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full px-4 py-3.5 bg-gradient-to-r from-[#25D366] to-[#128C7E] text-white rounded-xl font-bold text-center hover:shadow-xl transition-all duration-300 shadow-lg group relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="flex items-center justify-center gap-2.5 relative z-10">
-                  <FaWhatsapp size={18} />
-                  <span>Chat on WhatsApp</span>
-                </div>
-              </a>
-            </div>
-
-            {/* Enhanced Contact & Admin Section */}
             <div className="mt-4 p-4 border-t border-gray-200">
-              {/* Admin Button */}
               <Link
-                to="/admin/login"
+                to="/contact"
                 onClick={closeMobileMenu}
                 className="block w-full mb-4 px-4 py-3.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl font-bold text-center hover:shadow-xl transition-all duration-300 shadow-lg group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-secondary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="flex items-center justify-center gap-2.5 relative z-10">
                   <FiUser size={18} />
-                  <span>Admin Portal</span>
+                  <span>Contact Us</span>
                 </div>
               </Link>
             </div>

@@ -46,7 +46,9 @@ const ProductShowcaseSection = () => {
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-600"></div>
-            <p className="mt-4 text-primary-700 font-medium">Loading products...</p>
+            <p className="mt-4 text-primary-700 font-medium">
+              Loading products...
+            </p>
           </div>
         </div>
       </section>
@@ -75,7 +77,7 @@ const ProductShowcaseSection = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.map((product) => {
             const badge = getBadge(product);
             return (

@@ -109,7 +109,7 @@ const Footer = () => {
                   </svg>
                 </div>
                 <span className="text-sm text-gray-300 group-hover:text-white">
-                  +91 98291 32777
+                  +91 98969 15524
                 </span>
               </a>
 
