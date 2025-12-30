@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react"; 
 import { Link } from "react-router-dom";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
@@ -131,12 +131,13 @@ const CarouselSlider = () => {
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      {/* Slides Container */}
-      <div className="relative h-[70vh] min-h-[500px] md:h-[80vh] overflow-hidden">
+      {/* Slides Container - Updated height to 80vh for mobile as requested */}
+      <div className="relative h-[80vh] md:h-[80vh] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-all duration-700 ${
+            // Added flex flex-col for mobile, md:block for desktop to restore overlay
+            className={`absolute inset-0 transition-all duration-700 flex flex-col md:block ${
               index === currentSlide
                 ? "opacity-100 translate-x-0"
                 : index < currentSlide
@@ -147,11 +148,11 @@ const CarouselSlider = () => {
               transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
-            {/* Background Image with Optimized Loading */}
-            <div className="absolute inset-0">
+            {/* Background Image Container */}
+            {/* Mobile: h-1/2 relative, Desktop: absolute inset-0 full height */}
+            <div className="relative h-1/2 w-full md:absolute md:inset-0 md:h-full">
               {loadedImages[slide.id] ? (
                 <>
-                  {/* High quality image with proper sizing */}
                   <img
                     src={slide.image}
                     alt={slide.title}
@@ -169,42 +170,43 @@ const CarouselSlider = () => {
                   />
                 </>
               ) : (
-                // Loading placeholder
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-900 to-primary-800 animate-pulse" />
               )}
             </div>
 
-            {/* Content - Positioned on Right for Better Balance */}
-            <div className="relative h-full flex items-center">
+            {/* Content Container */}
+            {/* Mobile: h-1/2 relative bg-gray-900, Desktop: h-full absolute transparent */}
+            <div className="relative h-1/2 w-full bg-gray-900 md:bg-transparent md:h-full flex items-center">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                <div className="max-w-xl lg:max-w-xl ml-auto animate-fade-in">
-                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl py-5 px-6 md:py-6 md:px-7 border border-white/20 shadow-2xl">
-                    {/* Badge - Using Secondary Color */}
+                {/* On mobile center text, on desktop keep original right alignment */}
+                <div className="w-full md:max-w-xl md:ml-auto animate-fade-in flex justify-center md:block">
+                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl py-5 px-6 md:py-6 md:px-7 border border-white/20 shadow-2xl w-full">
+                    {/* Badge */}
                     <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-gradient-to-r from-secondary-600 to-secondary-700 px-4 py-2 rounded-full mb-3 shadow-lg">
                       {slide.badge}
                     </span>
 
                     {/* Title */}
-                    <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
+                    <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
                       {slide.title}
                     </h1>
 
                     {/* Description */}
-                    <p className="text-base md:text-lg text-white/90 mb-6 max-w-lg leading-relaxed drop-shadow-md">
+                    <p className="text-sm md:text-lg text-white/90 mb-6 max-w-lg leading-relaxed drop-shadow-md">
                       {slide.description}
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-3 md:gap-4">
                       <Link
                         to={slide.ctaLink}
-                        className="inline-flex items-center justify-center px-5 py-2.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[160px] hover:shadow-primary-500/40 active:scale-95"
+                        className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[120px] md:min-w-[160px] hover:shadow-primary-500/40 active:scale-95 text-sm md:text-base"
                       >
                         <span className="drop-shadow-sm">{slide.ctaText}</span>
                       </Link>
                       <Link
                         to="/quote"
-                        className="inline-flex items-center justify-center px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95"
+                        className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[120px] md:min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95 text-sm md:text-base"
                       >
                         Request Quote
                       </Link>
@@ -216,27 +218,27 @@ const CarouselSlider = () => {
           </div>
         ))}
 
-        {/* Navigation Arrows - Using Primary Color */}
+        {/* Navigation Arrows - Kept at middle (top-1/2) */}
         <button
           onClick={prevSlide}
           disabled={isTransitioning}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
+          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Previous slide"
         >
-          <HiChevronLeft size={26} className="drop-shadow-sm" />
+          <HiChevronLeft size={20} className="md:w-[26px] md:h-[26px] drop-shadow-sm" />
         </button>
 
         <button
           onClick={nextSlide}
           disabled={isTransitioning}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
+          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Next slide"
         >
-          <HiChevronRight size={26} className="drop-shadow-sm" />
+          <HiChevronRight size={20} className="md:w-[26px] md:h-[26px] drop-shadow-sm" />
         </button>
 
         {/* Bottom Controls Container */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-20">
+        <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-20">
           {/* Dots Indicator */}
           <div className="flex items-center gap-2 bg-primary-900/70 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 shadow-xl">
             {slides.map((_, index) => (
@@ -255,7 +257,7 @@ const CarouselSlider = () => {
           </div>
 
           {/* Slide Counter & Play/Pause */}
-          <div className="flex items-center gap-3 bg-primary-900/70 backdrop-blur-sm px-4 py-2.5 rounded-full border border-white/20 shadow-xl">
+          <div className="hidden md:flex items-center gap-3 bg-primary-900/70 backdrop-blur-sm px-4 py-2.5 rounded-full border border-white/20 shadow-xl">
             <span className="text-sm text-white font-medium drop-shadow-sm">
               <span className="text-white">{currentSlide + 1}</span>
               <span className="text-white/70">/{slides.length}</span>
@@ -277,7 +279,7 @@ const CarouselSlider = () => {
           </div>
         </div>
 
-        {/* Progress Bar - Using Gradient from Primary to Secondary */}
+        {/* Progress Bar */}
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary-900/40 z-10">
           <div
             className="h-full bg-gradient-to-r from-primary-500 via-primary-400 to-secondary-500 transition-all duration-100"
