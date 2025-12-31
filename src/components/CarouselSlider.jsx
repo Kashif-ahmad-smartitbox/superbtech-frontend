@@ -4,24 +4,17 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/slider_asset5.jpg";
-import slide2 from "../assests/slider_asset2.jpg";
-import slide3 from "../assests/slider_asset6.jpg";
-import slide4 from "../assests/slider_asset4.jpg";
-import slide5 from "../assests/slider_collage.jpg";
+import slide1 from "../assests/collage_asset_1.jpeg";
+import slide2 from "../assests/asset_12.jpeg";
+import slide3 from "../assests/asset_13.jpeg";
+import slide4 from "../assests/asset_14.jpeg";
+import slide5 from "../assests/asset_15.jpeg";
+import slide6 from "../assests/asset_16.jpeg";
+import slide7 from "../assests/asset_17.jpeg";
+import slide8 from "../assests/asset_18.jpeg";
 
 const CarouselSlider = () => {
   const slides = [
-    {
-        id: 5,
-        image: slide5,
-        title: "Our more Equipments",
-        description:
-          "Some more Equipments we provide in our company",
-        ctaText: "View Products",
-        ctaLink: "/products",
-        badge: "Equipments",
-      },
     {
       id: 1,
       image: slide1,
@@ -61,6 +54,46 @@ const CarouselSlider = () => {
         ctaText: "View Products",
         ctaLink: "/products",
         badge: "Medical",
+      },
+      {
+        id: 5,
+        image: slide5,
+        title: "Our more Equipments",
+        description:
+          "Some more Equipments we provide in our company",
+        ctaText: "View Products",
+        ctaLink: "/products",
+        badge: "Equipments",
+      },
+      {
+        id: 6,
+        image: slide6,
+        title: "Industrial Testing Solutions",
+        description:
+          "Reliable equipment for quality control & research facilities",
+        ctaText: "Contact Experts",
+        ctaLink: "/contact",
+        badge: "Industrial",
+      },
+      {
+        id: 7,
+        image: slide7,
+        title: "Industrial Testing Solutions",
+        description:
+          "Reliable equipment for quality control & research facilities",
+        ctaText: "Contact Experts",
+        ctaLink: "/contact",
+        badge: "Industrial",
+      },
+      {
+        id: 8,
+        image: slide8,
+        title: "Industrial Testing Solutions",
+        description:
+          "Reliable equipment for quality control & research facilities",
+        ctaText: "Contact Experts",
+        ctaLink: "/contact",
+        badge: "Industrial",
       },
   ];
 
