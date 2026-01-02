@@ -4,7 +4,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/collage_1.jpg";
+import slide1 from "../assests/1.jpg";
 import slide2 from "../assests/F1.jpg";
 import slide3 from "../assests/F2.jpg";
 import slide4 from "../assests/F4.jpg";
