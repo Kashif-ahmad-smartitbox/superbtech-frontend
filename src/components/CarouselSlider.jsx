@@ -4,14 +4,14 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/collage_asset_1.jpeg";
-import slide2 from "../assests/asset_12.jpeg";
-import slide3 from "../assests/asset_13.jpeg";
-import slide4 from "../assests/asset_14.jpeg";
-import slide5 from "../assests/asset_15.jpeg";
-import slide6 from "../assests/asset_16.jpeg";
-import slide7 from "../assests/asset_17.jpeg";
-import slide8 from "../assests/asset_18.jpeg";
+import slide1 from "../assests/collage_1.jpg";
+import slide2 from "../assests/F1.jpg";
+import slide3 from "../assests/F2.jpg";
+import slide4 from "../assests/F4.jpg";
+import slide5 from "../assests/F5.jpg";
+import slide6 from "../assests/F6.jpg";
+import slide7 from "../assests/F7.jpg";
+import slide8 from "../assests/F8.jpg";
 
 const CarouselSlider = () => {
   const slides = [
