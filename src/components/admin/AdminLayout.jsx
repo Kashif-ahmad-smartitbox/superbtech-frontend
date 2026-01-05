@@ -150,6 +150,26 @@ const AdminLayout = () => {
             <span className="text-[10px] md:text-base">Enquiries</span>
           </Link>
 
+          <Link
+            to="/admin/news"
+            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
+          >
+            <svg
+              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+              />
+            </svg>
+            <span className="text-[10px] md:text-base">News</span>
+          </Link>
+
           {/* Logout Button */}
           <div className="md:pt-4 md:border-t md:border-gray-800 md:mt-4 flex flex-1 md:flex-none justify-center md:justify-start md:block">
             <button

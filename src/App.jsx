@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminEnquiries from "./pages/admin/AdminEnquiries";
+import AdminNews from "./pages/admin/AdminNews";
 import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 import { AuthProvider } from "./context/AuthContext";
@@ -41,6 +42,7 @@ function App() {
             <Route path="categories" element={<AdminCategories />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="enquiries" element={<AdminEnquiries />} />
+            <Route path="news" element={<AdminNews />} />
           </Route>
         </Routes>
       </Router>
