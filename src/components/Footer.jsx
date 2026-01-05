@@ -17,8 +17,8 @@ const Footer = () => {
         }}
       ></div>
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <div className="container mx-auto px-4 py-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent">
