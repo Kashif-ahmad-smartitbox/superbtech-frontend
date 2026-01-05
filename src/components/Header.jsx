@@ -18,6 +18,7 @@ import {
   FiGlobe,
   FiHelpCircle,
   FiDownload,
+  FiInfo,
 } from "react-icons/fi";
 import { HiOutlineArrowRight, HiOutlineExternalLink } from "react-icons/hi";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
@@ -128,7 +129,7 @@ const Header = () => {
       }`}
     >
       {/* Enhanced Top Announcement Bar - Hidden on Mobile */}
-      <div className="hidden lg:block bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white relative overflow-hidden">
+      <div className="hidden lg:block bg-gradient-to-r from-primary-500 via-primary-500 to-primary-400 text-white relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-secondary-500/10 to-primary-500/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
@@ -270,6 +271,35 @@ const Header = () => {
               </div>
             </Link>
 
+            <Link
+              to="/about"
+              className={`px-5 py-2.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
+                isActive("/about")
+                  ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
+                  : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 hover:shadow-sm hover:border hover:border-primary-100"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 relative z-10">
+                <div
+                  className={`p-1.5 rounded-lg ${
+                    isActive("/about")
+                      ? "bg-gradient-to-r from-primary-500 to-primary-600"
+                      : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                  } transition-all`}
+                >
+                  <FiInfo
+                    size={16}
+                    className={
+                      isActive("/about")
+                        ? "text-white"
+                        : "text-primary-600 group-hover:text-white transition-colors"
+                    }
+                  />
+                </div>
+                <span>About Us</span>
+              </div>
+            </Link>
+
             {/* Enhanced Products Dropdown */}
             <div className="relative group" ref={dropdownRef}>
               <button
@@ -297,7 +327,7 @@ const Header = () => {
                     <div className="absolute -inset-1 bg-primary-200/40 rounded-full blur-md"></div>
                   )}
                 </div>
-                <span>Category</span>
+                <span>Products</span>
                 <FiChevronDown
                   className={`transition-transform duration-300 ${
                     dropdownOpen
@@ -639,6 +669,30 @@ const Header = () => {
                   </p>
                 </div>
                 {isActive("/") && (
+                  <div className="ml-auto w-2 h-2 rounded-full bg-primary-500 animate-pulse"></div>
+                )}
+              </Link>
+
+              {/* About Us - Mobile */}
+              <Link
+                to="/about"
+                onClick={closeMobileMenu}
+                className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all ${
+                  isActive("/about")
+                    ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 font-semibold border border-primary-200 shadow-sm"
+                    : "text-gray-800 hover:bg-primary-50 hover:border hover:border-primary-100"
+                }`}
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center shadow-sm">
+                  <FiInfo size={22} className="text-primary-600" />
+                </div>
+                <div>
+                  <span className="text-sm font-medium">About Us</span>
+                  <p className="text-xs text-gray-500">
+                    Learn more about our company
+                  </p>
+                </div>
+                {isActive("/about") && (
                   <div className="ml-auto w-2 h-2 rounded-full bg-primary-500 animate-pulse"></div>
                 )}
               </Link>

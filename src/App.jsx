@@ -18,6 +18,7 @@ import AdminEnquiries from "./pages/admin/AdminEnquiries";
 import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 import { AuthProvider } from "./context/AuthContext";
+import AboutSection from "./components/AboutSection";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="/about" element={<AboutSection />} />
             <Route path="products" element={<Products />} />
             <Route path="news" element={<News />} />
             <Route path="contact" element={<Contact />} />

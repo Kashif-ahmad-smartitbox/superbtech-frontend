@@ -19,7 +19,7 @@ const AboutSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
             About <span className="text-primary-600">Superb Technologies</span>
           </h2>
-          <p className="mt-4 text-gray-600 max-w-3xl mx-auto">
+          <p className="mt-4 text-gray-600 max-w-3xl mx-auto text-base md:text-lg">
             A trusted Indian manufacturer delivering reliable scientific and
             engineering laboratory equipment for academic and industrial
             applications.
@@ -154,53 +154,56 @@ const AboutSection = () => {
           </div>
         </div>
 
-        {/* Closing Statement */}
-        <div className="mt-14 max-w-5xl text-gray-700 leading-relaxed text-[15px] md:text-base">
-          <p>
-            At <strong className="text-primary-700">Superb Technologies</strong>
-            , we believe long-term success is built on product reliability,
-            ethical business practices, and customer satisfaction. Our goal is
-            to support education and research by delivering laboratory equipment
-            that performs consistently over time, adds real instructional value,
-            and meets the evolving needs of engineering and scientific
-            institutions.
-          </p>
+        {/* Closing Statement + Mission/Vision – Now Properly Centered */}
+        <div className="mt-16 text-center">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-gray-700 leading-relaxed text-[15px] md:text-base mb-10">
+              At{" "}
+              <strong className="text-primary-700">Superb Technologies</strong>,
+              we believe long-term success is built on product reliability,
+              ethical business practices, and customer satisfaction. Our goal is
+              to support education and research by delivering laboratory
+              equipment that performs consistently over time, adds real
+              instructional value, and meets the evolving needs of engineering
+              and scientific institutions.
+            </p>
 
-          {/* Mission/Vision Box */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Mission */}
-              <div className="p-4 bg-white/50 rounded-lg border border-primary-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
-                    <Target className="text-white" size={20} />
+            {/* Mission/Vision Box – Centered & Responsive */}
+            <div className="p-6 md:p-8 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl border border-primary-200 shadow-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                {/* Mission */}
+                <div className="p-6 bg-white rounded-xl border border-primary-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center flex-shrink-0">
+                      <Target className="text-white" size={24} />
+                    </div>
+                    <h4 className="font-bold text-primary-800 text-xl">
+                      Our Mission
+                    </h4>
                   </div>
-                  <h4 className="font-bold text-primary-800 text-lg">
-                    Our Mission
-                  </h4>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    To provide high-quality, reliable laboratory equipment that
+                    enhances technical education and industrial research
+                    capabilities.
+                  </p>
                 </div>
-                <p className="text-sm text-gray-700 pl-1">
-                  To provide high-quality, reliable laboratory equipment that
-                  enhances technical education and industrial research
-                  capabilities.
-                </p>
-              </div>
 
-              {/* Vision */}
-              <div className="p-4 bg-white/50 rounded-lg border border-primary-100">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-secondary-500 to-secondary-600 flex items-center justify-center">
-                    <Eye className="text-white" size={20} />
+                {/* Vision */}
+                <div className="p-6 bg-white rounded-xl border border-primary-100 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-secondary-500 to-secondary-600 flex items-center justify-center flex-shrink-0">
+                      <Eye className="text-white" size={24} />
+                    </div>
+                    <h4 className="font-bold text-primary-800 text-xl">
+                      Our Vision
+                    </h4>
                   </div>
-                  <h4 className="font-bold text-primary-800 text-lg">
-                    Our Vision
-                  </h4>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    To become the most trusted manufacturer of scientific
+                    equipment in India, recognized for excellence in quality and
+                    innovation.
+                  </p>
                 </div>
-                <p className="text-sm text-gray-700 pl-1">
-                  To become the most trusted manufacturer of scientific
-                  equipment in India, recognized for excellence in quality and
-                  innovation.
-                </p>
               </div>
             </div>
           </div>

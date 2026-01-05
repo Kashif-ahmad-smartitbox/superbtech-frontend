@@ -87,7 +87,7 @@ const ProductShowcaseSection = () => {
                 className="group bg-white rounded-2xl border border-primary-100 hover:-translate-y-2 transition-all duration-500 overflow-hidden block relative"
               >
                 {/* Image Container with Badge */}
-                <div className="relative h-64 bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
+                <div className="relative h-64 bg-white overflow-hidden">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={getImageUrl(product.images[0])}
