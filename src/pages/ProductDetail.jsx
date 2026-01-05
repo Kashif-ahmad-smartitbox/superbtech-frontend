@@ -10,7 +10,16 @@ import {
   FiCheck,
   FiInfo,
   FiArrowLeft, // Added back arrow icon
+  FiPlay,
 } from "react-icons/fi";
+
+// Helper function to extract YouTube video ID from various URL formats
+const getYouTubeVideoId = (url) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -310,6 +319,28 @@ const ProductDetail = () => {
                             {line.trim()}
                           </div>
                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* YouTube Video */}
+                  {product.youtubeLink && getYouTubeVideoId(product.youtubeLink) && (
+                    <div className="mb-6">
+                      <h2 className="text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
+                        <FiPlay className="text-red-600" />
+                        Product Video
+                      </h2>
+                      <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
+                        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                          <iframe
+                            className="absolute top-0 left-0 w-full h-full rounded-lg"
+                            src={`https://www.youtube.com/embed/${getYouTubeVideoId(product.youtubeLink)}`}
+                            title="Product Video"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
                       </div>
                     </div>
                   )}
