@@ -24,6 +24,7 @@ const AdminProducts = () => {
     bestSeller: false,
     experimentation: '',
     servicesRequired: '',
+    youtubeLink: '',
     isActive: true,
     order: 0
   });
@@ -154,6 +155,7 @@ const AdminProducts = () => {
       bestSeller: product.bestSeller || false,
       experimentation: product.experimentation || '',
       servicesRequired: product.servicesRequired || '',
+      youtubeLink: product.youtubeLink || '',
       isActive: product.isActive,
       order: product.order || 0
     });
@@ -193,6 +195,7 @@ const AdminProducts = () => {
       bestSeller: false,
       experimentation: '',
       servicesRequired: '',
+      youtubeLink: '',
       isActive: true,
       order: 0
     });
@@ -660,6 +663,35 @@ const AdminProducts = () => {
                 />
                 <small className="text-gray-500 text-sm mt-1 block">
                   Upload a PDF brochure for this product
+                </small>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">YouTube Video Link</label>
+                {editingProduct && editingProduct.youtubeLink && (
+                  <div className="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
+                    <p className="text-sm text-gray-700 mb-2">
+                      <strong>Current Video:</strong>
+                    </p>
+                    <a 
+                      href={editingProduct.youtubeLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-red-600 hover:underline text-sm break-all"
+                    >
+                      {editingProduct.youtubeLink}
+                    </a>
+                  </div>
+                )}
+                <input
+                  type="url"
+                  name="youtubeLink"
+                  value={formData.youtubeLink}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+                <small className="text-gray-500 text-sm mt-1 block">
+                  Add a YouTube video link for this product (e.g., https://www.youtube.com/watch?v=xxxxx)
                 </small>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

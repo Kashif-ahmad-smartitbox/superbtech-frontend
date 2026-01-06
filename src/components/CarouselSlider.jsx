@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";  
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
@@ -35,66 +35,25 @@ const CarouselSlider = () => {
       ctaLink: "/catalog",
       badge: "Education",
     },
-      {
-        id: 3,
-        image: slide3,
-        title: "Industrial Testing Solutions",
-        description:
-          "Reliable equipment for quality control & research facilities",
-        ctaText: "Contact Experts",
-        ctaLink: "/contact",
-        badge: "Industrial",
-      },
-      {
-        id: 4,
-        image: slide4,
-        title: "Medical Equipment Solutions",
-        description:
-          "Advanced medical devices for diagnosis & treatment",
-        ctaText: "View Products",
-        ctaLink: "/products",
-        badge: "Medical",
-      },
-      {
-        id: 5,
-        image: slide5,
-        title: "Our more Equipments",
-        description:
-          "Some more Equipments we provide in our company",
-        ctaText: "View Products",
-        ctaLink: "/products",
-        badge: "Equipments",
-      },
-      {
-        id: 6,
-        image: slide6,
-        title: "Industrial Testing Solutions",
-        description:
-          "Reliable equipment for quality control & research facilities",
-        ctaText: "Contact Experts",
-        ctaLink: "/contact",
-        badge: "Industrial",
-      },
-      {
-        id: 7,
-        image: slide7,
-        title: "Industrial Testing Solutions",
-        description:
-          "Reliable equipment for quality control & research facilities",
-        ctaText: "Contact Experts",
-        ctaLink: "/contact",
-        badge: "Industrial",
-      },
-      {
-        id: 8,
-        image: slide8,
-        title: "Industrial Testing Solutions",
-        description:
-          "Reliable equipment for quality control & research facilities",
-        ctaText: "Contact Experts",
-        ctaLink: "/contact",
-        badge: "Industrial",
-      },
+    {
+      id: 3,
+      image: slide3,
+      title: "Industrial Testing Solutions",
+      description:
+        "Reliable equipment for quality control & research facilities",
+      ctaText: "Contact Experts",
+      ctaLink: "/contact",
+      badge: "Industrial",
+    },
+    {
+      id: 4,
+      image: slide4,
+      title: "Medical Equipment Solutions",
+      description: "Advanced medical devices for diagnosis & treatment",
+      ctaText: "View Products",
+      ctaLink: "/products",
+      badge: "Medical",
+    },
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -238,7 +197,7 @@ const CarouselSlider = () => {
                         <span className="drop-shadow-sm">{slide.ctaText}</span>
                       </Link>
                       <Link
-                        to="/quote"
+                        to="/contact"
                         className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[120px] md:min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95 text-sm md:text-base"
                       >
                         Request Quote
@@ -258,7 +217,10 @@ const CarouselSlider = () => {
           className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Previous slide"
         >
-          <HiChevronLeft size={20} className="md:w-[26px] md:h-[26px] drop-shadow-sm" />
+          <HiChevronLeft
+            size={20}
+            className="md:w-[26px] md:h-[26px] drop-shadow-sm"
+          />
         </button>
 
         <button
@@ -267,7 +229,10 @@ const CarouselSlider = () => {
           className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
           aria-label="Next slide"
         >
-          <HiChevronRight size={20} className="md:w-[26px] md:h-[26px] drop-shadow-sm" />
+          <HiChevronRight
+            size={20}
+            className="md:w-[26px] md:h-[26px] drop-shadow-sm"
+          />
         </button>
 
         {/* Bottom Controls Container */}

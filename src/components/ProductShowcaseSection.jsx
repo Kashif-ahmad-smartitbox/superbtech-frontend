@@ -87,7 +87,7 @@ const ProductShowcaseSection = () => {
                 className="group bg-white rounded-2xl border border-primary-100 hover:-translate-y-2 transition-all duration-500 overflow-hidden block relative"
               >
                 {/* Image Container with Badge */}
-                <div className="relative h-64 bg-white overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={getImageUrl(product.images[0])}
@@ -116,9 +116,6 @@ const ProductShowcaseSection = () => {
                       {badge}
                     </div>
                   )}
-
-                  {/* Overlay Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-900/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
 
                 {/* Content */}
