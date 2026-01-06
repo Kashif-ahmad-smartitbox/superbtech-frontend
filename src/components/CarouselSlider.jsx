@@ -4,14 +4,10 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { FiPause, FiPlay } from "react-icons/fi";
 
 // Import your local images
-import slide1 from "../assests/1.jpg";
+import slide1 from "../assests/1.png";
 import slide2 from "../assests/F1.jpg";
 import slide3 from "../assests/F2.jpg";
 import slide4 from "../assests/F4.jpg";
-import slide5 from "../assests/F5.jpg";
-import slide6 from "../assests/F6.jpg";
-import slide7 from "../assests/F7.jpg";
-import slide8 from "../assests/F8.jpg";
 
 const CarouselSlider = () => {
   const slides = [
@@ -60,6 +56,11 @@ const CarouselSlider = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [loadedImages, setLoadedImages] = useState({});
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+
+  // Minimum swipe distance
+  const minSwipeDistance = 50;
 
   const nextSlide = useCallback(() => {
     if (isTransitioning) return;
@@ -82,18 +83,42 @@ const CarouselSlider = () => {
     setTimeout(() => setIsTransitioning(false), 600);
   };
 
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+  };
+
   // Auto play functionality
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
       nextSlide();
-    }, 4000); // Increased interval for better viewing
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [isAutoPlaying, nextSlide]);
 
-  // Preload and track image loading
+  // Preload images
   useEffect(() => {
     const loadImages = async () => {
       const promises = slides.map((slide) => {
@@ -123,13 +148,17 @@ const CarouselSlider = () => {
       onMouseEnter={() => setIsAutoPlaying(false)}
       onMouseLeave={() => setIsAutoPlaying(true)}
     >
-      {/* Slides Container - Updated height to 80vh for mobile as requested */}
-      <div className="relative h-[80vh] md:h-[80vh] overflow-hidden">
+      {/* Slides Container - Optimized height for mobile */}
+      <div
+        className="relative h-[85vh] md:h-[80vh] overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            // Added flex flex-col for mobile, md:block for desktop to restore overlay
-            className={`absolute inset-0 transition-all duration-700 flex flex-col md:block ${
+            className={`absolute inset-0 transition-all duration-700 ${
               index === currentSlide
                 ? "opacity-100 translate-x-0"
                 : index < currentSlide
@@ -140,25 +169,19 @@ const CarouselSlider = () => {
               transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
             }}
           >
-            {/* Background Image Container */}
-            {/* Mobile: h-1/2 relative, Desktop: absolute inset-0 full height */}
-            <div className="relative h-1/2 w-full md:absolute md:inset-0 md:h-full">
+            {/* Background Image with Overlay */}
+            <div className="absolute inset-0">
               {loadedImages[slide.id] ? (
                 <>
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className={`w-full h-full object-cover transition-transform duration-[15000ms] ${
-                      index === currentSlide ? "scale-105" : "scale-100"
+                    className={`w-full h-full object-cover transition-transform duration-[20000ms] ${
+                      index === currentSlide ? "scale-110" : "scale-100"
                     }`}
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : "low"}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px"
-                    style={{
-                      imageRendering: loadedImages[slide.id]
-                        ? "crisp-edges"
-                        : "auto",
-                    }}
+                    sizes="100vw"
                   />
                 </>
               ) : (
@@ -166,43 +189,28 @@ const CarouselSlider = () => {
               )}
             </div>
 
-            {/* Content Container */}
-            {/* Mobile: h-1/2 relative bg-gray-900, Desktop: h-full absolute transparent */}
-            <div className="relative h-1/2 w-full bg-gray-900 md:bg-transparent md:h-full flex items-center">
+            {/* Content Container - Centered for mobile, right-aligned for desktop */}
+            <div className="absolute inset-0 z-20 flex items-end md:items-center">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                {/* On mobile center text, on desktop keep original right alignment */}
-                <div className="w-full md:max-w-xl md:ml-auto animate-fade-in flex justify-center md:block">
-                  <div className="bg-gradient-to-r from-primary-900/50 to-primary-800/30 backdrop-blur-md rounded-2xl py-5 px-6 md:py-6 md:px-7 border border-white/20 shadow-2xl w-full">
-                    {/* Badge */}
-                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-secondary-50 bg-gradient-to-r from-secondary-600 to-secondary-700 px-4 py-2 rounded-full mb-3 shadow-lg">
+                <div className="w-full md:max-w-xl md:ml-auto mb-12 md:mb-0 animate-fade-in">
+                  {/* Badge - Positioned above content on mobile */}
+                  <div className="flex justify-center md:justify-start mb-4">
+                    <span className="inline-block text-xs font-semibold tracking-wider uppercase text-white bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 rounded-full shadow-lg border border-white/10">
                       {slide.badge}
                     </span>
+                  </div>
 
+                  {/* Content Card */}
+                  <div className="bg-gradient-to-b from-black/30 to-black/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl">
                     {/* Title */}
-                    <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-white leading-tight mb-3 drop-shadow-lg">
+                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white text-center md:text-left leading-tight mb-4">
                       {slide.title}
                     </h1>
 
                     {/* Description */}
-                    <p className="text-sm md:text-lg text-white/90 mb-6 max-w-lg leading-relaxed drop-shadow-md">
+                    <p className="text-xs md:text-base text-gray-200 text-center md:text-left leading-relaxed">
                       {slide.description}
                     </p>
-
-                    {/* CTA Buttons */}
-                    <div className="flex flex-wrap gap-3 md:gap-4">
-                      <Link
-                        to={slide.ctaLink}
-                        className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 text-white font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 min-w-[120px] md:min-w-[160px] hover:shadow-primary-500/40 active:scale-95 text-sm md:text-base"
-                      >
-                        <span className="drop-shadow-sm">{slide.ctaText}</span>
-                      </Link>
-                      <Link
-                        to="/contact"
-                        className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[120px] md:min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95 text-sm md:text-base"
-                      >
-                        Request Quote
-                      </Link>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -210,127 +218,73 @@ const CarouselSlider = () => {
           </div>
         ))}
 
-        {/* Navigation Arrows - Kept at middle (top-1/2) */}
+        {/* Navigation Arrows - Smaller and more subtle on mobile */}
         <button
           onClick={prevSlide}
           disabled={isTransitioning}
-          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
+          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2.5 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-30 shadow-xl border border-white/10"
           aria-label="Previous slide"
         >
-          <HiChevronLeft
-            size={20}
-            className="md:w-[26px] md:h-[26px] drop-shadow-sm"
-          />
+          <HiChevronLeft size={22} className="md:w-7 md:h-7" />
         </button>
 
         <button
           onClick={nextSlide}
           disabled={isTransitioning}
-          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-primary-900/70 hover:bg-primary-800 text-white p-2 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-20 shadow-2xl border border-white/20"
+          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2.5 md:p-3.5 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-white/50 z-30 shadow-xl border border-white/10"
           aria-label="Next slide"
         >
-          <HiChevronRight
-            size={20}
-            className="md:w-[26px] md:h-[26px] drop-shadow-sm"
-          />
+          <HiChevronRight size={22} className="md:w-7 md:h-7" />
         </button>
 
-        {/* Bottom Controls Container */}
-        <div className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-20">
+        {/* Bottom Controls - Compact for mobile */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-3 z-30">
           {/* Dots Indicator */}
-          <div className="flex items-center gap-2 bg-primary-900/70 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 shadow-xl">
+          <div className="flex items-center gap-3 bg-black/50 backdrop-blur-lg px-4 py-3 rounded-full border border-white/10 shadow-2xl">
             {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 disabled={isTransitioning}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 ${
+                className={`transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 ${
                   index === currentSlide
-                    ? "bg-secondary-400 scale-125 shadow-lg"
-                    : "bg-white/60 hover:bg-secondary-300 hover:scale-110"
+                    ? "w-8 h-2 bg-white rounded-full"
+                    : "w-2 h-2 bg-white/50 rounded-full hover:bg-white/80"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
 
-          {/* Slide Counter & Play/Pause */}
-          <div className="hidden md:flex items-center gap-3 bg-primary-900/70 backdrop-blur-sm px-4 py-2.5 rounded-full border border-white/20 shadow-xl">
-            <span className="text-sm text-white font-medium drop-shadow-sm">
-              <span className="text-white">{currentSlide + 1}</span>
-              <span className="text-white/70">/{slides.length}</span>
-            </span>
-
-            <div className="w-px h-4 bg-white/30"></div>
-
-            <button
-              onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-              className="text-white hover:text-secondary-300 transition-colors p-1"
-              aria-label={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
-            >
-              {isAutoPlaying ? (
-                <FiPause size={18} className="drop-shadow-sm" />
-              ) : (
-                <FiPlay size={18} className="drop-shadow-sm" />
-              )}
-            </button>
-          </div>
+          {/* Mobile Play/Pause */}
+          <button
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            className="bg-black/50 backdrop-blur-lg p-3 rounded-full border border-white/10 shadow-2xl text-white hover:text-primary-300 transition-colors"
+            aria-label={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
+          >
+            {isAutoPlaying ? <FiPause size={20} /> : <FiPlay size={20} />}
+          </button>
         </div>
 
-        {/* Progress Bar */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary-900/40 z-10">
+        {/* Slide Counter for Mobile - Top Right */}
+        <div className="absolute top-4 right-4 z-30 bg-black/50 backdrop-blur-lg px-3 py-1.5 rounded-full border border-white/10 shadow-lg">
+          <span className="text-sm text-white font-medium">
+            <span className="text-white">{currentSlide + 1}</span>
+            <span className="text-white/60"> / {slides.length}</span>
+          </span>
+        </div>
+
+        {/* Progress Bar - More visible */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 z-20">
           <div
-            className="h-full bg-gradient-to-r from-primary-500 via-primary-400 to-secondary-500 transition-all duration-100"
+            className="h-full bg-gradient-to-r from-primary-500 via-primary-400 to-primary-300 transition-all duration-100"
             style={{
               width: isAutoPlaying ? "100%" : "0%",
-              animation: isAutoPlaying ? "progress 4s linear forwards" : "none",
+              animation: isAutoPlaying ? "progress 5s linear forwards" : "none",
             }}
           />
         </div>
       </div>
-
-      {/* Custom Animation */}
-      <style jsx>{`
-        @keyframes progress {
-          0% {
-            width: 0%;
-          }
-          100% {
-            width: 100%;
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fadeInUp 0.8s ease-out 0.3s both;
-        }
-
-        /* Improve image rendering */
-        img {
-          -webkit-backface-visibility: hidden;
-          -moz-backface-visibility: hidden;
-          -webkit-transform: translateZ(0) scale(1, 1);
-          -moz-transform: translateZ(0) scale(1, 1);
-          image-rendering: -webkit-optimize-contrast;
-          image-rendering: crisp-edges;
-        }
-
-        /* Prevent blur on scale animation */
-        .scale-105 {
-          transform: scale(1.05);
-          transform-origin: center;
-        }
-      `}</style>
     </div>
   );
 };

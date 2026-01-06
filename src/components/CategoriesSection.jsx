@@ -73,7 +73,7 @@ const CategoryCard = ({ category }) => {
         </div>
 
         {/* Title */}
-        <h3 className="text-xs font-semibold text-primary-800 group-hover:text-primary-700 transition-colors mb-1 mt-1 line-clamp-2 min-h-[2.5rem]">
+        <h3 className="text-xs font-semibold text-primary-800 group-hover:text-primary-700 transition-colors mb-1 mt-1 line-clamp-2">
           {category.name}
         </h3>
 
@@ -112,7 +112,9 @@ const CategoriesSection = () => {
   // For responsive grid: 2 cols (mobile), 3 cols (sm), 4 cols (md), 5 cols (lg), 6 cols (xl)
   // Show 12 categories initially (2 rows on xl with 6 cols, or more rows on smaller screens)
   const initialCount = 12;
-  const displayedCategories = showAll ? categories : categories.slice(0, initialCount);
+  const displayedCategories = showAll
+    ? categories
+    : categories.slice(0, initialCount);
   const hasMore = categories.length > initialCount;
 
   if (loading) {
@@ -121,7 +123,9 @@ const CategoriesSection = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
-            <p className="mt-4 text-primary-700 font-medium text-sm">Loading categories...</p>
+            <p className="mt-4 text-primary-700 font-medium text-sm">
+              Loading categories...
+            </p>
           </div>
         </div>
       </section>
@@ -133,7 +137,7 @@ const CategoriesSection = () => {
   }
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-b from-white to-primary-50">
+    <section className="py-12 md:py-16 bg-white">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-10">
@@ -185,7 +189,7 @@ const CategoriesSection = () => {
             <button
               onClick={() => {
                 setShowAll(false);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
             >

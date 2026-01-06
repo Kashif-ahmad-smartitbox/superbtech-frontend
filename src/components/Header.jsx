@@ -405,16 +405,16 @@ const Header = () => {
                     to={item.path}
                     className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
                       active
-                        ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
-                        : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 hover:shadow-sm hover:border hover:border-primary-100"
+                        ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
+                        : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 relative z-10">
                       <div
                         className={`p-1.5 rounded-lg transition-all ${
                           active
-                            ? "bg-gradient-to-r from-primary-500 to-primary-600"
-                            : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                            ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                            : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                         }`}
                       >
                         <FiHome
@@ -437,10 +437,10 @@ const Header = () => {
                   <button
                     key={item.path}
                     onClick={handleNews}
-                    className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-primary-100 focus:outline-none"
+                    className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-secondary-100 focus:outline-none"
                   >
                     <div className="relative">
-                      <div className="p-1.5 rounded-lg bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600 transition-all">
+                      <div className="p-1.5 rounded-lg bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600 transition-all">
                         <HiOutlineExternalLink
                           size={16}
                           className="text-primary-600 group-hover:text-white transition-colors"
@@ -460,16 +460,16 @@ const Header = () => {
                     to={item.path}
                     className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
                       active
-                        ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
-                        : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 hover:shadow-sm hover:border hover:border-primary-100"
+                        ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
+                        : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
                     }`}
                   >
                     <div className="flex items-center gap-2.5 relative z-10">
                       <div
                         className={`p-1.5 rounded-lg transition-all ${
                           active
-                            ? "bg-gradient-to-r from-primary-500 to-primary-600"
-                            : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                            ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                            : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                         }`}
                       >
                         <WindArrowDown
@@ -523,7 +523,7 @@ const Header = () => {
             <div className="relative group" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-primary-100 focus:outline-none"
+                className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-secondary-100 focus:outline-none"
                 aria-expanded={dropdownOpen}
                 aria-haspopup="true"
               >
@@ -531,8 +531,8 @@ const Header = () => {
                   <div
                     className={`p-1.5 rounded-lg transition-all ${
                       dropdownOpen
-                        ? "bg-gradient-to-r from-primary-500 to-primary-600"
-                        : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
+                        ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                        : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                     }`}
                   >
                     <FiPackage

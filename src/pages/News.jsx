@@ -47,10 +47,10 @@ const News = () => {
         <div className="flex items-center justify-between mb-6">
           <Link
             to="/"
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:-translate-x-1 group"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:-translate-x-1 group"
           >
             <FiArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="hidden sm:inline">Back to Home</span>
+            <span className="hidden sm:inline text-sm">Back to Home</span>
           </Link>
 
           <nav className="flex items-center space-x-2 text-sm text-gray-600">
@@ -66,12 +66,6 @@ const News = () => {
 
         {/* Hero Header */}
         <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-full">
-            <FiBookOpen className="text-primary-600" />
-            <span className="text-sm font-semibold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              Latest Updates & Announcements
-            </span>
-          </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-primary-700 via-primary-600 to-secondary-600 bg-clip-text text-transparent">
               News Center

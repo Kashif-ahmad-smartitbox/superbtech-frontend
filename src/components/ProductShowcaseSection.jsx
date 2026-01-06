@@ -60,15 +60,15 @@ const ProductShowcaseSection = () => {
   }
 
   return (
-    <section className="relative py-16 md:py-24 bg-gradient-to-b from-white to-primary-50 overflow-hidden">
+    <section className="relative py-16 md:py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             Our <span className="text-primary-600">Laboratory & Training</span>{" "}
             Equipment
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm">
             Professionally engineered equipment designed for academic
             excellence, industrial precision, and long-term reliability in
             research environments.
