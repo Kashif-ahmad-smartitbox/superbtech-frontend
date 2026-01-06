@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import News from "./pages/News";
+import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
@@ -19,6 +20,7 @@ import AdminNews from "./pages/admin/AdminNews";
 import Layout from "./components/Layout";
 import AdminLayout from "./components/admin/AdminLayout";
 import { AuthProvider } from "./context/AuthContext";
+import Certificates from "./pages/certificates";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
             <Route path="products" element={<Products />} />
             <Route path="news" element={<News />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="about" element={<About />} />
+            <Route path="certificates" element={<Certificates />} />
             <Route path="products/:id" element={<ProductDetail />} />
             <Route path="category/:slug" element={<Products />} />
           </Route>

@@ -197,7 +197,7 @@ const CarouselSlider = () => {
                         <span className="drop-shadow-sm">{slide.ctaText}</span>
                       </Link>
                       <Link
-                        to="/quote"
+                        to="/contact"
                         className="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2 md:px-5 md:py-2.5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border-2 border-white/40 hover:border-secondary-400 hover:bg-secondary-900/30 transition-all duration-300 min-w-[120px] md:min-w-[160px] hover:text-secondary-50 hover:shadow-lg active:scale-95 text-sm md:text-base"
                       >
                         Request Quote
