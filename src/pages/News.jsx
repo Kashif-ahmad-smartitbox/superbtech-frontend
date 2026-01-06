@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api, { getImageUrl } from "../utils/api";
 import { FiCalendar, FiExternalLink, FiArrowRight } from "react-icons/fi";
@@ -52,7 +52,8 @@ const News = () => {
               Latest News & Updates
             </h1>
             <p className="text-primary-100 text-lg max-w-2xl mx-auto">
-              Stay informed with the latest news, announcements, and updates from Superb Technologies
+              Stay informed with the latest news, announcements, and updates
+              from Superb Technologies
             </p>
           </div>
         </div>
@@ -92,7 +93,8 @@ const News = () => {
               No News Available
             </h3>
             <p className="text-gray-600 max-w-md mx-auto">
-              Check back soon for the latest news and updates from Superb Technologies.
+              Check back soon for the latest news and updates from Superb
+              Technologies.
             </p>
           </div>
         ) : (
@@ -177,7 +179,8 @@ const News = () => {
             Looking for Scientific Equipment?
           </h2>
           <p className="text-primary-100 mb-6 max-w-2xl mx-auto">
-            Explore our wide range of high-quality laboratory and scientific equipment for educational and research purposes.
+            Explore our wide range of high-quality laboratory and scientific
+            equipment for educational and research purposes.
           </p>
           <Link
             to="/products"
