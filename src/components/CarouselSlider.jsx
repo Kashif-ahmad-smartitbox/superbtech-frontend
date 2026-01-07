@@ -192,7 +192,7 @@ const CarouselSlider = () => {
             {/* Content Container - Centered for mobile, right-aligned for desktop */}
             <div className="absolute inset-0 z-20 flex items-end md:items-center">
               <div className="container mx-auto px-4 md:px-6 lg:px-8">
-                <div className="w-full md:max-w-xl md:ml-auto mb-12 md:mb-0 animate-fade-in">
+                <div className="w-full md:max-w-xl md:ml-auto mb-20 md:mb-0 animate-fade-in">
                   {/* Badge - Positioned above content on mobile */}
                   <div className="flex justify-center md:justify-start mb-4">
                     <span className="inline-block text-xs font-semibold tracking-wider uppercase text-white bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-2 rounded-full shadow-lg border border-white/10">

@@ -11,6 +11,19 @@ import {
   FiInfo,
   FiArrowLeft,
   FiPlay,
+  FiPackage,
+  FiTag,
+  FiStar,
+  FiShield,
+  FiTruck,
+  FiHome,
+  FiX,
+  FiChevronLeft,
+  FiChevronUp,
+  FiChevronDown,
+  FiShare2,
+  FiPrinter,
+  FiBookOpen,
 } from "react-icons/fi";
 
 const getYouTubeVideoId = (url) => {
@@ -22,11 +35,18 @@ const getYouTubeVideoId = (url) => {
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Added for navigation
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+  const [expandedSections, setExpandedSections] = useState({
+    description: true,
+    specifications: false,
+    experimentation: false,
+    services: false,
+  });
+  const [showMobileThumbnails, setShowMobileThumbnails] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -43,19 +63,32 @@ const ProductDetail = () => {
     }
   };
 
-  // Handle back navigation
   const handleBack = () => {
-    navigate(-1); // Go back to previous page
+    navigate(-1);
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-primary-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-600"></div>
-          <p className="mt-4 text-primary-700 font-medium">
-            Loading product details...
-          </p>
+          <div className="relative mx-auto">
+            <div className="w-16 h-16 border-4 border-primary-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
         </div>
       </div>
     );
@@ -64,23 +97,32 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-primary-50">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-lg border border-primary-100">
+        <div className="text-center p-6 bg-white rounded-2xl shadow-lg border border-primary-100 max-w-md mx-4">
           <div className="w-16 h-16 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiInfo className="w-8 h-8 text-primary-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Product not found
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            Product Not Found
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6 text-sm">
             The product you're looking for doesn't exist or has been removed.
           </p>
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-          >
-            <FiArrowLeft className="rotate-180" />
-            Back to Products
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleBack}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300"
+            >
+              <FiArrowLeft className="w-4 h-4" />
+              Go Back
+            </button>
+            <Link
+              to="/products"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300"
+            >
+              <FiPackage className="w-4 h-4" />
+              All Products
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -88,108 +130,135 @@ const ProductDetail = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-white to-primary-50 flex flex-col">
-        <div className="container mx-auto px-4 pt-4">
-          <div className="flex items-center justify-between">
-            {/* Back Button */}
-            <button
-              onClick={handleBack}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:-translate-x-1 group"
-            >
-              <FiArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="hidden sm:inline">Back</span>
-            </button>
-
-            {/* Breadcrumb Navigation */}
-            <nav className="flex items-center space-x-2 text-sm text-gray-600">
-              <Link to="/" className="hover:text-primary-700 transition-colors">
-                Home
-              </Link>
-              <FiChevronRight className="w-4 h-4 text-gray-400" />
-              <Link
-                to="/products"
-                className="hover:text-primary-700 transition-colors"
+      <div className="min-h-screen bg-gradient-to-b from-white to-primary-50">
+        {/* Mobile Header */}
+        <div className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-primary-100">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-2 px-3 py-2 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors"
               >
-                Products
-              </Link>
-              {product.category && (
-                <>
-                  <FiChevronRight className="w-4 h-4 text-gray-400" />
-                  <Link
-                    to={`/category/${product.category.slug}`}
-                    className="hover:text-primary-700 transition-colors"
-                  >
-                    {product.category.name}
-                  </Link>
-                </>
-              )}
-              <FiChevronRight className="w-4 h-4 text-gray-400" />
-              <span className="text-primary-900 font-semibold truncate max-w-xs">
-                {product.name}
-              </span>
-            </nav>
+                <FiArrowLeft className="w-5 h-5" />
+              </button>
+              <div className="flex-1 px-3">
+                <h1 className="text-sm font-semibold text-gray-900 truncate">
+                  {product.name}
+                </h1>
+                <p className="text-xs text-gray-500 truncate">
+                  {product.orderCode}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowModal(true)}
+                className="px-3 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium rounded-lg hover:shadow-lg transition-all"
+              >
+                <FiMail className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-4 flex-grow">
-          <div className="bg-white overflow-hidden">
-            <div className="flex flex-col lg:flex-row h-full">
-              {/* Left Column: Images */}
-              <div className="lg:w-2/5 border-r border-primary-100 p-6">
-                {/* Main Image */}
-                <div className="relative aspect-square bg-gradient-to-br from-primary-50 to-secondary-50 rounded-xl mb-6 p-8 flex items-center justify-center overflow-hidden">
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      src={getImageUrl(product.images[activeImage])}
-                      alt={product.name}
-                      className="max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
-                    />
-                  ) : (
+        <div className="container mx-auto px-4 py-4">
+          {/* Breadcrumb Navigation - Desktop */}
+          <nav className="hidden lg:flex items-center space-x-2 text-sm text-gray-600 mb-6">
+            <Link to="/" className="hover:text-primary-700 transition-colors">
+              Home
+            </Link>
+            <FiChevronRight className="w-4 h-4 text-gray-400" />
+            <Link
+              to="/products"
+              className="hover:text-primary-700 transition-colors"
+            >
+              Products
+            </Link>
+            {product.category && (
+              <>
+                <FiChevronRight className="w-4 h-4 text-gray-400" />
+                <Link
+                  to={`/category/${product.category.slug}`}
+                  className="hover:text-primary-700 transition-colors"
+                >
+                  {product.category.name}
+                </Link>
+              </>
+            )}
+            <FiChevronRight className="w-4 h-4 text-gray-400" />
+            <span className="text-primary-900 font-semibold truncate">
+              {product.name}
+            </span>
+          </nav>
+
+          {/* Main Product Layout */}
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left Column: Images - Mobile */}
+            <div className="lg:hidden">
+              <div className="relative aspect-square bg-white rounded-2xl mb-4 overflow-hidden">
+                {product.images && product.images.length > 0 ? (
+                  <img
+                    src={getImageUrl(product.images[activeImage])}
+                    alt={product.name}
+                    className="w-full h-full object-contain p-4"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center p-8">
                     <div className="text-center">
-                      <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center mx-auto mb-4">
-                        <svg
-                          className="w-16 h-16 text-primary-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                          />
-                        </svg>
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center mx-auto mb-3">
+                        <FiPackage className="w-10 h-10 text-primary-400" />
                       </div>
-                      <span className="text-primary-700 font-semibold">
+                      <span className="text-primary-600 font-semibold">
                         Laboratory Equipment
                       </span>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Featured Badge */}
+                {/* Mobile Thumbnail Toggle */}
+                {product.images && product.images.length > 1 && (
+                  <button
+                    onClick={() =>
+                      setShowMobileThumbnails(!showMobileThumbnails)
+                    }
+                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1"
+                  >
+                    <span>View {product.images.length} Images</span>
+                    {showMobileThumbnails ? (
+                      <FiChevronDown className="w-3 h-3" />
+                    ) : (
+                      <FiChevronUp className="w-3 h-3" />
+                    )}
+                  </button>
+                )}
+
+                {/* Badges */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
                   {product.featured && (
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
-                      <svg
-                        className="w-3 h-3"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
+                    <div className="bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                      <FiStar className="w-3 h-3" />
                       Featured
                     </div>
                   )}
+                  {product.new && (
+                    <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                      <span>NEW</span>
+                    </div>
+                  )}
                 </div>
+              </div>
 
-                {/* Thumbnails */}
-                {product.images && product.images.length > 1 && (
-                  <div className="flex gap-3 overflow-x-auto pb-2">
+              {/* Mobile Thumbnails */}
+              {showMobileThumbnails &&
+                product.images &&
+                product.images.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2 mb-4">
                     {product.images.map((image, index) => (
                       <button
                         key={index}
-                        onClick={() => setActiveImage(index)}
-                        className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                        onClick={() => {
+                          setActiveImage(index);
+                          setShowMobileThumbnails(false);
+                        }}
+                        className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
                           activeImage === index
                             ? "border-primary-500 shadow-md"
                             : "border-primary-100 hover:border-primary-300"
@@ -204,224 +273,468 @@ const ProductDetail = () => {
                     ))}
                   </div>
                 )}
+            </div>
 
-                {/* Product Code */}
-                <div className="mt-6 p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg border border-primary-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-4 h-4 text-primary-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                      />
-                    </svg>
-                    <span className="text-sm font-semibold text-primary-800">
-                      Product Code
-                    </span>
+            {/* Left Column: Images - Desktop */}
+            <div className="hidden lg:flex lg:w-2/5 flex-col">
+              <div className="bg-white rounded-2xl border border-primary-100 p-6 sticky top-24">
+                <div className="relative aspect-square bg-white rounded-2xl mb-6 overflow-hidden">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      src={getImageUrl(product.images[activeImage])}
+                      alt={product.name}
+                      className="w-full h-full object-contain p-8 hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center p-8">
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center mx-auto mb-4">
+                          <FiPackage className="w-12 h-12 text-primary-400" />
+                        </div>
+                        <span className="text-primary-600 font-semibold">
+                          Laboratory Equipment
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-2">
+                    {product.featured && (
+                      <div className="bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                        <FiStar className="w-3 h-3" />
+                        Featured
+                      </div>
+                    )}
+                    {product.new && (
+                      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                        <span>NEW</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="text-lg font-bold text-primary-900">
-                    {product.orderCode}
+                </div>
+
+                {/* Thumbnails */}
+                {product.images && product.images.length > 1 && (
+                  <div className="grid grid-cols-4 gap-3 mb-6">
+                    {product.images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setActiveImage(index)}
+                        className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                          activeImage === index
+                            ? "border-primary-500 shadow-md"
+                            : "border-primary-100 hover:border-primary-300"
+                        }`}
+                      >
+                        <img
+                          src={getImageUrl(image)}
+                          alt={`Thumb ${index}`}
+                          className="w-full h-full object-cover hover:scale-110 transition-transform"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Product Info Card */}
+                <div className="space-y-4">
+                  <div className="p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
+                    <div className="flex items-center gap-3 mb-2">
+                      <FiTag className="text-primary-600" />
+                      <div>
+                        <div className="text-sm font-semibold text-primary-800">
+                          Product Code
+                        </div>
+                        <div className="text-lg font-bold text-primary-900">
+                          {product.orderCode}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div>
+                        <div className="text-sm font-semibold text-green-800">
+                          Stock Status
+                        </div>
+                        <div className="text-sm text-green-700">
+                          In Stock • Ready to Ship
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Right Column: Details */}
-              <div className="lg:w-3/5 p-6 lg:p-8">
-                <div className="h-full flex flex-col">
-                  {/* Header */}
-                  <div className="mb-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
-                          {product.name}
-                        </h1>
-                        <div className="flex items-center gap-2 mb-4">
-                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                          <span className="text-sm text-gray-600 font-medium">
-                            In Stock
-                          </span>
-                          <span className="text-xs text-gray-400 ml-2">
-                            Ready to Ship
-                          </span>
-                        </div>
-                      </div>
+            {/* Right Column: Details */}
+            <div className="lg:w-3/5">
+              <div className="bg-white rounded-2xl border border-primary-100 p-4 lg:p-8">
+                {/* Product Header */}
+                <div className="mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                    <div className="flex-1">
+                      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                        {product.name}
+                      </h1>
                       {product.category?.name && (
-                        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                          <FiTag className="w-3 h-3" />
                           {product.category.name}
                         </div>
                       )}
                     </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => window.print()}
+                        className="p-2 rounded-lg bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
+                        title="Print"
+                      >
+                        <FiPrinter className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => setShowModal(true)}
+                        className="hidden lg:flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                      >
+                        <FiMail className="w-4 h-4" />
+                        Request Quote
+                      </button>
+                    </div>
                   </div>
 
+                  {/* Quick Actions - Mobile */}
+                  <div className="lg:hidden grid grid-cols-2 gap-3 mb-6">
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                    >
+                      <FiMail className="w-4 h-4" />
+                      <span>Request</span>
+                    </button>
+                    {product.brochure?.path && (
+                      <a
+                        href={product.brochure.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
+                      >
+                        <FiDownload className="w-4 h-4" />
+                        <span>Brochure</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Navigation Menu - Mobile */}
+                <div className="lg:hidden mb-6">
+                  <div className="flex overflow-x-auto gap-2 pb-2">
+                    {[
+                      "description",
+                      "specifications",
+                      "experimentation",
+                      "services",
+                      "video",
+                    ].map((section) => {
+                      if (
+                        (section === "specifications" &&
+                          !product.specifications) ||
+                        (section === "experimentation" &&
+                          !product.experimentation) ||
+                        (section === "services" && !product.servicesRequired) ||
+                        (section === "video" && !product.youtubeLink)
+                      ) {
+                        return null;
+                      }
+                      return (
+                        <button
+                          key={section}
+                          onClick={() => scrollToSection(section)}
+                          className="flex-shrink-0 px-3 py-2 bg-primary-50 text-primary-700 text-sm font-medium rounded-lg hover:bg-primary-100 transition-colors"
+                        >
+                          {section.charAt(0).toUpperCase() + section.slice(1)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Content Sections */}
+                <div className="space-y-6">
                   {/* Description */}
-                  <div className="mb-6">
-                    <h2 className="text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
-                      <FiInfo className="text-primary-600" />
-                      Description
-                    </h2>
-                    <div className="prose prose-sm prose-primary max-w-none text-gray-600 bg-primary-50 rounded-lg p-4 border border-primary-100">
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: product.description,
-                        }}
-                        className="leading-relaxed"
-                      />
+                  <section id="description">
+                    <div className="lg:hidden mb-4">
+                      <button
+                        onClick={() => toggleSection("description")}
+                        className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
+                      >
+                        <span>Description</span>
+                        {expandedSections.description ? (
+                          <FiChevronUp className="w-5 h-5" />
+                        ) : (
+                          <FiChevronDown className="w-5 h-5" />
+                        )}
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Key Features */}
-                  {product.specifications && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-primary-800 mb-3">
-                        Key Features
+                    <div
+                      className={`${
+                        expandedSections.description ? "block" : "hidden"
+                      } lg:block`}
+                    >
+                      <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
+                        Description
                       </h2>
-                      <div
-                        className="prose prose-sm prose-primary max-w-none text-gray-600 bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100"
-                        dangerouslySetInnerHTML={{
-                          __html: product.specifications,
-                        }}
-                      />
+                      <div className="prose prose-sm max-w-none text-gray-600 bg-primary-50 rounded-xl p-4 border border-primary-100">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: product.description,
+                          }}
+                          className="leading-relaxed"
+                        />
+                      </div>
                     </div>
+                  </section>
+
+                  {/* Specifications */}
+                  {product.specifications && (
+                    <section id="specifications">
+                      <div className="lg:hidden mb-4">
+                        <button
+                          onClick={() => toggleSection("specifications")}
+                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
+                        >
+                          <span>Key Features</span>
+                          {expandedSections.specifications ? (
+                            <FiChevronUp className="w-5 h-5" />
+                          ) : (
+                            <FiChevronDown className="w-5 h-5" />
+                          )}
+                        </button>
+                      </div>
+                      <div
+                        className={`${
+                          expandedSections.specifications ? "block" : "hidden"
+                        } lg:block`}
+                      >
+                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
+                          Key Features
+                        </h2>
+                        <div
+                          className="prose prose-sm max-w-none text-gray-600 bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100"
+                          dangerouslySetInnerHTML={{
+                            __html: product.specifications,
+                          }}
+                        />
+                      </div>
+                    </section>
                   )}
 
                   {/* Experimentation */}
                   {product.experimentation && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-primary-800 mb-3">
-                        Experimentation
-                      </h2>
-                      <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
-                        {product.experimentation
-                          .split("\n")
-                          .filter((line) => line.trim())
-                          .map((line, index) => (
-                            <div key={index} className="text-gray-600 mb-2">
-                              {line.trim()}
-                            </div>
-                          ))}
+                    <section id="experimentation">
+                      <div className="lg:hidden mb-4">
+                        <button
+                          onClick={() => toggleSection("experimentation")}
+                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
+                        >
+                          <span>Experimentation</span>
+                          {expandedSections.experimentation ? (
+                            <FiChevronUp className="w-5 h-5" />
+                          ) : (
+                            <FiChevronDown className="w-5 h-5" />
+                          )}
+                        </button>
                       </div>
-                    </div>
+                      <div
+                        className={`${
+                          expandedSections.experimentation ? "block" : "hidden"
+                        } lg:block`}
+                      >
+                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
+                          Experimentation
+                        </h2>
+                        <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
+                          {product.experimentation
+                            .split("\n")
+                            .filter((line) => line.trim())
+                            .map((line, index) => (
+                              <div key={index} className="text-gray-600 mb-2">
+                                {line.trim()}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </section>
                   )}
 
                   {/* Services Required */}
                   {product.servicesRequired && (
-                    <div className="mb-6">
-                      <h2 className="text-lg font-bold text-primary-800 mb-3">
-                        Services Required
-                      </h2>
-                      <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
-                        {product.servicesRequired
-                          .split("\n")
-                          .filter((line) => line.trim())
-                          .map((line, index) => (
-                            <div key={index} className="text-gray-600 mb-2">
-                              {line.trim()}
-                            </div>
-                          ))}
+                    <section id="services">
+                      <div className="lg:hidden mb-4">
+                        <button
+                          onClick={() => toggleSection("services")}
+                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
+                        >
+                          <span>Services Required</span>
+                          {expandedSections.services ? (
+                            <FiChevronUp className="w-5 h-5" />
+                          ) : (
+                            <FiChevronDown className="w-5 h-5" />
+                          )}
+                        </button>
                       </div>
-                    </div>
+                      <div
+                        className={`${
+                          expandedSections.services ? "block" : "hidden"
+                        } lg:block`}
+                      >
+                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
+                          Services Required
+                        </h2>
+                        <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
+                          {product.servicesRequired
+                            .split("\n")
+                            .filter((line) => line.trim())
+                            .map((line, index) => (
+                              <div key={index} className="text-gray-600 mb-2">
+                                {line.trim()}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    </section>
                   )}
 
                   {/* YouTube Video */}
                   {product.youtubeLink &&
                     getYouTubeVideoId(product.youtubeLink) && (
-                      <div className="mb-6">
-                        <h2 className="text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
-                          <FiPlay className="text-red-600" />
-                          Product Video
-                        </h2>
-                        <div className="bg-gradient-to-br from-primary-50 to-white rounded-lg p-4 border border-primary-100">
-                          <div
-                            className="relative w-full"
-                            style={{ paddingBottom: "56.25%" }}
+                      <section id="video">
+                        <div className="lg:hidden mb-4">
+                          <button
+                            onClick={() => toggleSection("video")}
+                            className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
                           >
-                            <iframe
-                              className="absolute top-0 left-0 w-full h-full rounded-lg"
-                              src={`https://www.youtube.com/embed/${getYouTubeVideoId(
-                                product.youtubeLink
-                              )}`}
-                              title="Product Video"
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
+                            <span className="flex items-center gap-2">
+                              <FiPlay className="text-red-600" />
+                              Product Video
+                            </span>
+                            {expandedSections.video ? (
+                              <FiChevronUp className="w-5 h-5" />
+                            ) : (
+                              <FiChevronDown className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+                        <div
+                          className={`${
+                            expandedSections.video ? "block" : "hidden"
+                          } lg:block`}
+                        >
+                          <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
+                            <FiPlay className="text-red-600" />
+                            Product Video
+                          </h2>
+                          <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
+                            <div
+                              className="relative w-full"
+                              style={{ paddingBottom: "56.25%" }}
+                            >
+                              <iframe
+                                className="absolute top-0 left-0 w-full h-full rounded-lg"
+                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(
+                                  product.youtubeLink
+                                )}`}
+                                title="Product Video"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </section>
                     )}
+                </div>
 
-                  {/* Additional Info */}
-                  <div className="mt-auto pt-6 border-t border-primary-100">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <div className="flex items-center gap-3 p-3 bg-primary-50 rounded-lg border border-primary-100">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
-                          <FiCheck className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold text-primary-800">
-                            Quality Certified
-                          </div>
-                          <div className="text-xs text-gray-600">
-                            Manufactured under ISO standards
-                          </div>
-                        </div>
+                {/* Benefits Cards */}
+                <div className="mt-8 pt-6 border-t border-primary-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary-50 to-white rounded-xl border border-primary-100">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center flex-shrink-0">
+                        <FiShield className="w-5 h-5 text-white" />
                       </div>
-                      <div className="flex items-center gap-3 p-3 bg-primary-50 rounded-lg border border-primary-100">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center">
-                          <FiDownload className="w-5 h-5 text-white" />
+                      <div>
+                        <div className="text-sm font-semibold text-primary-800 mb-1">
+                          Quality Certified
                         </div>
-                        <div>
-                          <div className="text-sm font-semibold text-primary-800">
-                            Documentation
-                          </div>
-                          <div className="text-xs text-gray-600">
-                            Complete technical specifications
-                          </div>
+                        <div className="text-xs text-gray-600">
+                          Manufactured under ISO standards
                         </div>
                       </div>
                     </div>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary-50 to-white rounded-xl border border-primary-100">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center flex-shrink-0">
+                        <FiTruck className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-primary-800 mb-1">
+                          Worldwide Shipping
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          Export to 5+ countries
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col gap-4">
+                  {/* Contact CTA */}
+                  <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200 p-6">
+                    <div className="text-center mb-4">
+                      <h3 className="text-lg font-bold text-primary-900 mb-2">
+                        Interested in this product?
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Get detailed specifications, pricing, and technical
+                        support
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <button
-                        className="w-full px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 text-sm"
                         onClick={() => setShowModal(true)}
+                        className="flex-1 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
                       >
-                        <FiMail />
-                        {product.brochure?.path
-                          ? "Request Quote & Download Brochure"
-                          : "Request Quote"}
+                        <FiMail className="w-5 h-5" />
+                        Request Detailed Quote
                       </button>
                       {product.brochure?.path && (
-                        <p className="text-xs text-gray-600 text-center flex items-center justify-center gap-1">
-                          <FiInfo className="w-3 h-3" />
-                          Submit an enquiry to download the product brochure
-                        </p>
+                        <a
+                          href={product.brochure.path}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
+                        >
+                          <FiDownload className="w-5 h-5" />
+                          Download Brochure
+                        </a>
                       )}
                     </div>
 
                     {/* Contact Info */}
-                    <div className="mt-6 pt-4 border-t border-primary-100">
-                      <p className="text-sm text-gray-600 mb-2">
-                        Need assistance?
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="mt-6 pt-4 border-t border-primary-200">
+                      <div className="flex flex-col sm:flex-row gap-4 text-sm">
                         <a
                           href="mailto:info@superbtechnologies.in"
-                          className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors text-sm"
+                          className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiMail className="w-4 h-4" />
                           info@superbtechnologies.in
                         </a>
                         <a
                           href="tel:+919829132777"
-                          className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors text-sm"
+                          className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiPhone className="w-4 h-4" />
                           +91 98291 32777
