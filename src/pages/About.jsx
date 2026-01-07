@@ -21,6 +21,8 @@ import {
   FiTruck,
   FiDollarSign,
   FiAnchor,
+  FiArrowRight,
+  FiHome,
 } from "react-icons/fi";
 import { FaIndustry, FaUniversity, FaCertificate } from "react-icons/fa";
 
@@ -607,30 +609,31 @@ const About = () => {
       </div>
 
       {/* Contact & Location */}
-      <div className="bg-gradient-to-br from-primary-400 to-primary-500 py-12 sm:py-16 lg:py-20">
+      {/* Contact & Location */}
+      <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-900 py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 sm:mb-6">
                 Visit Our Manufacturing Unit
               </h2>
-              <p className="text-white/80 text-base sm:text-lg max-w-2xl mx-auto">
+              <p className="text-primary-100 text-base sm:text-lg max-w-2xl mx-auto">
                 Located in the industrial hub of Ambala, Haryana
               </p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
               {/* Address Card */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/20 p-6 sm:p-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/20 p-6 sm:p-8 shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center shadow-lg">
                     <FiMapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">
                       Registered Office
                     </h3>
-                    <p className="text-white/80 text-sm">
+                    <p className="text-primary-100 text-sm">
                       Manufacturing & Head Office
                     </p>
                   </div>
@@ -638,85 +641,135 @@ const About = () => {
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <FiMapPin className="w-5 h-5 text-white/80 mt-0.5 flex-shrink-0" />
+                    <FiMapPin className="w-5 h-5 text-primary-200 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-white">{companyInfo.address}</p>
-                      <p className="text-white/60 text-sm mt-1">
+                      <p className="text-white font-medium">
+                        {companyInfo.address}
+                      </p>
+                      <p className="text-primary-200 text-sm mt-1">
                         HSIIDC Industrial Area, Ambala
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <FiPhone className="w-5 h-5 text-white/80" />
-                    <a
-                      href="tel:+919829132777"
-                      className="text-white hover:text-white/90"
-                    >
-                      +91 98291 32777
-                    </a>
+                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                      <FiPhone className="w-5 h-5 text-primary-300" />
+                    </div>
+                    <div>
+                      <a
+                        href="tel:+919829132777"
+                        className="text-white hover:text-secondary-300 font-medium transition-colors text-lg"
+                      >
+                        +91 98291 32777
+                      </a>
+                      <p className="text-primary-200 text-sm mt-0.5">
+                        Sales & Support
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <FiMail className="w-5 h-5 text-white/80" />
-                    <a
-                      href="mailto:info@superbtechnologies.in"
-                      className="text-white hover:text-white/90"
-                    >
-                      info@superbtechnologies.in
-                    </a>
+                  <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-secondary-500/20 flex items-center justify-center">
+                      <FiMail className="w-5 h-5 text-secondary-300" />
+                    </div>
+                    <div>
+                      <a
+                        href="mailto:info@superbtechnologies.in"
+                        className="text-white hover:text-secondary-300 font-medium transition-colors"
+                      >
+                        info@superbtechnologies.in
+                      </a>
+                      <p className="text-primary-200 text-sm mt-0.5">
+                        General Inquiries
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Manufacturing Info */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/20 p-6 sm:p-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/20 p-6 sm:p-8 shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary-500 to-primary-500 flex items-center justify-center shadow-lg">
                     <FaIndustry className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white">
                       Manufacturing Unit
                     </h3>
-                    <p className="text-white/80 text-sm">
+                    <p className="text-primary-100 text-sm">
                       State-of-the-art facility
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <span className="text-white/80">Factory Area</span>
-                    <span className="text-white font-semibold">
+                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
+                        <FiPackage className="w-5 h-5 text-primary-300" />
+                      </div>
+                      <span className="text-primary-100">Factory Area</span>
+                    </div>
+                    <span className="text-white font-bold text-lg">
                       {companyInfo.premisesSize}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <span className="text-white/80">Infrastructure</span>
-                    <span className="text-white font-semibold">
+                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-secondary-500/20 flex items-center justify-center group-hover:bg-secondary-500/30 transition-colors">
+                        <FiHome className="w-5 h-5 text-secondary-300" />
+                      </div>
+                      <span className="text-primary-100">Infrastructure</span>
+                    </div>
+                    <span className="text-white font-bold text-lg">
                       Permanent Building
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <span className="text-white/80">Team Size</span>
-                    <span className="text-white font-semibold">
+                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
+                        <FiUsers className="w-5 h-5 text-primary-300" />
+                      </div>
+                      <span className="text-primary-100">Team Size</span>
+                    </div>
+                    <span className="text-white font-bold text-lg">
                       {companyInfo.employees}
                     </span>
                   </div>
 
-                  <div className="mt-6">
+                  <div className="mt-6 pt-6 border-t border-white/10">
                     <Link
                       to="/products"
-                      className="inline-flex items-center justify-center w-full px-6 py-3 bg-white text-primary-700 font-bold rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                      className="inline-flex items-center justify-center w-full px-6 py-3.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold rounded-lg hover:from-primary-600 hover:to-secondary-600 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 shadow-lg group"
                     >
-                      View Our Product
+                      <span className="group-hover:scale-105 transition-transform">
+                        View Our Products
+                      </span>
+                      <FiArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Link>
+                    <p className="text-primary-200 text-center text-sm mt-3">
+                      Explore our wide range of scientific laboratory equipment
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Map/Visit Info */}
+            <div className="mt-12 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full border border-white/20">
+                <FiClock className="w-4 h-4 text-primary-200" />
+                <span className="text-primary-100 text-sm">
+                  Monday to Saturday: 9:00 AM to 6:00 PM
+                </span>
+              </div>
+              <p className="text-primary-200 text-sm mt-4">
+                Prior appointment recommended for factory visits
+              </p>
             </div>
           </div>
         </div>
