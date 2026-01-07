@@ -661,7 +661,7 @@ const About = () => {
                         href="tel:+919829132777"
                         className="text-white hover:text-secondary-300 font-medium transition-colors text-lg"
                       >
-                        +91 98291 32777
+                        +91 90348 15524
                       </a>
                       <p className="text-primary-200 text-sm mt-0.5">
                         Sales & Support
@@ -675,10 +675,10 @@ const About = () => {
                     </div>
                     <div>
                       <a
-                        href="mailto:info@superbtechnologies.in"
+                        href="mailto:info.superbengineers@gmail.com"
                         className="text-white hover:text-secondary-300 font-medium transition-colors"
                       >
-                        info@superbtechnologies.in
+                        info.superbengineers@gmail.com
                       </a>
                       <p className="text-primary-200 text-sm mt-0.5">
                         General Inquiries

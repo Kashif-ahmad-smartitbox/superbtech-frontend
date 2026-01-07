@@ -494,7 +494,7 @@ const Header = () => {
               to="/about"
               className={`px-5 py-2.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
                 isActive("/about")
-                  ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
+                  ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
                   : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
               }`}
             >
@@ -502,7 +502,7 @@ const Header = () => {
                 <div
                   className={`p-1.5 rounded-lg ${
                     isActive("/about")
-                      ? "bg-gradient-to-r from-primary-500 to-primary-600"
+                      ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
                       : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                   } transition-all`}
                 >

@@ -24,9 +24,9 @@ function Contact() {
       "Ambala City, Ambala - 134003",
       "Haryana, India",
     ],
-    phone: "08048968724",
-    email: "info@superbtechnologies.com",
-    sms: "08048968724",
+    phone: "+919034815524",
+    email: "info.superbengineers@gmail.com",
+    sms: "+919034815524",
   };
 
   // Coordinates for the map (Ambala City, Haryana)
