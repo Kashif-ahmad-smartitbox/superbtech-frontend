@@ -607,7 +607,7 @@ const About = () => {
       </div>
 
       {/* Contact & Location */}
-      <div className="bg-gradient-to-br from-primary-600 to-secondary-600 py-12 sm:py-16 lg:py-20">
+      <div className="bg-gradient-to-br from-primary-400 to-primary-500 py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8 sm:mb-12">

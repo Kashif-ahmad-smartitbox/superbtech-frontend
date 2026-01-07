@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Outlet,
   Navigate,
@@ -7,18 +7,39 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+  LayoutDashboard,
+  FolderTree,
+  Package,
+  MessageSquare,
+  Newspaper,
+  LogOut,
+  Home,
+  Menu,
+  X,
+  ChevronRight,
+  Settings,
+  Users,
+} from "lucide-react";
+import logo from "../../assests/favicon.png";
 
 const AdminLayout = () => {
   const { user, loading, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-primary-200 rounded-full"></div>
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary-600 font-semibold text-sm">
+            Loading
+          </div>
         </div>
       </div>
     );
@@ -33,20 +54,157 @@ const AdminLayout = () => {
     navigate("/admin/login");
   };
 
+  const navItems = [
+    {
+      to: "/admin/dashboard",
+      icon: LayoutDashboard,
+      label: "Dashboard",
+    },
+    {
+      to: "/admin/categories",
+      icon: FolderTree,
+      label: "Categories",
+    },
+    {
+      to: "/admin/products",
+      icon: Package,
+      label: "Products",
+    },
+    {
+      to: "/admin/enquiries",
+      icon: MessageSquare,
+      label: "Enquiries",
+      badge: "12",
+    },
+    {
+      to: "/admin/news",
+      icon: Newspaper,
+      label: "News",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 flex flex-col md:flex-row">
-      {/* ASIDE / NAVIGATION 
-        Mobile: Fixed Bottom Bar
-        Desktop: Fixed Left Sidebar
-      */}
-      <aside className="fixed bottom-0 left-0 w-full md:w-64 bg-gradient-to-b from-slate-900 via-gray-900 to-slate-900 text-white md:h-full shadow-2xl border-t md:border-r border-gray-800 z-50 md:top-0">
-        
-        {/* Logo Section - Hidden on Mobile to save space */}
-        <div className="hidden md:block p-6 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+    <div className="h-screen flex bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+      {/* ================= SIDEBAR (DESKTOP) ================= */}
+      <aside
+        className={`
+          hidden lg:flex flex-col
+          bg-gradient-to-b from-primary-950 via-primary-900 to-primary-800
+          text-primary-100
+          border-r border-primary-700/50
+          transition-all duration-300 ease-in-out
+          shadow-xl
+          ${isCollapsed ? "w-20" : "w-64"}
+        `}
+      >
+        {/* Logo & Brand */}
+        <div className="h-24 border-b border-primary-700/50">
+          <div className="h-full flex items-center px-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={logo}
+                alt="Superb Technologies"
+                className={`transition-all duration-300 ${
+                  isCollapsed ? "w-12" : "w-14"
+                }`}
+              />
+              {!isCollapsed && (
+                <div className="flex flex-col transition-all duration-300 overflow-hidden animate-fadeIn">
+                  <span className="text-xl font-bold bg-gradient-to-r from-primary-200 via-white to-secondary-200 bg-clip-text text-transparent whitespace-nowrap">
+                    SuperbTech
+                  </span>
+                  <span className="text-xs text-primary-300 whitespace-nowrap">
+                    Admin Panel
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-6 space-y-2">
+          {navItems.map((item) => {
+            const isActive = location.pathname.startsWith(item.to);
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                title={isCollapsed ? item.label : ""}
+                className={`
+                  relative flex items-center h-12 rounded-xl
+                  transition-all duration-200 group
+                  ${isCollapsed ? "justify-center px-0" : "px-4 gap-3"}
+                  ${
+                    isActive
+                      ? "bg-gradient-to-r from-primary-600/90 to-primary-500/90 shadow-lg shadow-primary-500/20 text-white"
+                      : "hover:bg-primary-700/50 hover:shadow-md hover:shadow-primary-900/10"
+                  }
+                `}
+              >
+                {isActive && !isCollapsed && (
+                  <div className="absolute -left-2 top-2 bottom-2 w-1 bg-gradient-to-b from-secondary-400 to-secondary-300 rounded-r-full shadow shadow-secondary-400" />
+                )}
+
+                <div className="relative">
+                  <Icon
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      isActive
+                        ? "text-white"
+                        : "text-primary-300 group-hover:text-white"
+                    } ${
+                      isCollapsed && isActive
+                        ? "scale-110"
+                        : "group-hover:scale-110"
+                    }`}
+                  />
+                  {isCollapsed && isActive && (
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-secondary-400 rounded-full shadow shadow-secondary-400" />
+                  )}
+                </div>
+
+                {!isCollapsed && (
+                  <div className="flex-1 flex items-center justify-between">
+                    <span className="text-sm font-medium tracking-wide">
+                      {item.label}
+                    </span>
+                    {item.badge && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white shadow shadow-red-500/30">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {isCollapsed && item.badge && (
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full shadow shadow-red-500" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Info & Controls */}
+        <div className="p-4 space-y-3 border-t border-primary-700/50">
+          {/* Collapse Button */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`
+              w-full h-11 flex items-center justify-center gap-2
+              rounded-xl bg-primary-800/30 hover:bg-primary-700/50
+              transition-all duration-200 group
+              ${isCollapsed ? "px-0" : "px-3"}
+            `}
+          >
+            <div className="w-6 h-6 flex items-center justify-center rounded-lg bg-primary-700/50">
               <svg
-                className="w-6 h-6 text-white"
+                className={`w-4 h-4 transition-all duration-300 ${
+                  isCollapsed
+                    ? "rotate-180 text-secondary-300"
+                    : "text-primary-300"
+                } group-hover:text-secondary-300 group-hover:scale-110`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -55,193 +213,237 @@ const AdminLayout = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
                 />
               </svg>
             </div>
-            <div>
-              <h2 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Admin Dashboard
-              </h2>
-              <p className="text-xs text-gray-400">Control Panel</p>
+            {!isCollapsed && (
+              <span className="text-sm text-primary-300 group-hover:text-white transition-colors">
+                {isCollapsed ? "Expand" : "Collapse"}
+              </span>
+            )}
+          </button>
+
+          {!isCollapsed && (
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-primary-800/50">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-white font-semibold">
+                {user.name?.charAt(0).toUpperCase() || "A"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">
+                  {user.name || "Admin"}
+                </p>
+                <p className="text-xs text-primary-300 truncate">
+                  {user.email || "admin@superbtech.com"}
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Navigation Links */}
-        <nav className="p-2 md:p-4 flex flex-row md:flex-col justify-around md:space-y-1 w-full overflow-x-auto md:overflow-visible">
-          <Link
-            to="/admin/dashboard"
-            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
-          >
-            <svg
-              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            <span className="text-[10px] md:text-base">Dashboard</span>
-          </Link>
-          
-          <Link
-            to="/admin/categories"
-            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
-          >
-            <svg
-              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-              />
-            </svg>
-            <span className="text-[10px] md:text-base">Categories</span>
-          </Link>
-
-          <Link
-            to="/admin/products"
-            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
-          >
-            <svg
-              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <span className="text-[10px] md:text-base">Products</span>
-          </Link>
-
-          <Link
-            to="/admin/enquiries"
-            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
-          >
-            <svg
-              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-[10px] md:text-base">Enquiries</span>
-          </Link>
-
-          <Link
-            to="/admin/news"
-            className="flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-indigo-600/20 transition-all group flex-1 md:flex-none justify-center md:justify-start"
-          >
-            <svg
-              className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-              />
-            </svg>
-            <span className="text-[10px] md:text-base">News</span>
-          </Link>
+          )}
 
           {/* Logout Button */}
-          <div className="md:pt-4 md:border-t md:border-gray-800 md:mt-4 flex flex-1 md:flex-none justify-center md:justify-start md:block">
-            <button
-              onClick={handleLogout}
-              className="w-full flex flex-col md:flex-row items-center md:gap-3 px-2 py-2 md:px-4 md:py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-700/20 transition-all group text-red-400 justify-center md:justify-start"
-            >
-              <svg
-                className="w-6 h-6 md:w-5 md:h-5 group-hover:scale-110 transition-transform mb-1 md:mb-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-              <span className="text-[10px] md:text-base">Logout</span>
-            </button>
-          </div>
-        </nav>
+          <button
+            onClick={handleLogout}
+            className={`
+              w-full h-11 flex items-center rounded-xl
+              transition-all duration-200 group
+              bg-gradient-to-r from-red-600/20 to-red-700/10
+              hover:from-red-600/30 hover:to-red-700/20
+              hover:shadow-md hover:shadow-red-900/10
+              ${isCollapsed ? "justify-center px-0" : "px-4 gap-3"}
+            `}
+          >
+            <div className="relative">
+              <LogOut
+                className={`w-5 h-5 transition-transform duration-200 ${
+                  isCollapsed ? "" : "group-hover:scale-110"
+                } text-red-400 group-hover:text-red-300`}
+              />
+              {isCollapsed && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+            </div>
+            {!isCollapsed && (
+              <span className="text-sm font-medium text-red-400 group-hover:text-red-300">
+                Logout
+              </span>
+            )}
+          </button>
+        </div>
       </aside>
 
-      {/* MAIN CONTENT 
-        Mobile: Removed Left Margin, Added Bottom Padding
-        Desktop: Kept Left Margin
-      */}
-      <main className="flex-1 md:ml-64 mb-20 md:mb-0 w-full">
-        {/* Header Bar */}
-        <div className="bg-white/80 backdrop-blur-md shadow-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Admin Panel</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage your products and content
-            </p>
-          </div>
-          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-            <div className="text-right">
-              <p className="text-xs md:text-sm text-gray-500">Welcome back,</p>
-              <p className="font-semibold text-gray-900 text-sm md:text-base">{user.name}</p>
+      {/* ================= MOBILE SIDEBAR ================= */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-primary-950 to-primary-900 shadow-2xl animate-slideIn">
+            <div className="h-24 flex items-center justify-between px-6 border-b border-primary-700/50">
+              <div className="flex items-center gap-3">
+                <img src={logo} alt="SuperbTech" className="w-12" />
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold bg-gradient-to-r from-primary-200 via-white to-secondary-200 bg-clip-text text-transparent">
+                    SuperbTech
+                  </span>
+                  <span className="text-xs text-primary-300">Admin Panel</span>
+                </div>
+              </div>
             </div>
-            <Link 
-              to="/" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-secondary flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+
+            <nav className="p-4 space-y-2">
+              {navItems.map((item) => {
+                const isActive = location.pathname.startsWith(item.to);
+                const Icon = item.icon;
+
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`
+                      flex items-center h-12 px-4 rounded-xl gap-3
+                      transition-all duration-200
+                      ${
+                        isActive
+                          ? "bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg"
+                          : "text-primary-300 hover:bg-primary-700/50 hover:text-white"
+                      }
+                    `}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="flex-1 text-sm font-medium">
+                      {item.label}
+                    </span>
+                    {item.badge && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-red-500 text-white">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-primary-700/50">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-primary-800/50 mb-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-white font-semibold">
+                  {user.name?.charAt(0).toUpperCase() || "A"}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    {user.name || "Admin"}
+                  </p>
+                  <p className="text-xs text-primary-300">
+                    {user.email || "admin@superbtech.com"}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-3 h-11 rounded-xl bg-red-600/20 text-red-400 hover:bg-red-600/30 hover:text-red-300 transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-              <span className="hidden sm:inline">View Site</span>
-            </Link>
+                <LogOut className="w-5 h-5" />
+                <span className="text-sm font-medium">Logout</span>
+              </button>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="h-16 bg-white/80 backdrop-blur-sm border-b border-gray-200/50 flex items-center px-4 md:px-6 justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 rounded-xl hover:bg-primary-50 transition-colors"
+            >
+              <Menu className="w-5 h-5 text-primary-600" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow shadow-primary-500/30">
+                {(() => {
+                  const matchedItem = navItems.find((i) =>
+                    location.pathname.startsWith(i.to)
+                  );
+                  if (matchedItem && matchedItem.icon) {
+                    const IconComponent = matchedItem.icon;
+                    return <IconComponent className="w-4 h-4 text-white" />;
+                  }
+                  return null;
+                })()}
+              </div>
+              <h1 className="text-lg md:text-xl font-semibold text-primary-900">
+                {navItems.find((i) => location.pathname.startsWith(i.to))
+                  ?.label || "Dashboard"}
+              </h1>
+            </div>
+          </div>
+
+          <Link
+            to="/"
+            target="_blank"
+            className="group flex items-center gap-2 px-4 py-2.5 text-sm rounded-xl bg-gradient-to-r from-primary-50 to-secondary-50 border border-primary-200/50 hover:border-primary-300 hover:shadow-md transition-all duration-200"
+          >
+            <Home className="w-4 h-4 text-primary-600 group-hover:text-primary-700" />
+            <span className="text-primary-700 group-hover:text-primary-800 font-medium">
+              View Site
+            </span>
+          </Link>
+        </header>
+
+        {/* Breadcrumb */}
+        <div className="px-4 md:px-6 py-3 text-sm bg-gradient-to-r from-primary-50/50 to-secondary-50/50 border-b border-gray-200/50 flex items-center gap-2">
+          <Link
+            to="/admin/dashboard"
+            className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
+          >
+            Dashboard
+          </Link>
+          <ChevronRight className="w-4 h-4 text-primary-400" />
+          <span className="font-semibold text-primary-900">
+            {navItems.find((i) => location.pathname.startsWith(i.to))?.label ||
+              "Dashboard"}
+          </span>
         </div>
 
-        {/* Content Area */}
-        <div className="p-4 md:p-8">
-          <Outlet />
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-gradient-to-br from-primary-50/30 via-transparent to-secondary-50/30">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+
+        <div className="mt-auto p-4 border-t border-gray-200 flex self-end">
+          <p className="text-xs text-gray-500 text-center leading-relaxed">
+            Designed with ❤️ and crafted with care by Team{" "}
+            <a
+              className="font-bold text-yellow-500"
+              href="https://smartitbox.in"
+            >
+              SMART ITBOX
+            </a>{" "}
+            Your Business Automation Partner
+          </p>
         </div>
-      </main>
+      </div>
+
+      {/* Add animation styles */}
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+        .animate-slideIn {
+          animation: slideIn 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };

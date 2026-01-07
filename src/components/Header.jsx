@@ -490,35 +490,6 @@ const Header = () => {
               return null;
             })}
 
-            <Link
-              to="/about"
-              className={`px-5 py-2.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
-                isActive("/about")
-                  ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 shadow-md border border-primary-200"
-                  : "text-gray-800 hover:text-primary-800 hover:bg-gradient-to-r hover:from-primary-50/70 hover:to-primary-100/70 hover:shadow-sm hover:border hover:border-primary-100"
-              }`}
-            >
-              <div className="flex items-center gap-2.5 relative z-10">
-                <div
-                  className={`p-1.5 rounded-lg ${
-                    isActive("/about")
-                      ? "bg-gradient-to-r from-primary-500 to-primary-600"
-                      : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-primary-500 group-hover:to-primary-600"
-                  } transition-all`}
-                >
-                  <FiInfo
-                    size={16}
-                    className={
-                      isActive("/about")
-                        ? "text-white"
-                        : "text-primary-600 group-hover:text-white transition-colors"
-                    }
-                  />
-                </div>
-                <span>About Us</span>
-              </div>
-            </Link>
-
             {/* Enhanced Products Dropdown */}
             <div className="relative group" ref={dropdownRef}>
               <button
