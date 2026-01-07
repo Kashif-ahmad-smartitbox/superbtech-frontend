@@ -83,7 +83,7 @@ const ProductShowcaseSection = () => {
             return (
               <Link
                 key={product._id}
-                to={`/products/${product._id}`}
+                to={`/products/${product.slug}-${product._id}`}
                 className="group bg-white rounded-2xl border border-primary-100 hover:-translate-y-2 transition-all duration-500 overflow-hidden block relative"
               >
                 {/* Image Container with Badge */}

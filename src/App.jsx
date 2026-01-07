@@ -34,7 +34,7 @@ function App() {
             <Route path="news" element={<News />} />
             <Route path="contact" element={<Contact />} />
             <Route path="certificates" element={<Certificates />} />
-            <Route path="products/:id" element={<ProductDetail />} />
+            <Route path="products/:slugId" element={<ProductDetail />} />
             <Route path="category/:slug" element={<Products />} />
           </Route>
 

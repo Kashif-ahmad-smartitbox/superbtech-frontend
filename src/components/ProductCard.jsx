@@ -120,7 +120,7 @@ const ProductCard = ({ product }) => {
           <div className="mt-auto flex flex-col sm:flex-row gap-2">
             {/* View Details Button */}
             <Link
-              to={`/products/${product._id}`}
+              to={`/products/${product.slug}-${product._id}`}
               className="px-3 py-2 bg-gradient-to-r from-primary-50 to-white text-primary-700 hover:text-white hover:from-primary-600 hover:to-primary-700 text-xs font-semibold rounded-lg transition-all duration-300 border border-primary-200 hover:border-primary-600 shadow-sm hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-1.5 group flex-1 min-w-0"
             >
               <svg

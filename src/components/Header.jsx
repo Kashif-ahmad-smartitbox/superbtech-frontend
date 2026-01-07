@@ -104,7 +104,7 @@ const ContactButton = ({
   </a>
 );
 
-// Category item component
+// Category item component with products
 const CategoryItem = ({
   category,
   index,
@@ -112,15 +112,20 @@ const CategoryItem = ({
   onToggle,
   onSelect,
   level = 0,
+  expandedProducts,
+  onToggleProducts,
 }) => {
   const hasSubcategories = category.subcategories?.length > 0;
+  const hasProducts = category.products?.length > 0;
+  const hasChildren = hasSubcategories || hasProducts;
   const location = useLocation();
   const isActive = location.pathname === `/category/${category.slug}`;
+  const isProductsExpanded = expandedProducts?.has(`products-${category._id}`);
 
   return (
     <div>
       <div className="flex items-center gap-1">
-        {hasSubcategories && (
+        {hasChildren && (
           <button
             onClick={onToggle}
             className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
@@ -140,7 +145,7 @@ const CategoryItem = ({
           to={`/category/${category.slug}`}
           onClick={onSelect}
           className={`flex items-center justify-between p-2 rounded-lg border transition-all duration-300 hover:shadow-sm flex-1 min-w-0 group/item ${
-            hasSubcategories ? "" : "ml-6"
+            hasChildren ? "" : "ml-6"
           } ${
             isActive
               ? "bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200 shadow-sm"
@@ -170,22 +175,75 @@ const CategoryItem = ({
               )}
             </div>
           </div>
-          {!hasSubcategories && (
+          {!hasChildren && (
             <HiOutlineArrowRight className="text-gray-400 text-xs group-hover/item:text-primary-600 group-hover/item:translate-x-1 transition-all duration-300 flex-shrink-0 ml-2" />
           )}
         </Link>
       </div>
-      {hasSubcategories && isExpanded && (
+      {hasChildren && isExpanded && (
         <div className="ml-4 pl-2 border-l-2 border-primary-100 mt-1 mb-1">
-          {category.subcategories.map((subcat) => (
+          {/* Subcategories */}
+          {hasSubcategories && category.subcategories.map((subcat) => (
             <CategoryItem
               key={subcat._id}
               category={subcat}
               index={0}
               level={level + 1}
               onSelect={onSelect}
+              isExpanded={expandedProducts?.has(subcat._id)}
+              onToggle={() => onToggleProducts && onToggleProducts(subcat._id)}
+              expandedProducts={expandedProducts}
+              onToggleProducts={onToggleProducts}
             />
           ))}
+          {/* Products under category */}
+          {hasProducts && (
+            <div className="mt-1">
+              <button
+                onClick={() => onToggleProducts && onToggleProducts(`products-${category._id}`)}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-secondary-600 hover:text-secondary-700 hover:bg-secondary-50 rounded-md w-full transition-colors"
+              >
+                <FiChevronRight
+                  className={`text-secondary-400 transition-transform duration-200 ${
+                    isProductsExpanded ? "rotate-90" : ""
+                  }`}
+                  size={10}
+                />
+                <FiPackage size={10} className="text-secondary-500" />
+                <span className="font-medium">Products ({category.products.length})</span>
+              </button>
+              {isProductsExpanded && (
+                <div className="ml-4 mt-1 space-y-0.5">
+                  {category.products.map((product) => (
+                    <Link
+                      key={product._id}
+                      to={`/products/${product.slug}-${product._id}`}
+                      onClick={onSelect}
+                      className="flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:text-primary-700 hover:bg-primary-50 rounded-md transition-colors group/product"
+                    >
+                      {product.images && product.images[0] ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-6 h-6 rounded object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                          <FiPackage size={10} className="text-gray-400" />
+                        </div>
+                      )}
+                      <span className="truncate flex-1 group-hover/product:text-primary-700">
+                        {product.name}
+                      </span>
+                      <span className="text-[10px] text-gray-400 font-mono">
+                        {product.orderCode}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -197,6 +255,7 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
+  const [expandedProducts, setExpandedProducts] = useState(new Set());
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -217,10 +276,10 @@ const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  // Fetch categories
+  // Fetch categories with products
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories/with-products");
       setCategories(response.data);
 
       // Auto-expand parent category if current route is a subcategory
@@ -313,6 +372,18 @@ const Header = () => {
         newSet.delete(categoryId);
       } else {
         newSet.add(categoryId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleProducts = (productKey) => {
+    setExpandedProducts((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(productKey)) {
+        newSet.delete(productKey);
+      } else {
+        newSet.add(productKey);
       }
       return newSet;
     });
@@ -592,6 +663,8 @@ const Header = () => {
                       isExpanded={expandedCategories.has(cat._id)}
                       onToggle={() => toggleCategory(cat._id)}
                       onSelect={() => setDropdownOpen(false)}
+                      expandedProducts={expandedProducts}
+                      onToggleProducts={toggleProducts}
                     />
                   ))}
                 </div>

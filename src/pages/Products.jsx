@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import ProductCard from "../components/ProductCard";
 import {
@@ -24,9 +24,11 @@ const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedCategories, setExpandedCategories] = useState(new Set());
+  const [expandedProducts, setExpandedProducts] = useState(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
@@ -55,11 +57,23 @@ const Products = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories/with-products");
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
+  };
+
+  const toggleProducts = (key) => {
+    setExpandedProducts((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+      return newSet;
+    });
   };
 
   const fetchCategoryBySlug = async () => {
@@ -365,12 +379,18 @@ const Products = () => {
                       const hasSubcategories =
                         category.subcategories &&
                         category.subcategories.length > 0;
+                      const hasProducts =
+                        category.products && category.products.length > 0;
+                      const hasChildren = hasSubcategories || hasProducts;
                       const isExpanded = expandedCategories.has(category._id);
+                      const isProductsExpanded = expandedProducts.has(
+                        `products-${category._id}`
+                      );
 
                       return (
                         <div key={category._id}>
                           <div className="flex items-center gap-1">
-                            {hasSubcategories && (
+                            {hasChildren && (
                               <button
                                 onClick={() => toggleCategory(category._id)}
                                 className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
@@ -387,7 +407,7 @@ const Products = () => {
                                 selectedCategory?._id === category._id
                                   ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
                                   : "bg-primary-50 text-primary-700 hover:bg-primary-100"
-                              } ${hasSubcategories ? "" : "ml-6"}`}
+                              } ${hasChildren ? "" : "ml-6"}`}
                               onClick={() => handleCategoryFilter(category._id)}
                             >
                               <div className="flex items-center justify-between">
@@ -395,38 +415,147 @@ const Products = () => {
                                   {category.name}
                                 </span>
                                 {selectedCategory?._id === category._id &&
-                                  !hasSubcategories && (
+                                  !hasChildren && (
                                     <FiChevronRight className="w-4 h-4" />
                                   )}
                               </div>
                             </button>
                           </div>
-                          {hasSubcategories && isExpanded && (
+                          {hasChildren && isExpanded && (
                             <div className="ml-3 mt-1 space-y-1">
-                              {category.subcategories.map((subcat) => (
-                                <button
-                                  key={subcat._id}
-                                  className={`w-full text-left px-3 py-1.5 rounded-md transition-all duration-300 text-xs ${
-                                    selectedCategory?._id === subcat._id
-                                      ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
-                                      : "bg-primary-50/50 text-primary-600 hover:bg-primary-100"
-                                  }`}
-                                  onClick={() => {
-                                    setSelectedCategory(subcat);
-                                    setExpandedCategories(
-                                      (prev) => new Set([...prev, category._id])
-                                    );
-                                    fetchProducts(subcat._id);
-                                  }}
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <span className="w-1 h-1 rounded-full bg-primary-400"></span>
+                              {/* Subcategories */}
+                              {hasSubcategories &&
+                                category.subcategories.map((subcat) => {
+                                  const subcatHasProducts =
+                                    subcat.products && subcat.products.length > 0;
+                                  const subcatProductsExpanded =
+                                    expandedProducts.has(`products-${subcat._id}`);
+
+                                  return (
+                                    <div key={subcat._id}>
+                                      <div className="flex items-center gap-1">
+                                        {subcatHasProducts && (
+                                          <button
+                                            onClick={() =>
+                                              toggleProducts(`products-${subcat._id}`)
+                                            }
+                                            className="p-0.5 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
+                                          >
+                                            <FiChevronRight
+                                              className={`text-gray-400 transition-transform duration-200 ${
+                                                subcatProductsExpanded ? "rotate-90" : ""
+                                              }`}
+                                              size={10}
+                                            />
+                                          </button>
+                                        )}
+                                        <button
+                                          className={`w-full text-left px-3 py-1.5 rounded-md transition-all duration-300 text-xs ${
+                                            selectedCategory?._id === subcat._id
+                                              ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+                                              : "bg-primary-50/50 text-primary-600 hover:bg-primary-100"
+                                          } ${subcatHasProducts ? "" : "ml-4"}`}
+                                          onClick={() => {
+                                            setSelectedCategory(subcat);
+                                            setExpandedCategories(
+                                              (prev) =>
+                                                new Set([...prev, category._id])
+                                            );
+                                            fetchProducts(subcat._id);
+                                          }}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <span className="w-1 h-1 rounded-full bg-primary-400"></span>
+                                            <span className="font-medium">
+                                              {subcat.name}
+                                            </span>
+                                          </div>
+                                        </button>
+                                      </div>
+                                      {/* Products under subcategory */}
+                                      {subcatHasProducts && subcatProductsExpanded && (
+                                        <div className="ml-4 mt-1 space-y-0.5">
+                                          {subcat.products.map((product) => (
+                                            <Link
+                                              key={product._id}
+                                              to={`/products/${product.slug}-${product._id}`}
+                                              className="flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:text-primary-700 hover:bg-primary-50 rounded-md transition-colors group/product"
+                                            >
+                                              {product.images && product.images[0] ? (
+                                                <img
+                                                  src={product.images[0]}
+                                                  alt={product.name}
+                                                  className="w-5 h-5 rounded object-cover flex-shrink-0"
+                                                />
+                                              ) : (
+                                                <div className="w-5 h-5 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                                  <FiPackage
+                                                    size={8}
+                                                    className="text-gray-400"
+                                                  />
+                                                </div>
+                                              )}
+                                              <span className="truncate flex-1 group-hover/product:text-primary-700">
+                                                {product.name}
+                                              </span>
+                                            </Link>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              {/* Products directly under category */}
+                              {hasProducts && (
+                                <div className="mt-1">
+                                  <button
+                                    onClick={() =>
+                                      toggleProducts(`products-${category._id}`)
+                                    }
+                                    className="flex items-center gap-1 px-2 py-1 text-xs text-secondary-600 hover:text-secondary-700 hover:bg-secondary-50 rounded-md w-full transition-colors"
+                                  >
+                                    <FiChevronRight
+                                      className={`text-secondary-400 transition-transform duration-200 ${
+                                        isProductsExpanded ? "rotate-90" : ""
+                                      }`}
+                                      size={10}
+                                    />
+                                    <FiPackage size={10} className="text-secondary-500" />
                                     <span className="font-medium">
-                                      {subcat.name}
+                                      Products ({category.products.length})
                                     </span>
-                                  </div>
-                                </button>
-                              ))}
+                                  </button>
+                                  {isProductsExpanded && (
+                                    <div className="ml-4 mt-1 space-y-0.5">
+                                      {category.products.map((product) => (
+                                        <Link
+                                          key={product._id}
+                                          to={`/products/${product.slug}-${product._id}`}
+                                          className="flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:text-primary-700 hover:bg-primary-50 rounded-md transition-colors group/product"
+                                        >
+                                          {product.images && product.images[0] ? (
+                                            <img
+                                              src={product.images[0]}
+                                              alt={product.name}
+                                              className="w-5 h-5 rounded object-cover flex-shrink-0"
+                                            />
+                                          ) : (
+                                            <div className="w-5 h-5 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                              <FiPackage
+                                                size={8}
+                                                className="text-gray-400"
+                                              />
+                                            </div>
+                                          )}
+                                          <span className="truncate flex-1 group-hover/product:text-primary-700">
+                                            {product.name}
+                                          </span>
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

@@ -34,7 +34,7 @@ const getYouTubeVideoId = (url) => {
 };
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { slugId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,13 +48,39 @@ const ProductDetail = () => {
   });
   const [showMobileThumbnails, setShowMobileThumbnails] = useState(false);
 
+  // Extract the product ID from the slug-id format (e.g., "product-name-123abc" -> "123abc")
+  // The ID is the last segment after the final hyphen, assuming MongoDB ObjectId format (24 chars)
+  const extractProductId = (slugIdParam) => {
+    if (!slugIdParam) return null;
+    // Check if it's just an ID (legacy URL support)
+    if (/^[a-f0-9]{24}$/i.test(slugIdParam)) {
+      return slugIdParam;
+    }
+    // Extract ID from slug-id format (last 24 characters after the last hyphen)
+    const lastHyphenIndex = slugIdParam.lastIndexOf('-');
+    if (lastHyphenIndex !== -1) {
+      const potentialId = slugIdParam.substring(lastHyphenIndex + 1);
+      if (/^[a-f0-9]{24}$/i.test(potentialId)) {
+        return potentialId;
+      }
+    }
+    // Fallback: return the entire param (might be the ID itself)
+    return slugIdParam;
+  };
+
+  const productId = extractProductId(slugId);
+
   useEffect(() => {
     fetchProduct();
-  }, [id]);
+  }, [productId]);
 
   const fetchProduct = async () => {
     try {
-      const response = await api.get(`/products/${id}`);
+      if (!productId) {
+        setLoading(false);
+        return;
+      }
+      const response = await api.get(`/products/${productId}`);
       setProduct(response.data);
     } catch (error) {
       console.error("Error fetching product:", error);

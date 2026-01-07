@@ -113,7 +113,13 @@ const Catalog = () => {
 
   const handleGetNow = () => {
     if (selectedProduct) {
-      navigate(`/products/${selectedProduct}`);
+      // Find the product to get its slug
+      const product = allProducts.find((p) => p._id === selectedProduct);
+      if (product) {
+        navigate(`/products/${product.slug}-${product._id}`);
+      } else {
+        navigate(`/products/${selectedProduct}`);
+      }
     } else if (selectedCategory) {
       const category = categories.find((cat) => cat._id === selectedCategory);
       if (category) {
