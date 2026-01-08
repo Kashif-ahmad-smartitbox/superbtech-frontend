@@ -57,7 +57,7 @@ const ProductDetail = () => {
       return slugIdParam;
     }
     // Extract ID from slug-id format (last 24 characters after the last hyphen)
-    const lastHyphenIndex = slugIdParam.lastIndexOf('-');
+    const lastHyphenIndex = slugIdParam.lastIndexOf("-");
     if (lastHyphenIndex !== -1) {
       const potentialId = slugIdParam.substring(lastHyphenIndex + 1);
       if (/^[a-f0-9]{24}$/i.test(potentialId)) {
@@ -756,14 +756,14 @@ const ProductDetail = () => {
                           className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiMail className="w-4 h-4" />
-                          info@superbtechnologies.in
+                          superbtech01@gmail.com
                         </a>
                         <a
                           href="tel:+919829132777"
                           className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiPhone className="w-4 h-4" />
-                          +91 98291 32777
+                          +91 98969 15524
                         </a>
                       </div>
                     </div>

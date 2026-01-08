@@ -217,14 +217,14 @@ function Certificates() {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             Our Certifications
-            <span className="block text-2xl sm:text-3xl lg:text-4xl xl:text-5xl bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent mt-2">
+            <span className="block text-lg sm:text-2xl lg:text-3xl xl:text-4xl bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent mt-2">
               Quality & Compliance
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
+          <p className="text-base sm:text-sm lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
             These internationally recognized certifications demonstrate our
             commitment to manufacturing excellence, safety compliance, and
             environmental responsibility in laboratory equipment production.

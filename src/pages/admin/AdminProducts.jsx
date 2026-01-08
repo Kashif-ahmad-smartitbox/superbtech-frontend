@@ -683,16 +683,19 @@ const AdminProducts = () => {
       )}
 
       {/* Product Modal - Compact */}
+      {/* Product Modal - Enhanced */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2">
-          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="bg-primary-600 text-white p-3 sticky top-0 flex justify-between items-center z-10">
               <div>
                 <h3 className="text-sm font-bold">
-                  {editingProduct ? "Edit Product" : "Add Product"}
+                  {editingProduct ? "Edit Product" : "Add New Product"}
                 </h3>
                 <p className="text-primary-100 text-[10px] mt-0.5">
-                  {editingProduct ? "Update details" : "Create new product"}
+                  {editingProduct
+                    ? "Update product details"
+                    : "Create a new product entry"}
                 </p>
               </div>
               <button
@@ -704,11 +707,11 @@ const AdminProducts = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-3 space-y-3">
-              {/* Basic Info */}
+              {/* Basic Info Grid */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Code
+                    Order Code <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -722,7 +725,7 @@ const AdminProducts = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Order
+                    Display Order
                   </label>
                   <input
                     type="number"
@@ -731,13 +734,14 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
                     placeholder="0"
+                    min="0"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Name
+                  Product Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -752,7 +756,7 @@ const AdminProducts = () => {
 
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="category"
@@ -779,9 +783,9 @@ const AdminProducts = () => {
               {/* Description */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Description
+                  Description <span className="text-red-500">*</span>
                 </label>
-                <div className="bg-white rounded border border-gray-300 min-h-[100px]">
+                <div className="bg-white rounded border border-gray-300 min-h-[120px]">
                   <ReactQuill
                     theme="snow"
                     value={formData.description}
@@ -791,16 +795,22 @@ const AdminProducts = () => {
                     modules={{
                       toolbar: [
                         [{ header: [1, 2, 3, false] }],
-                        ["bold", "italic"],
+                        ["bold", "italic", "underline", "strike"],
                         [{ list: "ordered" }, { list: "bullet" }],
                         ["link"],
                         ["clean"],
                       ],
                     }}
-                    style={{ minHeight: "80px", fontSize: "12px" }}
-                    placeholder="Product description..."
+                    style={{ minHeight: "100px", fontSize: "12px" }}
+                    placeholder="Enter product description..."
                   />
                 </div>
+                {!formData.description ||
+                formData.description === "<p><br></p>" ? (
+                  <p className="text-xs text-red-500 mt-1">
+                    Description is required
+                  </p>
+                ) : null}
               </div>
 
               {/* Specifications */}
@@ -808,7 +818,7 @@ const AdminProducts = () => {
                 <label className="block text-xs font-medium text-gray-700 mb-1">
                   Specifications
                 </label>
-                <div className="bg-white rounded border border-gray-300 min-h-[80px]">
+                <div className="bg-white rounded border border-gray-300 min-h-[100px]">
                   <ReactQuill
                     theme="snow"
                     value={formData.specifications}
@@ -822,13 +832,13 @@ const AdminProducts = () => {
                         ["clean"],
                       ],
                     }}
-                    style={{ minHeight: "60px", fontSize: "12px" }}
-                    placeholder="Product specifications..."
+                    style={{ minHeight: "80px", fontSize: "12px" }}
+                    placeholder="Enter product specifications..."
                   />
                 </div>
               </div>
 
-              {/* Additional Info */}
+              {/* Additional Fields */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -838,30 +848,30 @@ const AdminProducts = () => {
                     name="experimentation"
                     value={formData.experimentation}
                     onChange={handleChange}
-                    rows="2"
+                    rows="3"
                     className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
-                    placeholder="Experimentation details"
+                    placeholder="Enter experimentation details..."
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Services
+                    Services Required
                   </label>
                   <textarea
                     name="servicesRequired"
                     value={formData.servicesRequired}
                     onChange={handleChange}
-                    rows="2"
+                    rows="3"
                     className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
-                    placeholder="Services required"
+                    placeholder="Enter services required..."
                   />
                 </div>
               </div>
 
-              {/* YouTube */}
+              {/* YouTube Link */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  YouTube Link
+                  YouTube Video Link
                 </label>
                 <input
                   type="url"
@@ -869,14 +879,14 @@ const AdminProducts = () => {
                   value={formData.youtubeLink}
                   onChange={handleChange}
                   className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                  placeholder="Video link"
+                  placeholder="https://www.youtube.com/watch?v=..."
                 />
               </div>
 
               {/* Images */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Images
+                  Product Images
                 </label>
                 {existingImages.length > 0 && (
                   <div className="grid grid-cols-4 gap-2 mb-2">
@@ -885,7 +895,7 @@ const AdminProducts = () => {
                         <img
                           src={getImageUrl(img)}
                           alt={`Preview ${index}`}
-                          className="w-full h-12 object-cover rounded"
+                          className="w-full h-16 object-cover rounded"
                         />
                         <button
                           type="button"
@@ -898,18 +908,56 @@ const AdminProducts = () => {
                     ))}
                   </div>
                 )}
+                <label className="block">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                    className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                  />
+                  <span className="text-xs text-gray-500 mt-1 block">
+                    Upload product images (multiple allowed)
+                  </span>
+                </label>
+              </div>
+
+              {/* Brochure */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  Brochure PDF
+                </label>
+                {editingProduct && editingProduct.brochure?.path && (
+                  <div className="mb-2 p-2 bg-blue-50 rounded border border-blue-200">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-3 h-3 text-blue-600" />
+                      <span className="text-xs font-medium text-gray-700 truncate">
+                        {editingProduct.brochure.originalName || "brochure.pdf"}
+                      </span>
+                    </div>
+                    {editingProduct.brochure.path.startsWith("http") && (
+                      <a
+                        href={editingProduct.brochure.path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-600 hover:underline mt-1 inline-flex items-center gap-1"
+                      >
+                        <Download className="w-2 h-2" /> Download
+                      </a>
+                    )}
+                  </div>
+                )}
                 <input
                   type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                  className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                  accept="application/pdf"
+                  onChange={handleBrochureChange}
+                  className="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
                 />
               </div>
 
-              {/* Flags */}
-              <div className="grid grid-cols-4 gap-2">
-                <label className="flex items-center gap-1 cursor-pointer">
+              {/* Status Toggles - Improved */}
+              <div className="grid grid-cols-2 gap-2">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded border border-gray-300 hover:bg-gray-50 transition-colors">
                   <input
                     type="checkbox"
                     name="featured"
@@ -917,11 +965,16 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="text-xs font-medium text-gray-700">
-                    Featured
-                  </span>
+                  <div>
+                    <span className="font-medium text-gray-700 text-xs">
+                      Featured
+                    </span>
+                    <p className="text-[10px] text-gray-500 mt-0.5">
+                      Show as featured
+                    </p>
+                  </div>
                 </label>
-                <label className="flex items-center gap-1 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded border border-gray-300 hover:bg-gray-50 transition-colors">
                   <input
                     type="checkbox"
                     name="new"
@@ -929,9 +982,16 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="text-xs font-medium text-gray-700">New</span>
+                  <div>
+                    <span className="font-medium text-gray-700 text-xs">
+                      New
+                    </span>
+                    <p className="text-[10px] text-gray-500 mt-0.5">
+                      Mark as new
+                    </p>
+                  </div>
                 </label>
-                <label className="flex items-center gap-1 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded border border-gray-300 hover:bg-gray-50 transition-colors">
                   <input
                     type="checkbox"
                     name="bestSeller"
@@ -939,11 +999,16 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="text-xs font-medium text-gray-700">
-                    Best Seller
-                  </span>
+                  <div>
+                    <span className="font-medium text-gray-700 text-xs">
+                      Best Seller
+                    </span>
+                    <p className="text-[10px] text-gray-500 mt-0.5">
+                      Mark as best seller
+                    </p>
+                  </div>
                 </label>
-                <label className="flex items-center gap-1 cursor-pointer">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded border border-gray-300 hover:bg-gray-50 transition-colors">
                   <input
                     type="checkbox"
                     name="isActive"
@@ -951,13 +1016,18 @@ const AdminProducts = () => {
                     onChange={handleChange}
                     className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                   />
-                  <span className="text-xs font-medium text-gray-700">
-                    Active
-                  </span>
+                  <div>
+                    <span className="font-medium text-gray-700 text-xs">
+                      Active
+                    </span>
+                    <p className="text-[10px] text-gray-500 mt-0.5">
+                      Show on website
+                    </p>
+                  </div>
                 </label>
               </div>
 
-              {/* Submit */}
+              {/* Submit Buttons */}
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
@@ -970,7 +1040,7 @@ const AdminProducts = () => {
                   type="submit"
                   className="flex-1 px-3 py-1.5 bg-primary-500 text-white hover:bg-primary-600 rounded font-medium transition-all text-xs"
                 >
-                  {editingProduct ? "Update" : "Create"}
+                  {editingProduct ? "Update Product" : "Create Product"}
                 </button>
               </div>
             </form>

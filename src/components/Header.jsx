@@ -55,22 +55,28 @@ const useScrollDetection = (threshold = 20) => {
 };
 
 // Custom hook for click outside detection
-const useClickOutside = (ref, handler) => {
+const useClickOutside = (refs, handler) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      // Check if click is outside ALL provided refs
+      const isOutsideAll = refs.every(
+        (ref) => ref.current && !ref.current.contains(event.target)
+      );
+
+      if (isOutsideAll) {
         handler();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [ref, handler]);
+  }, [refs, handler]);
 };
 
 // Navigation items configuration
 const NAV_ITEMS = [
   { path: "/", label: "Home", icon: FiHome },
+  { path: "/products", label: "Products", icon: FiPackage, hasDropdown: true },
   { path: "/news", label: "News", icon: HiOutlineExternalLink },
   { path: "/certificates", label: "Certificates", icon: WindArrowDown },
 ];
@@ -104,147 +110,222 @@ const ContactButton = ({
   </a>
 );
 
-// Category item component with products
-const CategoryItem = ({
+const CompactCategoryItem = ({
   category,
   index,
-  isExpanded,
-  onToggle,
   onSelect,
-  level = 0,
-  expandedProducts,
-  onToggleProducts,
+  onMouseEnter,
+  onMouseLeave,
+  isActive,
+  isHovered,
 }) => {
   const hasSubcategories = category.subcategories?.length > 0;
   const hasProducts = category.products?.length > 0;
-  const hasChildren = hasSubcategories || hasProducts;
-  const location = useLocation();
-  const isActive = location.pathname === `/category/${category.slug}`;
-  const isProductsExpanded = expandedProducts?.has(`products-${category._id}`);
+
+  const handleClick = () => {
+    if (onSelect) {
+      onSelect(category);
+    }
+  };
 
   return (
-    <div>
-      <div className="flex items-center gap-1">
-        {hasChildren && (
-          <button
-            onClick={onToggle}
-            className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
-            aria-label={`${isExpanded ? "Collapse" : "Expand"} ${
-              category.name
+    <div
+      className="relative"
+      onMouseEnter={() => onMouseEnter && onMouseEnter(category._id)}
+      onMouseLeave={onMouseLeave}
+    >
+      <Link
+        to={`/category/${category.slug}`}
+        onClick={handleClick}
+        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 min-w-0 group/item ${
+          isActive || isHovered
+            ? "bg-primary-50 border border-primary-200"
+            : "hover:bg-primary-50 hover:border hover:border-primary-100"
+        }`}
+      >
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center flex-shrink-0">
+          <span className="text-xs font-bold text-primary-700">
+            {index + 1}
+          </span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <span
+            className={`font-semibold text-sm block truncate ${
+              isActive || isHovered
+                ? "text-primary-800"
+                : "text-gray-800 group-hover/item:text-primary-800"
             }`}
           >
-            <FiChevronRight
-              className={`text-gray-400 text-xs transition-transform duration-200 ${
-                isExpanded ? "rotate-90" : ""
-              }`}
-              size={12}
-            />
-          </button>
-        )}
-        <Link
-          to={`/category/${category.slug}`}
-          onClick={onSelect}
-          className={`flex items-center justify-between p-2 rounded-lg border transition-all duration-300 hover:shadow-sm flex-1 min-w-0 group/item ${
-            hasChildren ? "" : "ml-6"
-          } ${
-            isActive
-              ? "bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200 shadow-sm"
-              : "border-transparent hover:border-primary-100 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100"
-          }`}
-        >
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover/item:from-primary-200 group-hover/item:to-primary-300 transition-all shadow-sm flex-shrink-0">
-              <span className="text-xs font-bold text-primary-700">
-                {index + 1}
-              </span>
+            {category.name}
+          </span>
+          {hasSubcategories || hasProducts ? (
+            <div className="flex items-center gap-2 mt-1">
+              {hasSubcategories && (
+                <span className="text-[10px] px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">
+                  {category.subcategories.length} sub
+                </span>
+              )}
+              {hasProducts && (
+                <span className="text-[10px] px-1.5 py-0.5 bg-green-50 text-green-600 rounded">
+                  {category.products.length} items
+                </span>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <span
-                className={`font-semibold text-xs block truncate ${
-                  isActive
-                    ? "text-primary-800"
-                    : "text-gray-800 group-hover/item:text-primary-800"
-                }`}
-              >
-                {category.name}
-              </span>
-              {category.description && (
-                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1 truncate">
-                  {category.description}
-                </p>
+          ) : null}
+        </div>
+        {(hasSubcategories || hasProducts) && (
+          <FiChevronRight className="text-gray-400 text-xs flex-shrink-0" />
+        )}
+      </Link>
+    </div>
+  );
+};
+
+const CompactSubMenu = ({ category, onClose }) => {
+  if (!category) return null;
+
+  const hasSubcategories = category.subcategories?.length > 0;
+  const hasProducts = category.products?.length > 0;
+
+  const handleLinkClick = (e) => {
+    e.stopPropagation();
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  return (
+    <div className="absolute left-[12px] top-0 ml-1 w-80 bg-white rounded-xl border border-gray-200 overflow-hidden z-50">
+      {/* Submenu Header */}
+      <div className="bg-gradient-to-r from-primary-50 to-primary-100 px-4 py-3 border-b border-primary-200">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-200 to-primary-300 flex items-center justify-center">
+            <FiPackage className="text-primary-700" size={18} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-primary-900 text-sm truncate">
+              {category.name}
+            </h3>
+            <div className="flex items-center gap-2 mt-0.5">
+              {hasSubcategories && (
+                <span className="text-[10px] px-2 py-0.5 bg-white text-primary-600 rounded-full">
+                  {category.subcategories.length} Subcategories
+                </span>
+              )}
+              {hasProducts && (
+                <span className="text-[10px] px-2 py-0.5 bg-white text-primary-600 rounded-full">
+                  {category.products.length} Products
+                </span>
               )}
             </div>
           </div>
-          {!hasChildren && (
-            <HiOutlineArrowRight className="text-gray-400 text-xs group-hover/item:text-primary-600 group-hover/item:translate-x-1 transition-all duration-300 flex-shrink-0 ml-2" />
-          )}
-        </Link>
-      </div>
-      {hasChildren && isExpanded && (
-        <div className="ml-4 pl-2 border-l-2 border-primary-100 mt-1 mb-1">
-          {/* Subcategories */}
-          {hasSubcategories && category.subcategories.map((subcat) => (
-            <CategoryItem
-              key={subcat._id}
-              category={subcat}
-              index={0}
-              level={level + 1}
-              onSelect={onSelect}
-              isExpanded={expandedProducts?.has(subcat._id)}
-              onToggle={() => onToggleProducts && onToggleProducts(subcat._id)}
-              expandedProducts={expandedProducts}
-              onToggleProducts={onToggleProducts}
-            />
-          ))}
-          {/* Products under category */}
-          {hasProducts && (
-            <div className="mt-1">
-              <button
-                onClick={() => onToggleProducts && onToggleProducts(`products-${category._id}`)}
-                className="flex items-center gap-1 px-2 py-1 text-xs text-secondary-600 hover:text-secondary-700 hover:bg-secondary-50 rounded-md w-full transition-colors"
-              >
-                <FiChevronRight
-                  className={`text-secondary-400 transition-transform duration-200 ${
-                    isProductsExpanded ? "rotate-90" : ""
-                  }`}
-                  size={10}
-                />
-                <FiPackage size={10} className="text-secondary-500" />
-                <span className="font-medium">Products ({category.products.length})</span>
-              </button>
-              {isProductsExpanded && (
-                <div className="ml-4 mt-1 space-y-0.5">
-                  {category.products.map((product) => (
-                    <Link
-                      key={product._id}
-                      to={`/products/${product.slug}-${product._id}`}
-                      onClick={onSelect}
-                      className="flex items-center gap-2 px-2 py-1.5 text-xs text-gray-600 hover:text-primary-700 hover:bg-primary-50 rounded-md transition-colors group/product"
-                    >
-                      {product.images && product.images[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-6 h-6 rounded object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
-                          <FiPackage size={10} className="text-gray-400" />
-                        </div>
-                      )}
-                      <span className="truncate flex-1 group-hover/product:text-primary-700">
-                        {product.name}
-                      </span>
-                      <span className="text-[10px] text-gray-400 font-mono">
-                        {product.orderCode}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
+      </div>
+
+      {/* Submenu Content */}
+      <div className="max-h-[400px] overflow-y-auto">
+        {/* View All Button */}
+        <Link
+          to={`/category/${category.slug}`}
+          onClick={handleLinkClick}
+          className="flex items-center justify-between px-4 py-3 border-b border-gray-100 hover:bg-primary-50 transition-colors group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-md bg-primary-100 flex items-center justify-center">
+              <FiGrid className="text-primary-600" size={14} />
+            </div>
+            <span className="font-medium text-sm text-primary-800">
+              View All in {category.name}
+            </span>
+          </div>
+          <HiOutlineArrowRight className="text-primary-500 text-sm group-hover:translate-x-1 transition-transform" />
+        </Link>
+
+        {/* Subcategories Section */}
+        {hasSubcategories && (
+          <div className="px-4 py-3 border-b border-gray-100">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+              <h4 className="font-semibold text-gray-800 text-sm">
+                Subcategories
+              </h4>
+            </div>
+            <div className="space-y-2">
+              {category.subcategories.map((subcat) => (
+                <Link
+                  key={subcat._id}
+                  to={`/category/${subcat.slug}`}
+                  onClick={handleLinkClick}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors group/subcat"
+                >
+                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-800 truncate group-hover/subcat:text-blue-700">
+                      {subcat.name}
+                    </p>
+                    {subcat.description && (
+                      <p className="text-xs text-gray-500 truncate mt-0.5">
+                        {subcat.description}
+                      </p>
+                    )}
+                  </div>
+                  <FiChevronRight className="text-gray-400 text-xs group-hover/subcat:text-blue-500" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Products Section */}
+        {hasProducts && (
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <h4 className="font-semibold text-gray-800 text-sm">Products</h4>
+            </div>
+            <div className="space-y-2">
+              {category.products.slice(0, 6).map((product) => (
+                <Link
+                  key={product._id}
+                  to={`/products/${product.slug}`}
+                  onClick={handleLinkClick}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-50 transition-colors group/product"
+                >
+                  {product.images && product.images[0] ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-8 h-8 rounded object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <FiPackage className="text-gray-400" size={14} />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-gray-800 truncate group-hover/product:text-green-700">
+                      {product.name}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      Code: {product.orderCode}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Footer Link */}
+      {category.products && category.products.length > 6 && (
+        <Link
+          to={`/category/${category.slug}`}
+          onClick={handleLinkClick}
+          className="block px-4 py-3 text-center text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 border-t border-gray-100 transition-colors"
+        >
+          View {category.products.length - 6} more products →
+        </Link>
       )}
     </div>
   );
@@ -254,19 +335,24 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState(new Set());
-  const [expandedProducts, setExpandedProducts] = useState(new Set());
+  const [hoveredCategoryId, setHoveredCategoryId] = useState(null);
+  const dropdownRef = useRef(null);
+  const submenuRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const hoverTimeoutRef = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const dropdownRef = useRef(null);
-  const mobileMenuRef = useRef(null);
-
   const scrolled = useScrollDetection(20);
 
-  // Click outside handlers
-  useClickOutside(dropdownRef, () => setDropdownOpen(false));
-  useClickOutside(mobileMenuRef, () => setMobileMenuOpen(false));
+  // Close mobile menu on outside click
+  useClickOutside([mobileMenuRef], () => setMobileMenuOpen(false));
+
+  // Close products dropdown on outside click
+  useClickOutside([dropdownRef, submenuRef], () => {
+    setDropdownOpen(false);
+    setHoveredCategoryId(null);
+  });
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -281,25 +367,10 @@ const Header = () => {
     try {
       const response = await api.get("/categories/with-products");
       setCategories(response.data);
-
-      // Auto-expand parent category if current route is a subcategory
-      const currentPath = location.pathname;
-      if (currentPath.startsWith("/category/")) {
-        const slug = currentPath.replace("/category/", "");
-        for (const cat of response.data) {
-          if (cat.subcategories) {
-            const subcat = cat.subcategories.find((sub) => sub.slug === slug);
-            if (subcat) {
-              setExpandedCategories(new Set([cat._id]));
-              break;
-            }
-          }
-        }
-      }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
-  }, [location.pathname]);
+  }, []);
 
   useEffect(() => {
     fetchCategories();
@@ -356,40 +427,55 @@ const Header = () => {
     closeMobileMenu();
   };
 
-  const handleCatalog = () => {
-    // Add catalog functionality here
-    console.log("Open catalog");
-  };
-
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
 
-  const toggleCategory = (categoryId) => {
-    setExpandedCategories((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
-      } else {
-        newSet.add(categoryId);
-      }
-      return newSet;
-    });
+  const handleCategoryHover = (categoryId) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setHoveredCategoryId(categoryId);
   };
 
-  const toggleProducts = (productKey) => {
-    setExpandedProducts((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(productKey)) {
-        newSet.delete(productKey);
-      } else {
-        newSet.add(productKey);
-      }
-      return newSet;
-    });
+  const handleCategoryLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredCategoryId(null);
+    }, 150);
+  };
+
+  const handleSubmenuEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+  };
+
+  const handleSubmenuLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredCategoryId(null);
+    }, 150);
+  };
+
+  const handleCategorySelect = (category) => {
+    if (category.subcategories?.length > 0 || category.products?.length > 0) {
+      setHoveredCategoryId(category._id);
+    } else {
+      navigate(`/category/${category.slug}`);
+      setDropdownOpen(false);
+      setHoveredCategoryId(null);
+    }
+  };
+
+  const handleSubmenuClose = () => {
+    setDropdownOpen(false);
+    setHoveredCategoryId(null);
   };
 
   const isActive = (path) => location.pathname === path;
+
+  const hoveredCategory = categories.find(
+    (cat) => cat._id === hoveredCategoryId
+  );
 
   return (
     <header
@@ -503,6 +589,116 @@ const Header = () => {
                 );
               }
 
+              if (item.path === "/products") {
+                const active = isActive(item.path);
+                return (
+                  <div
+                    key={item.path}
+                    className="relative"
+                    ref={dropdownRef} // Main dropdown container ref
+                  >
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(!dropdownOpen);
+                        if (dropdownOpen) {
+                          setHoveredCategoryId(null);
+                        }
+                      }}
+                      className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl flex items-center gap-2.5 group relative border focus:outline-none ${
+                        active || dropdownOpen
+                          ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border-secondary-200"
+                          : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border-secondary-100 border-transparent"
+                      }`}
+                      aria-expanded={dropdownOpen}
+                      aria-haspopup="true"
+                    >
+                      <div className="relative">
+                        <div
+                          className={`p-1.5 rounded-lg transition-all ${
+                            active || dropdownOpen
+                              ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                              : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
+                          }`}
+                        >
+                          <FiPackage
+                            size={16}
+                            className={
+                              active || dropdownOpen
+                                ? "text-white"
+                                : "text-primary-600 group-hover:text-white transition-colors"
+                            }
+                          />
+                        </div>
+                      </div>
+                      <span>Products</span>
+                      <FiChevronDown
+                        className={`transition-transform duration-300 ${
+                          dropdownOpen
+                            ? "rotate-180 text-primary-600"
+                            : "text-gray-400 group-hover:text-primary-600"
+                        }`}
+                        size={16}
+                      />
+                    </button>
+
+                    {/* Main Products Dropdown */}
+                    {dropdownOpen && (
+                      <div className="absolute left-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-40">
+                        <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 bg-white/10 rounded-lg">
+                              <TbBrandGoogleAnalytics
+                                className="text-white"
+                                size={18}
+                              />
+                            </div>
+                            <div>
+                              <p className="text-white font-bold text-xs">
+                                PRODUCT CATEGORIES
+                              </p>
+                              <p className="text-primary-200 text-[10px]">
+                                Premium Laboratory Solutions
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-2" style={{ width: "280px" }}>
+                          <div className="space-y-1">
+                            {categories.map((cat, index) => (
+                              <div key={cat._id} className="relative">
+                                <CompactCategoryItem
+                                  category={cat}
+                                  index={index}
+                                  onSelect={handleCategorySelect}
+                                  onMouseEnter={handleCategoryHover}
+                                  onMouseLeave={handleCategoryLeave}
+                                  isActive={
+                                    location.pathname ===
+                                    `/category/${cat.slug}`
+                                  }
+                                  isHovered={hoveredCategoryId === cat._id}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Link
+                          to="/products"
+                          onClick={handleSubmenuClose}
+                          className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-4 py-3 text-xs font-semibold transition-all duration-300"
+                        >
+                          <FiGrid size={14} />
+                          <span>Browse All Products</span>
+                          <HiOutlineArrowRight size={14} />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               if (item.path === "/news") {
                 return (
                   <button
@@ -589,100 +785,6 @@ const Header = () => {
                 <span>About Us</span>
               </div>
             </Link>
-
-            {/* Enhanced Products Dropdown */}
-            <div className="relative group" ref={dropdownRef}>
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-secondary-100 focus:outline-none"
-                aria-expanded={dropdownOpen}
-                aria-haspopup="true"
-              >
-                <div className="relative">
-                  <div
-                    className={`p-1.5 rounded-lg transition-all ${
-                      dropdownOpen
-                        ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
-                        : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
-                    }`}
-                  >
-                    <FiPackage
-                      size={16}
-                      className={
-                        dropdownOpen
-                          ? "text-white"
-                          : "text-primary-600 group-hover:text-white transition-colors"
-                      }
-                    />
-                  </div>
-                </div>
-                <span>Products</span>
-                <FiChevronDown
-                  className={`transition-transform duration-300 ${
-                    dropdownOpen
-                      ? "rotate-180 text-primary-600"
-                      : "text-gray-400 group-hover:text-primary-600"
-                  }`}
-                  size={16}
-                />
-              </button>
-              <div
-                className={`absolute left-0 top-full mt-2 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden transition-all duration-300 origin-top ${
-                  dropdownOpen
-                    ? "scale-100 opacity-100 visible translate-y-0"
-                    : "scale-95 opacity-0 invisible -translate-y-2"
-                }`}
-                role="menu"
-                aria-label="Product categories"
-              >
-                <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-4 py-3 relative overflow-hidden">
-                  <div className="relative flex items-center gap-2">
-                    <div className="p-1.5 bg-white/10 rounded-lg backdrop-blur-sm">
-                      <TbBrandGoogleAnalytics
-                        className="text-white"
-                        size={18}
-                      />
-                    </div>
-                    <div>
-                      <p className="text-white font-bold text-xs tracking-wide">
-                        PRODUCT CATEGORIES
-                      </p>
-                      <p className="text-primary-200 text-[10px] mt-0.5">
-                        Premium Laboratory Solutions
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="max-h-[28rem] overflow-y-auto custom-scrollbar p-1">
-                  {categories.map((cat, index) => (
-                    <CategoryItem
-                      key={cat._id}
-                      category={cat}
-                      index={index}
-                      isExpanded={expandedCategories.has(cat._id)}
-                      onToggle={() => toggleCategory(cat._id)}
-                      onSelect={() => setDropdownOpen(false)}
-                      expandedProducts={expandedProducts}
-                      onToggleProducts={toggleProducts}
-                    />
-                  ))}
-                </div>
-
-                <Link
-                  to="/products"
-                  onClick={() => setDropdownOpen(false)}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-4 py-2.5 text-xs font-semibold transition-all duration-300 group/cta shadow-lg focus:outline-none"
-                >
-                  <FiGrid size={14} />
-                  <span>Browse All Products</span>
-                  <HiOutlineArrowRight
-                    size={14}
-                    className="group-hover/cta:translate-x-1.5 transition-transform"
-                  />
-                </Link>
-              </div>
-            </div>
           </nav>
 
           {/* Right Side Actions */}
@@ -744,6 +846,26 @@ const Header = () => {
           </div>
         </div>
       </div>
+
+      {/* Submenu Container - Fixed position at top level */}
+      {dropdownOpen && hoveredCategory && (
+        <div
+          ref={submenuRef}
+          className="fixed top-full mt-2 z-50"
+          style={{
+            left: "50%",
+            transform: "translateX(calc(-50% + 140px))",
+            marginTop: "64px",
+          }}
+          onMouseEnter={handleSubmenuEnter}
+          onMouseLeave={handleSubmenuLeave}
+        >
+          <CompactSubMenu
+            category={hoveredCategory}
+            onClose={handleSubmenuClose}
+          />
+        </div>
+      )}
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
@@ -819,6 +941,70 @@ const Header = () => {
                 )}
               </Link>
 
+              {/* Products - Mobile */}
+              <div className="space-y-1">
+                <div
+                  className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 ${
+                    isActive("/products") ||
+                    location.pathname.startsWith("/category/") ||
+                    location.pathname.startsWith("/products/")
+                      ? "bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 shadow-sm"
+                      : "hover:bg-primary-50 hover:border hover:border-primary-100"
+                  }`}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center shadow-sm flex-shrink-0">
+                    <FiPackage
+                      size={22}
+                      className={
+                        isActive("/products") ||
+                        location.pathname.startsWith("/category/") ||
+                        location.pathname.startsWith("/products/")
+                          ? "text-primary-600"
+                          : "text-primary-500"
+                      }
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-gray-800">
+                      Products
+                    </span>
+                    <p className="text-xs text-gray-500">
+                      Browse all equipment
+                    </p>
+                  </div>
+                  {(isActive("/products") ||
+                    location.pathname.startsWith("/category/") ||
+                    location.pathname.startsWith("/products/")) && (
+                    <div className="ml-auto w-2 h-2 rounded-full bg-primary-500 animate-pulse flex-shrink-0" />
+                  )}
+                </div>
+
+                {/* Product Categories in Mobile Menu */}
+                <div className="ml-12 space-y-1 max-h-60 overflow-y-auto">
+                  {categories.map((cat) => (
+                    <div key={cat._id}>
+                      <Link
+                        to={`/category/${cat.slug}`}
+                        onClick={closeMobileMenu}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                          location.pathname === `/category/${cat.slug}`
+                            ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 font-semibold"
+                            : "text-gray-700 hover:bg-primary-50"
+                        }`}
+                      >
+                        <div className="w-2 h-2 rounded-full bg-primary-400" />
+                        <span className="text-sm flex-1">{cat.name}</span>
+                        {cat.subcategories?.length > 0 && (
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                            {cat.subcategories.length}
+                          </span>
+                        )}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* About Us - Mobile */}
               <Link
                 to="/about"
@@ -841,41 +1027,6 @@ const Header = () => {
                 {isActive("/about") && (
                   <div className="ml-auto w-2 h-2 rounded-full bg-primary-500 animate-pulse"></div>
                 )}
-              </Link>
-
-              {/* All Products */}
-              <Link
-                to="/products"
-                onClick={closeMobileMenu}
-                className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                  isActive("/products")
-                    ? "bg-gradient-to-r from-primary-50 to-primary-100 text-primary-800 font-semibold border border-primary-200 shadow-sm"
-                    : "text-gray-800 hover:bg-primary-50 hover:border hover:border-primary-100"
-                }`}
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center shadow-sm group-hover:from-primary-200 group-hover:to-secondary-200 transition-all flex-shrink-0 group-hover:scale-105">
-                  <FiGrid
-                    size={22}
-                    className={
-                      isActive("/products")
-                        ? "text-primary-600"
-                        : "text-primary-500 group-hover:text-primary-600"
-                    }
-                  />
-                </div>
-                <div className="flex-1">
-                  <span className="text-sm font-medium">All Products</span>
-                  <p className="text-xs text-gray-500">
-                    Complete equipment range
-                  </p>
-                </div>
-                <FiChevronRight
-                  className={`ml-auto text-sm transition-all duration-200 flex-shrink-0 ${
-                    isActive("/products")
-                      ? "text-primary-600"
-                      : "text-gray-400 group-hover:text-primary-600 group-hover:translate-x-1"
-                  }`}
-                />
               </Link>
 
               {/* News */}
@@ -943,10 +1094,10 @@ const Header = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">
-                    Quick Categories
+                    Popular Categories
                   </h3>
                   <p className="text-xs text-gray-600">
-                    Browse popular equipment types
+                    Browse frequently viewed equipment
                   </p>
                 </div>
               </div>
@@ -968,7 +1119,7 @@ const Header = () => {
                         </span>
                         {cat.subcategories?.length > 0 && (
                           <p className="text-[10px] text-gray-500 mt-0.5">
-                            {cat.subcategories.length} subcategories
+                            {cat.subcategories.length} sub
                           </p>
                         )}
                       </div>
@@ -976,7 +1127,7 @@ const Header = () => {
                   </Link>
                 ))}
 
-                {/* View All Categories Button */}
+                {/* View All Products Button */}
                 <Link
                   to="/products"
                   onClick={closeMobileMenu}
