@@ -170,11 +170,6 @@ const AdminLayout = () => {
                     <span className="text-sm font-medium tracking-wide">
                       {item.label}
                     </span>
-                    {item.badge && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white shadow shadow-red-500/30">
-                        {item.badge}
-                      </span>
-                    )}
                   </div>
                 )}
 

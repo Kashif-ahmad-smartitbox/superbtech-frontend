@@ -24,8 +24,8 @@ function Contact() {
       "Ambala City, Ambala - 134003",
       "Haryana, India",
     ],
-    phone: "+919034815524",
-    email: "info.superbengineers@gmail.com",
+    phone: "+91 98969 15524",
+    email: "superbtech01@gmail.com",
     sms: "+919034815524",
   };
 
@@ -189,7 +189,7 @@ function Contact() {
                         </span>
                       </div>
                       <p className="text-xs text-gray-600">
-                        Monday - Friday: 9:00 AM - 6:00 PM IST
+                        Monday - Saturday: 9:00 AM - 6:00 PM IST
                         <br />
                         Quick response within 24 hours
                       </p>
