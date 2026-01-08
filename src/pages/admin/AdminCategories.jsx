@@ -9,14 +9,13 @@ import {
   ChevronRight,
   FolderTree,
   ChevronDown,
-  ChevronUp,
   Eye,
   EyeOff,
   MoreVertical,
   Grid,
   List,
-  Filter,
-  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 const AdminCategories = () => {
@@ -34,8 +33,11 @@ const AdminCategories = () => {
     parent: "",
   });
   const [expandedCategories, setExpandedCategories] = useState(new Set());
-  const [viewMode, setViewMode] = useState("list");
   const [selectedCategories, setSelectedCategories] = useState(new Set());
+  const [sortConfig, setSortConfig] = useState({
+    key: "order",
+    direction: "asc",
+  });
 
   useEffect(() => {
     fetchCategories();
@@ -84,14 +86,22 @@ const AdminCategories = () => {
     }
   };
 
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
   // Calculate total count including subcategories
   const totalCategoriesCount = useMemo(() => {
     const countCategories = (cats) => {
       let count = 0;
       cats.forEach((cat) => {
-        count++; // Count current category
+        count++;
         if (cat.subcategories && cat.subcategories.length > 0) {
-          count += countCategories(cat.subcategories); // Recursively count subcategories
+          count += countCategories(cat.subcategories);
         }
       });
       return count;
@@ -124,14 +134,39 @@ const AdminCategories = () => {
     return flatten(categories);
   }, [categories, expandedCategories]);
 
+  const sortedCategories = useMemo(() => {
+    const sortableItems = [...flattenedCategories];
+    if (sortConfig.key) {
+      sortableItems.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+
+        // Handle nested properties
+        if (sortConfig.key === "parent") {
+          aValue = a.parent?.name || "";
+          bValue = b.parent?.name || "";
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [flattenedCategories, sortConfig]);
+
   const filteredCategories = useMemo(() => {
-    return flattenedCategories.filter(
+    return sortedCategories.filter(
       (category) =>
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (category.description &&
           category.description.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [flattenedCategories, searchTerm]);
+  }, [sortedCategories, searchTerm]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -233,17 +268,16 @@ const AdminCategories = () => {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      year: "numeric",
     });
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-[300px]">
         <div className="text-center">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-primary-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-3 border-primary-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-12 h-12 border-3 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
       </div>
@@ -252,178 +286,87 @@ const AdminCategories = () => {
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="space-y-3">
+        {/* Header - More Compact */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-primary-900 mb-1">
-              Categories Management
+            <h1 className="text-lg md:text-xl font-bold text-gray-900 mb-0.5">
+              Categories
             </h1>
-            <p className="text-sm text-primary-600">
-              Manage your product categories and subcategories
+            <p className="text-xs text-gray-600">
+              Total: {totalCategoriesCount} • Main: {categories.length} •
+              Active: {flattenedCategories.filter((c) => c.isActive).length}
             </p>
           </div>
           <div className="flex items-center gap-2">
             {selectedCategories.size > 0 && (
               <button
                 onClick={handleBulkDelete}
-                className="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors flex items-center gap-1.5 text-sm"
+                className="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors flex items-center gap-1 text-xs"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-3 h-3" />
                 Delete ({selectedCategories.size})
               </button>
             )}
             <button
               onClick={handleNew}
-              className="px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 rounded-lg font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-1.5 text-sm"
+              className="px-3 py-1.5 bg-primary-500 text-white hover:bg-primary-600 rounded-lg font-medium transition-all flex items-center gap-1 text-xs"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3" />
               Add Category
             </button>
           </div>
         </div>
 
-        {/* Stats - Compact */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-3 border border-primary-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-primary-600 mb-0.5">
-                  Total Categories
-                </p>
-                <p className="text-xl font-bold text-primary-900">
-                  {totalCategoriesCount}
-                </p>
-              </div>
-              <div className="p-2 rounded-lg bg-primary-500/10">
-                <FolderTree className="w-4 h-4 text-primary-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-xl p-3 border border-secondary-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-secondary-600 mb-0.5">
-                  Main Categories
-                </p>
-                <p className="text-xl font-bold text-secondary-900">
-                  {categories.length}
-                </p>
-              </div>
-              <div className="p-2 rounded-lg bg-secondary-500/10">
-                <ChevronRight className="w-4 h-4 text-secondary-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 border border-green-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-green-600 mb-0.5">
-                  Active
-                </p>
-                <p className="text-xl font-bold text-green-900">
-                  {flattenedCategories.filter((c) => c.isActive).length}
-                </p>
-              </div>
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <Eye className="w-4 h-4 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl p-3 border border-gray-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-600 mb-0.5">
-                  Inactive
-                </p>
-                <p className="text-xl font-bold text-gray-900">
-                  {flattenedCategories.filter((c) => !c.isActive).length}
-                </p>
-              </div>
-              <div className="p-2 rounded-lg bg-gray-500/10">
-                <EyeOff className="w-4 h-4 text-gray-600" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Controls - Compact */}
-        <div className="bg-white rounded-xl border border-gray-200 p-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        {/* Search and Filter - Ultra Compact */}
+        <div className="bg-white rounded-lg border border-gray-200 p-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-3.5 h-3.5" />
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
               <input
                 type="text"
                 placeholder="Search categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-gray-50 placeholder:text-gray-400 text-sm"
+                className="w-full pl-7 pr-3 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all bg-gray-50 placeholder:text-gray-400 text-xs"
               />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-1.5 rounded-md transition-all ${
-                    viewMode === "grid"
-                      ? "bg-white shadow-sm text-primary-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <Grid className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-1.5 rounded-md transition-all ${
-                    viewMode === "list"
-                      ? "bg-white shadow-sm text-primary-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <List className="w-3.5 h-3.5" />
-                </button>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Categories List/Grid */}
+        {/* Categories Table - Ultra Compact */}
         {filteredCategories.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-200">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center mx-auto mb-3">
-              <FolderTree className="w-8 h-8 text-primary-500" />
+          <div className="bg-white rounded-lg shadow-sm p-6 text-center border border-gray-200">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center mx-auto mb-2">
+              <FolderTree className="w-6 h-6 text-primary-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">
               {searchTerm ? "No categories found" : "No categories yet"}
             </h3>
-            <p className="text-gray-600 text-sm mb-4 max-w-md mx-auto">
+            <p className="text-gray-600 text-xs mb-3 max-w-md mx-auto">
               {searchTerm
-                ? "Try adjusting your search terms or clear the search to see all categories."
-                : "Get started by creating your first product category."}
+                ? "Try adjusting your search terms"
+                : "Create your first product category"}
             </p>
             {!searchTerm && (
               <button
                 onClick={handleNew}
-                className="px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 rounded-lg font-medium transition-all shadow-sm hover:shadow flex items-center gap-1.5 text-sm"
+                className="px-3 py-1.5 bg-primary-500 text-white hover:bg-primary-600 rounded font-medium transition-all flex items-center gap-1 text-xs mx-auto"
               >
-                <Plus className="w-4 h-4" />
-                Add Your First Category
+                <Plus className="w-3 h-3" />
+                Add First Category
               </button>
             )}
           </div>
-        ) : viewMode === "list" ? (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            {/* Single table container with fixed header and scrollable body */}
-            <div className="relative overflow-auto max-h-[calc(100vh-450px)]">
-              <table className="w-full">
-                <thead className="sticky top-0 z-10">
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="px-4 py-3 text-left min-w-[40px]">
-                      <label className="flex items-center gap-2">
+        ) : (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            {/* Table with smaller padding and font sizes */}
+            <div className="relative overflow-auto max-h-[calc(100vh-250px)]">
+              <table className="w-full text-xs">
+                <thead className="sticky top-0 z-10 bg-gray-50">
+                  <tr className="border-b border-gray-200">
+                    <th className="px-3 py-2 text-left w-8">
+                      <label className="flex items-center">
                         <input
                           type="checkbox"
                           checked={
@@ -432,28 +375,72 @@ const AdminCategories = () => {
                             filteredCategories.length > 0
                           }
                           onChange={selectAllCategories}
-                          className="w-3.5 h-3.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                          className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         />
                       </label>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-primary-700 uppercase tracking-wider min-w-[300px] whitespace-nowrap">
-                      Category
+                    <th
+                      className="px-2 py-2 text-left font-medium text-gray-700 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("name")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Category
+                        {sortConfig.key === "name" &&
+                          (sortConfig.direction === "asc" ? (
+                            <ArrowUp className="w-3 h-3" />
+                          ) : (
+                            <ArrowDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-primary-700 uppercase tracking-wider min-w-[80px] whitespace-nowrap">
-                      Order
+                    <th
+                      className="px-2 py-2 text-left font-medium text-gray-700 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("order")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Order
+                        {sortConfig.key === "order" &&
+                          (sortConfig.direction === "asc" ? (
+                            <ArrowUp className="w-3 h-3" />
+                          ) : (
+                            <ArrowDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-primary-700 uppercase tracking-wider min-w-[100px] whitespace-nowrap">
-                      Status
+                    <th
+                      className="px-2 py-2 text-left font-medium text-gray-700 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("isActive")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Status
+                        {sortConfig.key === "isActive" &&
+                          (sortConfig.direction === "asc" ? (
+                            <ArrowUp className="w-3 h-3" />
+                          ) : (
+                            <ArrowDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-primary-700 uppercase tracking-wider min-w-[120px] whitespace-nowrap">
-                      Created At
+                    <th
+                      className="px-2 py-2 text-left font-medium text-gray-700 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSort("createdAt")}
+                    >
+                      <div className="flex items-center gap-1">
+                        Created
+                        {sortConfig.key === "createdAt" &&
+                          (sortConfig.direction === "asc" ? (
+                            <ArrowUp className="w-3 h-3" />
+                          ) : (
+                            <ArrowDown className="w-3 h-3" />
+                          ))}
+                      </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-primary-700 uppercase tracking-wider min-w-[120px] whitespace-nowrap">
+                    <th className="px-2 py-2 text-left font-medium text-gray-700 w-20">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-100">
                   {filteredCategories.map((category) => (
                     <tr
                       key={category._id}
@@ -463,23 +450,23 @@ const AdminCategories = () => {
                           : ""
                       }`}
                     >
-                      <td className="px-4 py-3">
+                      <td className="px-3 py-2">
                         <label className="flex items-center">
                           <input
                             type="checkbox"
                             checked={selectedCategories.has(category._id)}
                             onChange={() => toggleSelectCategory(category._id)}
-                            className="w-3.5 h-3.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                            className="w-3 h-3 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                           />
                         </label>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center min-w-[20px]">
+                      <td className="px-2 py-2">
+                        <div className="flex items-center gap-1">
+                          <div className="flex items-center">
                             {Array.from({ length: category.level }).map(
                               (_, i) => (
-                                <div key={i} className="w-4 text-gray-300">
-                                  <ChevronRight className="w-3 h-3" />
+                                <div key={i} className="w-3 text-gray-300">
+                                  <ChevronRight className="w-2.5 h-2.5" />
                                 </div>
                               )
                             )}
@@ -491,29 +478,29 @@ const AdminCategories = () => {
                             }`}
                           >
                             {expandedCategories.has(category._id) ? (
-                              <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
+                              <ChevronDown className="w-3 h-3 text-gray-500" />
                             ) : (
-                              <ChevronRight className="w-3.5 h-3.5 text-gray-500" />
+                              <ChevronRight className="w-3 h-3 text-gray-500" />
                             )}
                           </button>
-                          <div className="flex items-center gap-2 min-w-0">
+                          <div className="flex items-center gap-1.5 min-w-0">
                             {category.image ? (
                               <img
                                 src={category.image}
                                 alt={category.name}
-                                className="w-8 h-8 rounded-lg object-cover flex-shrink-0"
+                                className="w-6 h-6 rounded object-cover flex-shrink-0"
                               />
                             ) : (
-                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                              <div className="w-6 h-6 rounded bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0">
                                 {category.name.charAt(0)}
                               </div>
                             )}
                             <div className="min-w-0">
-                              <div className="font-medium text-gray-900 text-sm truncate">
+                              <div className="font-medium text-gray-900 truncate">
                                 {category.name}
                               </div>
                               {category.description && (
-                                <div className="text-xs text-gray-500 truncate">
+                                <div className="text-gray-500 truncate">
                                   {category.description}
                                 </div>
                               )}
@@ -521,43 +508,44 @@ const AdminCategories = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-xs font-medium inline-block">
+                      <td className="px-2 py-2">
+                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded font-medium inline-block min-w-[24px] text-center">
                           {category.order || 0}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-2 py-2">
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                          className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${
                             category.isActive
                               ? "bg-green-100 text-green-800"
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {category.isActive ? "Active" : "Inactive"}
+                          {category.isActive ? (
+                            <Eye className="w-3 h-3" />
+                          ) : (
+                            <EyeOff className="w-3 h-3" />
+                          )}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                      <td className="px-2 py-2 text-gray-500 whitespace-nowrap">
                         {formatDate(category.createdAt)}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-2 py-2">
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => handleEdit(category)}
-                            className="p-1.5 rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
+                            className="p-1 rounded bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
                             title="Edit"
                           >
-                            <Edit2 className="w-3.5 h-3.5" />
+                            <Edit2 className="w-3 h-3" />
                           </button>
                           <button
                             onClick={() => handleDelete(category._id)}
-                            className="p-1.5 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                            className="p-1 rounded bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                             title="Delete"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button className="p-1.5 rounded-md bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors">
-                            <MoreVertical className="w-3.5 h-3.5" />
+                            <Trash2 className="w-3 h-3" />
                           </button>
                         </div>
                       </td>
@@ -567,144 +555,34 @@ const AdminCategories = () => {
               </table>
             </div>
           </div>
-        ) : (
-          // Grid View
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {filteredCategories.map((category) => (
-              <div
-                key={category._id}
-                className={`bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md transition-all ${
-                  selectedCategories.has(category._id)
-                    ? "ring-1 ring-primary-500"
-                    : ""
-                }`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    {category.image ? (
-                      <img
-                        src={category.image}
-                        alt={category.name}
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-sm">
-                        {category.name.charAt(0)}
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="font-medium text-gray-900 text-sm">
-                        {category.name}
-                      </h3>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <span
-                          className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-                            category.level === 0
-                              ? "bg-primary-100 text-primary-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {category.level === 0 ? "Main" : "Sub"}
-                        </span>
-                        <span
-                          className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-                            category.isActive
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {category.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.has(category._id)}
-                      onChange={() => toggleSelectCategory(category._id)}
-                      className="w-3.5 h-3.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                    />
-                  </label>
-                </div>
-
-                {category.description && (
-                  <p className="text-gray-600 text-xs mb-2 line-clamp-2">
-                    {category.description}
-                  </p>
-                )}
-
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  <div className="text-center p-1.5 bg-gray-50 rounded-md">
-                    <div className="text-xs font-medium text-gray-600">
-                      Order
-                    </div>
-                    <div className="text-sm font-bold text-gray-900">
-                      {category.order || 0}
-                    </div>
-                  </div>
-                  <div className="text-center p-1.5 bg-gray-50 rounded-md">
-                    <div className="text-xs font-medium text-gray-600">
-                      Created
-                    </div>
-                    <div className="text-sm font-bold text-gray-900">
-                      {formatDate(category.createdAt)}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                  <span className="text-xs text-gray-500">
-                    ID: {category._id?.substring(0, 8)}...
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => handleEdit(category)}
-                      className="p-1.5 rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
-                      title="Edit"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(category._id)}
-                      className="p-1.5 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         )}
       </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 text-white p-4 rounded-t-xl flex justify-between items-center">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-primary-600 text-white p-3 rounded-t-lg flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-bold">
+                <h3 className="text-sm font-bold">
                   {editingCategory ? "Edit Category" : "Add New Category"}
                 </h3>
-                <p className="text-primary-100 text-xs mt-0.5">
+                <p className="text-primary-100 text-[10px] mt-0.5">
                   {editingCategory
                     ? "Update category details"
                     : "Create a new product category"}
                 </p>
               </div>
               <button
-                className="p-1 hover:bg-white/20 rounded transition-colors"
+                className="p-0.5 hover:bg-white/20 rounded transition-colors"
                 onClick={() => setShowModal(false)}
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
+            <form onSubmit={handleSubmit} className="p-3 space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -713,13 +591,13 @@ const AdminCategories = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-                  placeholder="Enter category name"
+                  className="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  placeholder="Category name"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Description
                 </label>
                 <textarea
@@ -727,85 +605,80 @@ const AdminCategories = () => {
                   value={formData.description}
                   onChange={handleChange}
                   rows="2"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
-                  placeholder="Enter category description"
+                  className="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none"
+                  placeholder="Optional description"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Parent Category
-                </label>
-                <select
-                  name="parent"
-                  value={formData.parent}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
-                >
-                  <option value="">None (Main Category)</option>
-                  {categories
-                    .filter(
-                      (cat) =>
-                        !cat.parent &&
-                        (!editingCategory || cat._id !== editingCategory._id)
-                    )
-                    .map((cat) => (
-                      <option key={cat._id} value={cat._id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Display Order
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Parent
+                  </label>
+                  <select
+                    name="parent"
+                    value={formData.parent}
+                    onChange={handleChange}
+                    className="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                  >
+                    <option value="">Main Category</option>
+                    {categories
+                      .filter(
+                        (cat) =>
+                          !cat.parent &&
+                          (!editingCategory || cat._id !== editingCategory._id)
+                      )
+                      .map((cat) => (
+                        <option key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Order
                   </label>
                   <input
                     type="number"
                     name="order"
                     value={formData.order}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                    className="w-full px-2.5 py-1.5 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 transition-all"
                     placeholder="0"
                     min="0"
                   />
                 </div>
-                <div className="flex items-center justify-center">
-                  <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      name="isActive"
-                      checked={formData.isActive}
-                      onChange={handleChange}
-                      className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <div>
-                      <span className="font-semibold text-gray-700 text-sm">
-                        Active
-                      </span>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        Show on website
-                      </p>
-                    </div>
-                  </label>
-                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={formData.isActive}
+                    onChange={handleChange}
+                    className="w-3.5 h-3.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  />
+                  <span className="font-medium text-gray-700 text-xs">
+                    Active
+                  </span>
+                </label>
               </div>
 
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium transition-colors text-sm"
+                  className="flex-1 px-3 py-1.5 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded font-medium transition-colors text-xs"
                   onClick={() => setShowModal(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 rounded-lg font-medium transition-all shadow-sm hover:shadow text-sm"
+                  className="flex-1 px-3 py-1.5 bg-primary-500 text-white hover:bg-primary-600 rounded font-medium transition-all text-xs"
                 >
-                  {editingCategory ? "Update Category" : "Create Category"}
+                  {editingCategory ? "Update" : "Create"}
                 </button>
               </div>
             </form>
