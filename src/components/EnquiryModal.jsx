@@ -34,12 +34,18 @@ const EnquiryModal = ({ product, onClose }) => {
     setLoading(true);
 
     try {
-      const response = await api.post("/enquiries", {
-        ...formData,
-        productId: product._id,
-        productName: product.name,
-        productCode: product.orderCode,
-      });
+      const response = await api.post(
+        "/enquiries",
+        {
+          ...formData,
+          productId: product._id,
+          productName: product.name,
+          productCode: product.orderCode,
+        },
+        {
+          responseType: "blob",
+        }
+      );
 
       // Check if response has downloadUrl (Cloudinary) or is a blob (local file)
       if (response.data && response.data.downloadUrl) {
