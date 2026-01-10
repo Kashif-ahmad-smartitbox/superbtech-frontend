@@ -60,12 +60,12 @@ const ProductShowcaseSection = () => {
   }
 
   return (
-    <section className="relative py-16 md:py-24 bg-white overflow-hidden">
+    <section className="relative py-12 md:py-16 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-            Our <span className="text-primary-600">Laboratory & Training</span>{" "}
+            Our <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Laboratory & Training</span>{" "}
             Equipment
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-sm">

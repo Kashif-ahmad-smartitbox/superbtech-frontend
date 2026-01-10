@@ -137,12 +137,12 @@ const CategoriesSection = () => {
   }
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-10 md:py-14 bg-white">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
-            Our <span className="text-primary-600">Product Categories</span>
+            Our <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Product Categories</span>
           </h2>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto text-sm">
             Explore our comprehensive range of engineering laboratory equipment

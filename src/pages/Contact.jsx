@@ -54,12 +54,12 @@ function Contact() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-white to-primary-50 py-12">
+      <div className="min-h-screen bg-gradient-to-b from-white to-primary-50 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Get in <span className="text-primary-600">Touch</span>
+              Get in <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Touch</span>
             </h1>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Reach out to our team for inquiries, technical support, or
@@ -166,14 +166,14 @@ function Contact() {
                     <div className="space-y-3">
                       <a
                         href={`tel:${contactInfo.phone}`}
-                        className="block w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
+                        className="flex w-full px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-semibold text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 items-center justify-center gap-2"
                       >
                         <Phone size={18} />
                         Call Now
                       </a>
                       <a
                         href={`mailto:${contactInfo.email}`}
-                        className="block w-full px-4 py-3 bg-white border border-primary-300 text-primary-700 rounded-lg font-semibold text-center hover:bg-primary-50 transition-colors duration-300 flex items-center justify-center gap-2"
+                        className="flex w-full px-4 py-3 bg-white border border-primary-300 text-primary-700 rounded-lg font-semibold text-center hover:bg-primary-50 transition-colors duration-300 items-center justify-center gap-2"
                       >
                         <Mail size={18} />
                         Send Email
