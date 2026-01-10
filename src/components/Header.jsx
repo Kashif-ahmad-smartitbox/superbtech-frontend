@@ -487,13 +487,13 @@ const Header = () => {
     >
       {/* Top Announcement Bar */}
       <div className="hidden lg:block bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-secondary-500/10 to-primary-500/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-primary-500/10 to-secondary-500/10 rounded-full translate-x-1/2 translate-y-1/2" />
         </div>
 
         <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-1.5">
             <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-0">
               {contactInfo.map((info, index) => (
                 <ContactButton key={index} {...info} />
@@ -501,16 +501,13 @@ const Header = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-3 bg-gradient-to-r from-primary-800/40 to-secondary-800/40 px-4 py-2 rounded-xl border border-white/20 backdrop-blur-sm shadow-lg">
+              <div className="flex items-center gap-3 bg-gradient-to-r from-primary-800/40 to-secondary-800/40 px-4 py-1.5 rounded-xl border border-white/20 backdrop-blur-sm shadow-lg">
                 <div className="relative">
-                  <div className="w-3 h-3 bg-gradient-to-br from-secondary-400 to-secondary-500 rounded-full animate-pulse shadow-lg" />
+                  <div className="w-2.5 h-2.5 bg-gradient-to-br from-secondary-400 to-secondary-500 rounded-full animate-pulse shadow-lg" />
                   <div className="absolute inset-0 bg-secondary-500 rounded-full animate-ping opacity-50" />
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-white">24/7</span>
-                  <span className="text-xs text-primary-200 ml-2">
-                    Expert Support
-                  </span>
+                  <span className="text-xs font-bold text-white">24/7 Support</span>
                 </div>
               </div>
             </div>
@@ -520,31 +517,31 @@ const Header = () => {
 
       {/* Main Navigation */}
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-14 lg:h-18">
           {/* Logo Section */}
-          <Link to="/" className="flex items-center gap-3 group rounded-lg p-1">
+          <Link to="/" className="flex items-center gap-2 group rounded-lg p-1">
             <div className="relative">
               <img
                 src={logo}
                 alt="Superb Technologies Logo"
-                className="h-10 lg:h-12 w-auto object-contain group-hover:scale-110 transition-transform duration-500"
+                className="h-8 lg:h-10 w-auto object-contain group-hover:scale-110 transition-transform duration-500"
                 loading="eager"
               />
             </div>
             <div className="hidden md:block">
-              <h1 className="text-xs lg:text-lg font-bold bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 bg-clip-text text-transparent tracking-tight">
+              <h1 className="text-xs lg:text-base font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent tracking-tight">
                 Superb Technologies
               </h1>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-1.5 mt-0.5">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <FiStar
                       key={i}
-                      className="w-2 h-2 text-secondary-500 fill-secondary-500"
+                      className="w-1.5 h-1.5 text-secondary-500 fill-secondary-500"
                     />
                   ))}
                 </div>
-                <p className="text-[9px] text-gray-600 font-semibold tracking-wider uppercase">
+                <p className="text-[8px] text-gray-600 font-semibold tracking-wider uppercase">
                   Laboratory Equipment Experts
                 </p>
               </div>
@@ -560,22 +557,22 @@ const Header = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
+                    className={`px-3 py-1.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
                       active
                         ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
                         : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 relative z-10">
+                    <div className="flex items-center gap-2 relative z-10">
                       <div
-                        className={`p-1.5 rounded-lg transition-all ${
+                        className={`p-1 rounded-lg transition-all ${
                           active
                             ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
                             : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                         }`}
                       >
                         <FiHome
-                          size={16}
+                          size={14}
                           className={
                             active
                               ? "text-white"
@@ -604,7 +601,7 @@ const Header = () => {
                           setHoveredCategoryId(null);
                         }
                       }}
-                      className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl flex items-center gap-2.5 group relative border focus:outline-none ${
+                      className={`px-3 py-1.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl flex items-center gap-2 group relative border focus:outline-none ${
                         active || dropdownOpen
                           ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border-secondary-200"
                           : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border-secondary-100 border-transparent"
@@ -614,14 +611,14 @@ const Header = () => {
                     >
                       <div className="relative">
                         <div
-                          className={`p-1.5 rounded-lg transition-all ${
+                          className={`p-1 rounded-lg transition-all ${
                             active || dropdownOpen
                               ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
                               : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                           }`}
                         >
                           <FiPackage
-                            size={16}
+                            size={14}
                             className={
                               active || dropdownOpen
                                 ? "text-white"
@@ -637,7 +634,7 @@ const Header = () => {
                             ? "rotate-180 text-primary-600"
                             : "text-gray-400 group-hover:text-primary-600"
                         }`}
-                        size={16}
+                        size={14}
                       />
                     </button>
 
@@ -700,22 +697,37 @@ const Header = () => {
               }
 
               if (item.path === "/news") {
+                const active = isActive(item.path);
                 return (
-                  <button
+                  <Link
                     key={item.path}
-                    onClick={handleNews}
-                    className="px-5 py-2 font-semibold text-sm tracking-wide text-gray-800 hover:text-primary-800 bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 rounded-xl transition-all duration-300 flex items-center gap-2.5 group relative border border-transparent hover:border-secondary-100 focus:outline-none"
+                    to={item.path}
+                    className={`px-3 py-1.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
+                      active
+                        ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
+                        : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
+                    }`}
                   >
-                    <div className="relative">
-                      <div className="p-1.5 rounded-lg bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600 transition-all">
+                    <div className="flex items-center gap-2 relative z-10">
+                      <div
+                        className={`p-1 rounded-lg transition-all ${
+                          active
+                            ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
+                            : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
+                        }`}
+                      >
                         <HiOutlineExternalLink
-                          size={16}
-                          className="text-primary-600 group-hover:text-white transition-colors"
+                          size={14}
+                          className={
+                            active
+                              ? "text-white"
+                              : "text-primary-600 group-hover:text-white transition-colors"
+                          }
                         />
                       </div>
+                      <span>{item.label}</span>
                     </div>
-                    <span>{item.label}</span>
-                  </button>
+                  </Link>
                 );
               }
 
@@ -725,22 +737,22 @@ const Header = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`px-5 py-2 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
+                    className={`px-3 py-1.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden focus:outline-none ${
                       active
                         ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
                         : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
                     }`}
                   >
-                    <div className="flex items-center gap-2.5 relative z-10">
+                    <div className="flex items-center gap-2 relative z-10">
                       <div
-                        className={`p-1.5 rounded-lg transition-all ${
+                        className={`p-1 rounded-lg transition-all ${
                           active
                             ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
                             : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                         }`}
                       >
                         <WindArrowDown
-                          size={16}
+                          size={14}
                           className={
                             active
                               ? "text-white"
@@ -759,22 +771,22 @@ const Header = () => {
 
             <Link
               to="/about"
-              className={`px-5 py-2.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
+              className={`px-3 py-1.5 font-semibold text-sm tracking-wide transition-all duration-300 rounded-xl group relative overflow-hidden ${
                 isActive("/about")
                   ? "bg-gradient-to-r from-secondary-50 to-secondary-100 text-secondary-800 shadow-md border border-secondary-200"
                   : "text-gray-800 hover:text-secondary-800 hover:bg-gradient-to-r hover:from-secondary-50/70 hover:to-secondary-100/70 hover:shadow-sm hover:border hover:border-secondary-100"
               }`}
             >
-              <div className="flex items-center gap-2.5 relative z-10">
+              <div className="flex items-center gap-2 relative z-10">
                 <div
-                  className={`p-1.5 rounded-lg ${
+                  className={`p-1 rounded-lg ${
                     isActive("/about")
                       ? "bg-gradient-to-r from-secondary-500 to-secondary-600"
                       : "bg-primary-100 group-hover:bg-gradient-to-r group-hover:from-secondary-500 group-hover:to-secondary-600"
                   } transition-all`}
                 >
                   <FiInfo
-                    size={16}
+                    size={14}
                     className={
                       isActive("/about")
                         ? "text-white"
@@ -791,7 +803,7 @@ const Header = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/contact"
-              className="hidden md:flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-primary-900/40 group relative overflow-hidden focus:outline-none"
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 text-white rounded-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-primary-900/40 group relative overflow-hidden focus:outline-none"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-secondary-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <span className="relative z-10">Contact Us</span>

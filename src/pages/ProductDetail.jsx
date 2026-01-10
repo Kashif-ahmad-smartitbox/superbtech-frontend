@@ -187,7 +187,7 @@ const ProductDetail = () => {
 
         <div className="container mx-auto px-4 py-4">
           {/* Breadcrumb Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center space-x-2 text-sm text-gray-600 mb-6">
+          <nav className="hidden lg:flex items-center space-x-2 text-sm text-gray-600 mb-4">
             <Link to="/" className="hover:text-primary-700 transition-colors">
               Home
             </Link>
@@ -304,7 +304,7 @@ const ProductDetail = () => {
             {/* Left Column: Images - Desktop */}
             <div className="hidden lg:flex lg:w-2/5 flex-col">
               <div className="bg-white rounded-2xl border border-primary-100 p-6 sticky top-24">
-                <div className="relative aspect-square bg-white rounded-2xl mb-6 overflow-hidden">
+                <div className="relative aspect-square bg-white rounded-2xl mb-4 overflow-hidden">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={getImageUrl(product.images[activeImage])}
@@ -342,7 +342,7 @@ const ProductDetail = () => {
 
                 {/* Thumbnails */}
                 {product.images && product.images.length > 1 && (
-                  <div className="grid grid-cols-4 gap-3 mb-6">
+                  <div className="grid grid-cols-4 gap-3 mb-4">
                     {product.images.map((image, index) => (
                       <button
                         key={index}
@@ -400,7 +400,7 @@ const ProductDetail = () => {
             <div className="lg:w-3/5">
               <div className="bg-white rounded-2xl border border-primary-100 p-4 lg:p-8">
                 {/* Product Header */}
-                <div className="mb-6">
+                <div className="mb-4">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
                       <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
@@ -432,7 +432,7 @@ const ProductDetail = () => {
                   </div>
 
                   {/* Quick Actions - Mobile */}
-                  <div className="lg:hidden grid grid-cols-2 gap-3 mb-6">
+                  <div className="lg:hidden grid grid-cols-2 gap-3 mb-4">
                     <button
                       onClick={() => setShowModal(true)}
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
@@ -455,7 +455,7 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Navigation Menu - Mobile */}
-                <div className="lg:hidden mb-6">
+                <div className="lg:hidden mb-4">
                   <div className="flex overflow-x-auto gap-2 pb-2">
                     {[
                       "description",
@@ -488,7 +488,7 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Content Sections */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Description */}
                   <section id="description">
                     <div className="lg:hidden mb-4">
@@ -658,7 +658,7 @@ const ProductDetail = () => {
                             expandedSections.video ? "block" : "hidden"
                           } lg:block`}
                         >
-                          <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
+                          <h2 className="hidden lg:flex text-lg font-bold text-primary-800 mb-3 items-center gap-2">
                             <FiPlay className="text-red-600" />
                             Product Video
                           </h2>

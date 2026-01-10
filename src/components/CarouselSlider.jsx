@@ -203,7 +203,7 @@ const CarouselSlider = () => {
                   {/* Content Card */}
                   <div className="bg-gradient-to-b from-black/30 to-black/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl">
                     {/* Title */}
-                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white text-center md:text-left leading-tight mb-4">
+                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent text-center md:text-left leading-tight mb-4">
                       {slide.title}
                     </h1>
 

@@ -212,14 +212,14 @@ function Certificates() {
         <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-full backdrop-blur-sm">
             <FiAward className="text-primary-600 w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm font-semibold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            <span className="text-sm font-semibold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
               International Accreditations
             </span>
           </div>
 
           <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">
             Our Certifications
-            <span className="block text-lg sm:text-2xl lg:text-3xl xl:text-4xl bg-gradient-to-r from-primary-600 via-secondary-600 to-primary-600 bg-clip-text text-transparent mt-2">
+            <span className="block text-lg sm:text-2xl lg:text-3xl xl:text-4xl bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mt-2">
               Quality & Compliance
             </span>
           </h1>

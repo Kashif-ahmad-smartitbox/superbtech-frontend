@@ -17,7 +17,7 @@ const AboutSection = () => {
         {/* Header */}
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-            About <span className="text-primary-600">Superb Technologies</span>
+            About <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">Superb Technologies</span>
           </h2>
           <p className="mt-4 text-gray-600 max-w-3xl mx-auto text-base md:text-lg">
             A trusted Indian manufacturer delivering reliable scientific and
