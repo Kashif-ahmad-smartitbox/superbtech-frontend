@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api, { getImageUrl } from "../utils/api";
+import CustomAlert from "../components/CustomAlert";
 import EnquiryModal from "../components/EnquiryModal";
 import {
   FiChevronRight,
@@ -47,6 +48,8 @@ const ProductDetail = () => {
     services: false,
   });
   const [showMobileThumbnails, setShowMobileThumbnails] = useState(false);
+  const [isEnquirySubmitted, setIsEnquirySubmitted] = useState(false);
+  const [showDownloadAlert, setShowDownloadAlert] = useState(false);
 
   // Extract the product ID from the slug-id format (e.g., "product-name-123abc" -> "123abc")
   // The ID is the last segment after the final hyphen, assuming MongoDB ObjectId format (24 chars)
@@ -105,6 +108,18 @@ const ProductDetail = () => {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleDownloadClick = (e) => {
+    if (!isEnquirySubmitted) {
+      e.preventDefault();
+      setShowDownloadAlert(true);
+    }
+  };
+
+  const handleAlertClose = () => {
+    setShowDownloadAlert(false);
+    setShowModal(true);
   };
 
   if (loading) {
@@ -364,22 +379,22 @@ const ProductDetail = () => {
                 )}
 
                 {/* Product Info Card */}
-                <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
-                    <div className="flex items-center gap-3 mb-2">
+                <div className="space-y-2">
+                  <div className="p-2 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
+                    <div className="flex items-center gap-3">
                       <FiTag className="text-primary-600" />
                       <div>
                         <div className="text-sm font-semibold text-primary-800">
                           Product Code
                         </div>
-                        <div className="text-lg font-bold text-primary-900">
+                        <div className="text-sm font-bold text-primary-900">
                           {product.orderCode}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <div className="p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-green-500"></div>
                       <div>
@@ -445,6 +460,7 @@ const ProductDetail = () => {
                         href={product.brochure.path}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={handleDownloadClick}
                         className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                       >
                         <FiDownload className="w-4 h-4" />
@@ -740,6 +756,7 @@ const ProductDetail = () => {
                           href={product.brochure.path}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={handleDownloadClick}
                           className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
                         >
                           <FiDownload className="w-5 h-5" />
@@ -776,8 +793,19 @@ const ProductDetail = () => {
       </div>
 
       {showModal && (
-        <EnquiryModal product={product} onClose={() => setShowModal(false)} />
+        <EnquiryModal
+          product={product}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => setIsEnquirySubmitted(true)}
+        />
       )}
+      
+      <CustomAlert
+        isOpen={showDownloadAlert}
+        onClose={handleAlertClose}
+        title="Download Restricted"
+        message="Please fill the enquiry form to download the brochure. It helps us understand your requirements better."
+      />
     </>
   );
 };
