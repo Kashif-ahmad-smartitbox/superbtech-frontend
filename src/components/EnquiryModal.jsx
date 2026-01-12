@@ -9,7 +9,7 @@ import {
 } from "react-icons/fi";
 import api from "../utils/api";
 
-const EnquiryModal = ({ product, onClose }) => {
+const EnquiryModal = ({ product, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,16 +20,48 @@ const EnquiryModal = ({ product, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error for the field being edited
+    if (validationErrors[e.target.name]) {
+      setValidationErrors({
+        ...validationErrors,
+        [e.target.name]: "",
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Phone regex: Matches +91 followed by 10 digits OR just 10 digits
+    const phoneRegex = /^(\+91)?\d{10}$/;
+
+    if (!emailRegex.test(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    // Clean phone number (remove spaces/dashes if any, though input type tel usually allows them. 
+    // User requested specifically +91 or 10 digits logic, so we test against the raw or slightly cleaned value)
+    const phone = formData.phone.replace(/[\s-]/g, "");
+    if (!phoneRegex.test(phone)) {
+      errors.phone = "check the no";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     setError("");
     setLoading(true);
 
@@ -52,6 +84,7 @@ const EnquiryModal = ({ product, onClose }) => {
         // Cloudinary URL - open in new tab
         window.open(response.data.downloadUrl, "_blank");
         setSuccess(true);
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           onClose();
         }, 2000);
@@ -67,11 +100,13 @@ const EnquiryModal = ({ product, onClose }) => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         setSuccess(true);
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           onClose();
         }, 2000);
       } else {
         setSuccess(true);
+        if (onSuccess) onSuccess();
         setTimeout(() => {
           onClose();
         }, 2000);
@@ -107,8 +142,8 @@ const EnquiryModal = ({ product, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white p-6 rounded-t-2xl flex justify-between items-center z-10">
-          <div>
+        <div className="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white p-3 rounded-t-2xl flex justify-between items-center z-10">
+          <div className="pl-4">
             <h2 className="text-2xl font-bold flex items-center gap-2">
               <FiDownload className="text-secondary-400" />
               Product Enquiry
@@ -125,7 +160,7 @@ const EnquiryModal = ({ product, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4">
           {success ? (
             <div className="text-center py-8">
               <div className="w-20 h-20 bg-gradient-to-r from-green-100 to-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -194,7 +229,7 @@ const EnquiryModal = ({ product, onClose }) => {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
                     <FiUser className="text-primary-600" />
                     Full Name
                   </label>
@@ -210,37 +245,53 @@ const EnquiryModal = ({ product, onClose }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
                     <FiMail className="text-primary-600" />
                     Email Address
                     <span className="text-secondary-600">*</span>
                   </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="you@organization.com"
-                    className="input-field"
-                  />
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="you@organization.com"
+                      className={`input-field ${validationErrors.email ? "border-red-500 focus:ring-red-500" : ""}`}
+                    />
+                    {validationErrors.email && (
+                      <div className="absolute left-0 -bottom-6 z-10 bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                        {validationErrors.email}
+                        <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-800 transform rotate-45"></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
                     <FiPhone className="text-primary-600" />
                     Phone Number
                     <span className="text-secondary-600">*</span>
                   </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                    placeholder="+91 98765 43210"
-                    className="input-field"
-                  />
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                      placeholder="+91 98765 43210"
+                      className={`input-field ${validationErrors.phone ? "border-red-500 focus:ring-red-500" : ""}`}
+                    />
+                    {validationErrors.phone && (
+                      <div className="absolute left-0 -bottom-6 z-10 bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                        {validationErrors.phone}
+                        <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-800 transform rotate-45"></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div>
@@ -258,7 +309,7 @@ const EnquiryModal = ({ product, onClose }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
+                  <label className="text-sm font-semibold text-primary-800 mb-2 flex items-center gap-2">
                     <FiMessageSquare className="text-primary-600" />
                     Additional Information
                   </label>
