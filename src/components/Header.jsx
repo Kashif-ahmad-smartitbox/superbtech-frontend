@@ -60,7 +60,7 @@ const useClickOutside = (refs, handler) => {
     const handleClickOutside = (event) => {
       // Check if click is outside ALL provided refs
       const isOutsideAll = refs.every(
-        (ref) => ref.current && !ref.current.contains(event.target)
+        (ref) => !ref.current || !ref.current.contains(event.target)
       );
 
       if (isOutsideAll) {
