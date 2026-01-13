@@ -43,8 +43,26 @@ const EnquiryModal = ({ product, onClose }) => {
 
       // Check if response has downloadUrl (Cloudinary) or is a blob (local file)
       if (response.data && response.data.downloadUrl) {
-        // Cloudinary URL - open in new tab
-        window.open(response.data.downloadUrl, "_blank");
+        // Cloudinary URL - fetch as blob and download properly
+        try {
+          const pdfResponse = await fetch(response.data.downloadUrl);
+          if (!pdfResponse.ok) {
+            throw new Error("Failed to fetch PDF");
+          }
+          const pdfBlob = await pdfResponse.blob();
+          const blobUrl = window.URL.createObjectURL(pdfBlob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = `${product.name.replace(/\s+/g, "-")}-brochure.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+        } catch (fetchError) {
+          console.error("PDF fetch error:", fetchError);
+          // Fallback: open in new tab if fetch fails
+          window.open(response.data.downloadUrl, "_blank");
+        }
         setSuccess(true);
         setTimeout(() => {
           onClose();

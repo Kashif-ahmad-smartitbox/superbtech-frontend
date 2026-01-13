@@ -413,11 +413,16 @@ const AdminEnquiries = () => {
                         </div>
                         {enquiry.product?.brochure?.path && (
                           <a
-                            href={enquiry.product.brochure.path}
+                            href={
+                              enquiry.product.brochure.path.includes('cloudinary.com') && 
+                              enquiry.product.brochure.path.includes('/raw/')
+                                ? enquiry.product.brochure.path.replace('/raw/upload/', '/raw/upload/fl_attachment/')
+                                : enquiry.product.brochure.path
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-0.5"
-                            title="Brochure"
+                            title="Download Brochure"
                           >
                             <FileText className="w-2.5 h-2.5 text-blue-600" />
                           </a>

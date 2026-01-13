@@ -442,7 +442,12 @@ const ProductDetail = () => {
                     </button>
                     {product.brochure?.path && (
                       <a
-                        href={product.brochure.path}
+                        href={
+                          product.brochure.path.includes('cloudinary.com') && 
+                          product.brochure.path.includes('/raw/')
+                            ? product.brochure.path.replace('/raw/upload/', '/raw/upload/fl_attachment/')
+                            : product.brochure.path
+                        }
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
@@ -737,7 +742,12 @@ const ProductDetail = () => {
                       </button>
                       {product.brochure?.path && (
                         <a
-                          href={product.brochure.path}
+                          href={
+                            product.brochure.path.includes('cloudinary.com') && 
+                            product.brochure.path.includes('/raw/')
+                              ? product.brochure.path.replace('/raw/upload/', '/raw/upload/fl_attachment/')
+                              : product.brochure.path
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
