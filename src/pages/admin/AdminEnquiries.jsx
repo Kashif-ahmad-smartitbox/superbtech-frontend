@@ -15,8 +15,6 @@ import {
   CheckCircle,
   AlertCircle,
   FileText,
-  X,
-  Copy,
 } from "lucide-react";
 
 const AdminEnquiries = () => {
@@ -29,8 +27,6 @@ const AdminEnquiries = () => {
     key: "createdAt",
     direction: "desc",
   });
-  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
-  const [showMessageModal, setShowMessageModal] = useState(false);
 
   useEffect(() => {
     fetchEnquiries();
@@ -106,34 +102,6 @@ const AdminEnquiries = () => {
     }
   };
 
-  const handleViewMessage = (enquiry) => {
-    setSelectedEnquiry(enquiry);
-    setShowMessageModal(true);
-  };
-
-  const closeMessageModal = () => {
-    setShowMessageModal(false);
-    setSelectedEnquiry(null);
-  };
-
-  const copyToClipboard = (text) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Copied to clipboard!");
-      })
-      .catch(() => {
-        // Fallback for older browsers
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-        alert("Copied to clipboard!");
-      });
-  };
-
   const sortedEnquiries = useMemo(() => {
     const sortableItems = [...enquiries];
     if (sortConfig.key) {
@@ -183,7 +151,6 @@ const AdminEnquiries = () => {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      year: "numeric",
     });
   };
 
@@ -192,7 +159,6 @@ const AdminEnquiries = () => {
     return date.toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true,
     });
   };
 
@@ -202,14 +168,11 @@ const AdminEnquiries = () => {
     const diffMs = now - date;
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
 
     if (diffMins < 60) {
-      return `${diffMins}m ago`;
+      return `${diffMins}m`;
     } else if (diffHours < 24) {
-      return `${diffHours}h ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays}d ago`;
+      return `${diffHours}h`;
     } else {
       return formatDate(dateString);
     }
@@ -450,16 +413,11 @@ const AdminEnquiries = () => {
                         </div>
                         {enquiry.product?.brochure?.path && (
                           <a
-                            href={
-                              enquiry.product.brochure.path.includes('cloudinary.com') && 
-                              enquiry.product.brochure.path.includes('/raw/')
-                                ? enquiry.product.brochure.path.replace('/raw/upload/', '/raw/upload/fl_attachment/')
-                                : enquiry.product.brochure.path
-                            }
+                            href={enquiry.product.brochure.path}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-0.5"
-                            title="Download Brochure"
+                            title="Brochure"
                           >
                             <FileText className="w-2.5 h-2.5 text-blue-600" />
                           </a>
@@ -486,7 +444,14 @@ const AdminEnquiries = () => {
                           <Mail className="w-3 h-3" />
                         </a>
                         <button
-                          onClick={() => handleViewMessage(enquiry)}
+                          onClick={() => {
+                            if (
+                              enquiry.message &&
+                              enquiry.message.length > 100
+                            ) {
+                              alert(enquiry.message);
+                            }
+                          }}
                           className="p-1 rounded bg-gray-50 text-gray-600 hover:bg-gray-100 transition-colors"
                           title="View Message"
                         >
@@ -535,190 +500,6 @@ const AdminEnquiries = () => {
               <Trash2 className="w-3 h-3" />
               Delete All
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Message Modal */}
-      {showMessageModal && selectedEnquiry && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-            onClick={closeMessageModal}
-          />
-
-          {/* Modal Container */}
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-auto overflow-hidden">
-              {/* Modal Header */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-white" />
-                    <h3 className="text-lg font-semibold text-white">
-                      Message Details
-                    </h3>
-                  </div>
-                  <button
-                    onClick={closeMessageModal}
-                    className="p-1 rounded-lg hover:bg-white/10 transition-colors"
-                  >
-                    <X className="w-5 h-5 text-white" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Modal Content */}
-              <div className="p-4 space-y-4">
-                {/* Customer Info */}
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center flex-shrink-0">
-                      <User className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 truncate">
-                        {selectedEnquiry.name || "Anonymous"}
-                      </h4>
-                      <div className="mt-1 space-y-1">
-                        <div className="flex items-center gap-2">
-                          <Mail className="w-3 h-3 text-primary-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-600 truncate">
-                            {selectedEnquiry.email}
-                          </span>
-                          <button
-                            onClick={() =>
-                              copyToClipboard(selectedEnquiry.email)
-                            }
-                            className="ml-auto p-1 rounded hover:bg-gray-200 transition-colors"
-                            title="Copy email"
-                          >
-                            <Copy className="w-3 h-3 text-gray-500" />
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-gray-600">
-                            {selectedEnquiry.phone}
-                          </span>
-                          <button
-                            onClick={() =>
-                              copyToClipboard(selectedEnquiry.phone)
-                            }
-                            className="ml-auto p-1 rounded hover:bg-gray-200 transition-colors"
-                            title="Copy phone"
-                          >
-                            <Copy className="w-3 h-3 text-gray-500" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product Info */}
-                {selectedEnquiry.productName && (
-                  <div className="bg-blue-50 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="w-4 h-4 text-blue-600" />
-                      <h4 className="font-medium text-blue-900">Product</h4>
-                    </div>
-                    <p className="text-sm font-semibold text-blue-800">
-                      {selectedEnquiry.productName}
-                    </p>
-                    {selectedEnquiry.product?.orderCode && (
-                      <p className="text-xs text-blue-600 mt-1">
-                        Code: {selectedEnquiry.product.orderCode}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Message Content */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-gray-900">Message</h4>
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      <span>
-                        {formatDate(selectedEnquiry.createdAt)} at{" "}
-                        {formatTime(selectedEnquiry.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-3 max-h-48 overflow-y-auto">
-                    {selectedEnquiry.message ? (
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                        {selectedEnquiry.message}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-gray-500 italic">
-                        No message provided
-                      </p>
-                    )}
-                  </div>
-                  {selectedEnquiry.message && (
-                    <button
-                      onClick={() => copyToClipboard(selectedEnquiry.message)}
-                      className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded font-medium transition-colors flex items-center justify-center gap-2 text-sm"
-                    >
-                      <Copy className="w-4 h-4" />
-                      Copy Message
-                    </button>
-                  )}
-                </div>
-
-                {/* Status */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {selectedEnquiry.downloadedBrochure ? (
-                      <>
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span className="text-sm font-medium text-green-700">
-                          Brochure Downloaded
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle className="w-5 h-5 text-amber-500" />
-                        <span className="text-sm font-medium text-amber-700">
-                          Pending Download
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  {selectedEnquiry.product?.brochure?.path && (
-                    <a
-                      href={selectedEnquiry.product.brochure.path}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded font-medium transition-colors flex items-center gap-2 text-sm"
-                    >
-                      <Download className="w-4 h-4" />
-                      View Brochure
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="bg-gray-50 px-4 py-3 flex justify-end gap-2">
-                <button
-                  onClick={closeMessageModal}
-                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded font-medium transition-colors text-sm"
-                >
-                  Close
-                </button>
-                <a
-                  href={`mailto:${selectedEnquiry.email}`}
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded font-medium transition-colors flex items-center gap-2 text-sm"
-                >
-                  <Mail className="w-4 h-4" />
-                  Reply via Email
-                </a>
-              </div>
-            </div>
           </div>
         </div>
       )}
