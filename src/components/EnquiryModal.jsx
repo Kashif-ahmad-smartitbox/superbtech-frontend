@@ -66,20 +66,15 @@ const EnquiryModal = ({ product, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      const response = await api.post(
-        "/enquiries",
-        {
-          ...formData,
-          productId: product._id,
-          productName: product.name,
-          productCode: product.orderCode,
-        },
-        {
-          responseType: "blob",
-        }
-      );
+      // Don't use responseType: blob since backend returns JSON with downloadUrl
+      const response = await api.post("/enquiries", {
+        ...formData,
+        productId: product._id,
+        productName: product.name,
+        productCode: product.orderCode,
+      });
 
-      // Check if response has downloadUrl (Cloudinary) or is a blob (local file)
+      // Check if response has downloadUrl (Cloudinary)
       if (response.data && response.data.downloadUrl) {
         // Cloudinary URL - fetch as blob and download properly
         try {
@@ -88,41 +83,32 @@ const EnquiryModal = ({ product, onClose, onSuccess }) => {
             throw new Error("Failed to fetch PDF");
           }
           const pdfBlob = await pdfResponse.blob();
-          const blobUrl = window.URL.createObjectURL(pdfBlob);
+          
+          // Create a proper PDF blob even if Cloudinary returns wrong content-type
+          const finalBlob = new Blob([pdfBlob], { type: "application/pdf" });
+          const blobUrl = window.URL.createObjectURL(finalBlob);
           const link = document.createElement("a");
           link.href = blobUrl;
-          link.download = `${product.name.replace(/\s+/g, "-")}-brochure.pdf`;
+          // Use original filename from API response or product brochure if available
+          const fileName = response.data.originalName || product.brochure?.originalName || `${product.name.replace(/\s+/g, "-")}-brochure.pdf`;
+          link.download = fileName;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           window.URL.revokeObjectURL(blobUrl);
         } catch (fetchError) {
           console.error("PDF fetch error:", fetchError);
-          // Fallback: open in new tab if fetch fails
-          window.open(response.data.downloadUrl, "_blank");
+          // Fallback: open in new tab with fl_attachment flag
+          const downloadUrl = response.data.downloadUrl;
+          window.open(downloadUrl, "_blank");
         }
         setSuccess(true);
         if (onSuccess) onSuccess();
         setTimeout(() => {
           onClose();
         }, 2000);
-      } else if (response.data instanceof Blob) {
-        // Local file - download as blob
-        const blob = new Blob([response.data], { type: "application/pdf" });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${product.name.replace(/\s+/g, "-")}-brochure.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        setSuccess(true);
-        if (onSuccess) onSuccess();
-        setTimeout(() => {
-          onClose();
-        }, 2000);
       } else {
+        // No brochure available, just show success
         setSuccess(true);
         if (onSuccess) onSuccess();
         setTimeout(() => {
@@ -135,7 +121,10 @@ const EnquiryModal = ({ product, onClose, onSuccess }) => {
         setError(err.response.data.message);
       } else if (err.response?.data) {
         try {
-          const errorData = JSON.parse(err.response.data);
+          const errorText = typeof err.response.data === 'string' 
+            ? err.response.data 
+            : JSON.stringify(err.response.data);
+          const errorData = JSON.parse(errorText);
           setError(errorData.message || "An error occurred");
         } catch {
           setError("Failed to process your request. Please try again.");
