@@ -208,7 +208,7 @@ const CarouselSlider = () => {
                     </h1>
 
                     {/* Description */}
-                    <p className="text-xs md:text-base text-gray-200 text-center md:text-left leading-relaxed">
+                    <p className="text-xs md:text-base text-white text-center md:text-left leading-relaxed">
                       {slide.description}
                     </p>
                   </div>

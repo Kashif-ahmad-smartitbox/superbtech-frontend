@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api, { getImageUrl } from "../utils/api";
+import CustomAlert from "../components/CustomAlert";
 import EnquiryModal from "../components/EnquiryModal";
 import {
   FiChevronRight,
@@ -47,6 +48,8 @@ const ProductDetail = () => {
     services: false,
   });
   const [showMobileThumbnails, setShowMobileThumbnails] = useState(false);
+  const [isEnquirySubmitted, setIsEnquirySubmitted] = useState(false);
+  const [showDownloadAlert, setShowDownloadAlert] = useState(false);
 
   // Extract the product ID from the slug-id format (e.g., "product-name-123abc" -> "123abc")
   // The ID is the last segment after the final hyphen, assuming MongoDB ObjectId format (24 chars)
@@ -57,7 +60,7 @@ const ProductDetail = () => {
       return slugIdParam;
     }
     // Extract ID from slug-id format (last 24 characters after the last hyphen)
-    const lastHyphenIndex = slugIdParam.lastIndexOf('-');
+    const lastHyphenIndex = slugIdParam.lastIndexOf("-");
     if (lastHyphenIndex !== -1) {
       const potentialId = slugIdParam.substring(lastHyphenIndex + 1);
       if (/^[a-f0-9]{24}$/i.test(potentialId)) {
@@ -105,6 +108,18 @@ const ProductDetail = () => {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handleDownloadClick = (e) => {
+    if (!isEnquirySubmitted) {
+      e.preventDefault();
+      setShowDownloadAlert(true);
+    }
+  };
+
+  const handleAlertClose = () => {
+    setShowDownloadAlert(false);
+    setShowModal(true);
   };
 
   if (loading) {
@@ -187,7 +202,7 @@ const ProductDetail = () => {
 
         <div className="container mx-auto px-4 py-4">
           {/* Breadcrumb Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center space-x-2 text-sm text-gray-600 mb-6">
+          <nav className="hidden lg:flex items-center space-x-2 text-sm text-gray-600 mb-4">
             <Link to="/" className="hover:text-primary-700 transition-colors">
               Home
             </Link>
@@ -304,7 +319,7 @@ const ProductDetail = () => {
             {/* Left Column: Images - Desktop */}
             <div className="hidden lg:flex lg:w-2/5 flex-col">
               <div className="bg-white rounded-2xl border border-primary-100 p-6 sticky top-24">
-                <div className="relative aspect-square bg-white rounded-2xl mb-6 overflow-hidden">
+                <div className="relative aspect-square bg-white rounded-2xl mb-4 overflow-hidden">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={getImageUrl(product.images[activeImage])}
@@ -342,7 +357,7 @@ const ProductDetail = () => {
 
                 {/* Thumbnails */}
                 {product.images && product.images.length > 1 && (
-                  <div className="grid grid-cols-4 gap-3 mb-6">
+                  <div className="grid grid-cols-4 gap-3 mb-4">
                     {product.images.map((image, index) => (
                       <button
                         key={index}
@@ -364,22 +379,22 @@ const ProductDetail = () => {
                 )}
 
                 {/* Product Info Card */}
-                <div className="space-y-4">
-                  <div className="p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
-                    <div className="flex items-center gap-3 mb-2">
+                <div className="space-y-2">
+                  <div className="p-2 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
+                    <div className="flex items-center gap-3">
                       <FiTag className="text-primary-600" />
                       <div>
                         <div className="text-sm font-semibold text-primary-800">
                           Product Code
                         </div>
-                        <div className="text-lg font-bold text-primary-900">
+                        <div className="text-sm font-bold text-primary-900">
                           {product.orderCode}
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <div className="p-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 rounded-full bg-green-500"></div>
                       <div>
@@ -400,7 +415,7 @@ const ProductDetail = () => {
             <div className="lg:w-3/5">
               <div className="bg-white rounded-2xl border border-primary-100 p-4 lg:p-8">
                 {/* Product Header */}
-                <div className="mb-6">
+                <div className="mb-4">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
                       <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
@@ -432,7 +447,7 @@ const ProductDetail = () => {
                   </div>
 
                   {/* Quick Actions - Mobile */}
-                  <div className="lg:hidden grid grid-cols-2 gap-3 mb-6">
+                  <div className="lg:hidden grid grid-cols-2 gap-3 mb-4">
                     <button
                       onClick={() => setShowModal(true)}
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
@@ -450,6 +465,7 @@ const ProductDetail = () => {
                         }
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={handleDownloadClick}
                         className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                       >
                         <FiDownload className="w-4 h-4" />
@@ -460,7 +476,7 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Navigation Menu - Mobile */}
-                <div className="lg:hidden mb-6">
+                <div className="lg:hidden mb-4">
                   <div className="flex overflow-x-auto gap-2 pb-2">
                     {[
                       "description",
@@ -493,7 +509,7 @@ const ProductDetail = () => {
                 </div>
 
                 {/* Content Sections */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Description */}
                   <section id="description">
                     <div className="lg:hidden mb-4">
@@ -663,7 +679,7 @@ const ProductDetail = () => {
                             expandedSections.video ? "block" : "hidden"
                           } lg:block`}
                         >
-                          <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
+                          <h2 className="hidden lg:flex text-lg font-bold text-primary-800 mb-3 items-center gap-2">
                             <FiPlay className="text-red-600" />
                             Product Video
                           </h2>
@@ -750,6 +766,7 @@ const ProductDetail = () => {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={handleDownloadClick}
                           className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
                         >
                           <FiDownload className="w-5 h-5" />
@@ -766,14 +783,14 @@ const ProductDetail = () => {
                           className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiMail className="w-4 h-4" />
-                          info@superbtechnologies.in
+                          superbtech01@gmail.com
                         </a>
                         <a
                           href="tel:+919829132777"
                           className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiPhone className="w-4 h-4" />
-                          +91 98291 32777
+                          +91 98969 15524
                         </a>
                       </div>
                     </div>
@@ -786,8 +803,19 @@ const ProductDetail = () => {
       </div>
 
       {showModal && (
-        <EnquiryModal product={product} onClose={() => setShowModal(false)} />
+        <EnquiryModal
+          product={product}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => setIsEnquirySubmitted(true)}
+        />
       )}
+      
+      <CustomAlert
+        isOpen={showDownloadAlert}
+        onClose={handleAlertClose}
+        title="Download Restricted"
+        message="Please fill the enquiry form to download the brochure. It helps us understand your requirements better."
+      />
     </>
   );
 };

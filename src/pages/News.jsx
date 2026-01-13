@@ -41,10 +41,10 @@ const News = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-primary-50/30 to-white py-12">
+    <div className="min-h-screen bg-gradient-to-b from-white via-primary-50/30 to-white py-6">
       <div className="container mx-auto px-4">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <Link
             to="/"
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-700 font-semibold rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:-translate-x-1 group"
@@ -67,7 +67,7 @@ const News = () => {
         {/* Hero Header */}
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-primary-700 via-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
               News Center
             </span>
           </h1>

@@ -166,7 +166,7 @@ const Products = () => {
     : products;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-primary-50/10 to-white pt-4 pb-16">
+    <div className="min-h-screen bg-gradient-to-b from-white via-primary-50/10 to-white pt-4 pb-10">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Mobile Category Menu Button */}
         <div className="lg:hidden mb-6">
@@ -198,7 +198,7 @@ const Products = () => {
         {/* Hero Header - Desktop */}
         <div className="hidden lg:block text-center mb-4 animate-fade-in">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold my-4">
-            <span className="bg-gradient-to-r from-primary-700 via-primary-600 to-secondary-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
               {selectedCategory ? selectedCategory.name : "Our Product Range"}
             </span>
           </h1>
@@ -213,7 +213,7 @@ const Products = () => {
         {/* Hero Header - Mobile */}
         <div className="lg:hidden text-center mb-8">
           <h1 className="text-2xl font-bold mb-2">
-            <span className="bg-gradient-to-r from-primary-700 to-secondary-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
               {selectedCategory ? selectedCategory.name : "Products"}
             </span>
           </h1>
@@ -270,7 +270,7 @@ const Products = () => {
           <section className="hidden lg:block mb-16 animate-fade-in animation-delay-300">
             <div className="text-center mb-10">
               <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-                <span className="bg-gradient-to-r from-primary-700 to-primary-800 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
                   Product Categories
                 </span>
               </h2>
