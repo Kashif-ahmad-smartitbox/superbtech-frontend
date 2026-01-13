@@ -43,8 +43,27 @@ const EnquiryModal = ({ product, onClose }) => {
 
       // Check if response has downloadUrl (Cloudinary) or is a blob (local file)
       if (response.data && response.data.downloadUrl) {
-        // Cloudinary URL - open in new tab
-        window.open(response.data.downloadUrl, "_blank");
+        // Cloudinary URL - download the file with proper filename
+        const brochureFileName = response.data.brochureFileName || `${product.name.replace(/\s+/g, "-")}-brochure.pdf`;
+        
+        // Fetch the file and download it with proper filename
+        try {
+          const fileResponse = await fetch(response.data.downloadUrl);
+          const blob = await fileResponse.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = brochureFileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        } catch (downloadError) {
+          // Fallback: open in new tab if fetch fails
+          console.error("Download error, falling back to new tab:", downloadError);
+          window.open(response.data.downloadUrl, "_blank");
+        }
+        
         setSuccess(true);
         setTimeout(() => {
           onClose();
