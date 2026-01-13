@@ -58,7 +58,7 @@ const ProductCard = ({ product }) => {
 
           {/* Category Badge */}
           {product.category?.name && (
-            <div className="absolute top-3 left-3 bg-primary-400 text-white px-3 py-1.5 rounded-full text-[9px] font-bold shadow-lg uppercase tracking-wide max-w-[70%] truncate">
+            <div className="absolute top-3 left-3 bg-primary-400 text-white px-3 py-1.5 rounded-full text-[7px] shadow-lg uppercase tracking-wide max-w-[70%] truncate">
               {product.category.name}
             </div>
           )}
