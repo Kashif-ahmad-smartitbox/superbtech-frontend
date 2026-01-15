@@ -17,6 +17,7 @@ import {
   Star,
   Sparkles,
   Award,
+  FileText,
   Check,
   XCircle,
   MoreVertical,
