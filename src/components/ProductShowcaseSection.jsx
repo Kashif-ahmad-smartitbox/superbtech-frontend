@@ -133,9 +133,10 @@ const ProductShowcaseSection = () => {
                   </div>
 
                   {/* Description */}
-                  <p className="text-gray-600 leading-relaxed mb-4 line-clamp-3">
-                    {product.description}
-                  </p>
+                  <div 
+                    className="text-gray-600 leading-relaxed mb-4 line-clamp-3"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
 
                   {/* Product Code */}
                   {product.orderCode && (
