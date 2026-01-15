@@ -17,7 +17,7 @@ import {
   FileText,
   X,
   Copy,
-} from "lucide-react";
+} from "lucide-react"; 
 
 const AdminEnquiries = () => {
   const [enquiries, setEnquiries] = useState([]);
