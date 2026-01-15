@@ -441,15 +441,13 @@ const ProductDetail = () => {
                       <span>Request</span>
                     </button>
                     {product.brochure?.path && (
-                      <a
-                        href={product.brochure.path}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => setShowModal(true)}
                         className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                       >
                         <FiDownload className="w-4 h-4" />
                         <span>Brochure</span>
-                      </a>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -736,15 +734,13 @@ const ProductDetail = () => {
                         Request Detailed Quote
                       </button>
                       {product.brochure?.path && (
-                        <a
-                          href={product.brochure.path}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => setShowModal(true)}
                           className="flex-1 px-6 py-3.5 bg-gradient-to-r from-secondary-600 to-secondary-700 text-white font-bold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
                         >
                           <FiDownload className="w-5 h-5" />
                           Download Brochure
-                        </a>
+                        </button>
                       )}
                     </div>
 
