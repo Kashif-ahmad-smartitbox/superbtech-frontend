@@ -21,12 +21,12 @@ const ProductCard = ({ product }) => {
     <>
       <div className="group relative bg-white rounded-xl border border-primary-100 hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col h-full hover:-translate-y-1">
         {/* Image Section */}
-        <div className="relative aspect-square overflow-hidden bg-white">
+        <div className="relative h-48 overflow-hidden bg-white">
           {!imageError && product.images && product.images.length > 0 ? (
             <img
               src={getImageUrl(product.images[0])}
               alt={product.name}
-              className="w-full h-full object-contain p-6 group-hover:scale-110 transition-transform duration-700"
+              className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
               onError={handleImageError}
               loading="lazy"
             />
@@ -58,7 +58,7 @@ const ProductCard = ({ product }) => {
 
           {/* Category Badge */}
           {product.category?.name && (
-            <div className="absolute top-3 left-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg uppercase tracking-wide max-w-[70%] truncate">
+            <div className="absolute top-3 left-3 bg-primary-400 text-white px-3 py-1.5 rounded-full text-[7px] shadow-lg uppercase tracking-wide max-w-[70%] truncate">
               {product.category.name}
             </div>
           )}
@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Content Section */}
-        <div className="p-4 flex flex-col flex-1">
+        <div className="p-3 flex flex-col flex-1">
           {/* Product Name */}
           <h3 className="text-gray-900 font-bold text-sm leading-tight mb-2 min-h-[2.5rem] line-clamp-2 group-hover:text-primary-700 transition-colors">
             {product.name}
@@ -141,7 +141,7 @@ const ProductCard = ({ product }) => {
 
             {/* Enquire Now Button */}
             <button
-              className="px-3 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white text-xs font-bold rounded-lg transition-all duration-300 border border-primary-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap flex items-center justify-center gap-1.5 flex-1 min-w-0"
+              className="px-3 py-2 bg-green-600 hover:from-primary-700 hover:to-secondary-700 text-white text-xs font-bold rounded-lg transition-all duration-300 border border-primary-500 shadow-lg hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap flex items-center justify-center gap-1.5 flex-1 min-w-0"
               onClick={handleEnquiry}
             >
               <svg

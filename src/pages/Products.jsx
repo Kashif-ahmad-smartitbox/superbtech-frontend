@@ -197,7 +197,7 @@ const Products = () => {
 
         {/* Hero Header - Desktop */}
         <div className="hidden lg:block text-center mb-4 animate-fade-in">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold my-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold my-4">
             <span className="bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
               {selectedCategory ? selectedCategory.name : "Our Product Range"}
             </span>
@@ -371,7 +371,7 @@ const Products = () => {
                 </button>
 
                 <div className="mt-4">
-                  <h4 className="text-sm font-semibold text-primary-800 uppercase tracking-wide mb-3">
+                  <h4 className="text-xs font-semibold text-primary-800 uppercase tracking-wide mb-3">
                     Categories
                   </h4>
                   <div className="space-y-1">
@@ -403,7 +403,7 @@ const Products = () => {
                               </button>
                             )}
                             <button
-                              className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 text-sm ${
+                              className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 text-xs ${
                                 selectedCategory?._id === category._id
                                   ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
                                   : "bg-primary-50 text-primary-700 hover:bg-primary-100"
@@ -568,7 +568,7 @@ const Products = () => {
               {selectedCategory && (
                 <button
                   onClick={() => handleCategoryFilter(null)}
-                  className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-lg hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-primary-300"
+                  className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-lg hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-primary-300"
                 >
                   Clear Filter
                 </button>
@@ -765,7 +765,7 @@ const Products = () => {
           <div className="lg:col-span-3">
             {/* Results Header - Desktop */}
             {selectedCategory && (
-              <div className="hidden lg:block bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg shadow-sm border border-primary-200 px-6 py-4 mb-6">
+              <div className="hidden lg:block bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg shadow-sm border border-primary-200 px-6 py-2 mb-6">
                 <div className="flex justify-between items-center">
                   <div>
                     <h2 className="text-xl font-bold text-primary-900 mb-1">
@@ -902,7 +902,7 @@ const Products = () => {
                 )}
 
                 {/* All Products */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {filteredProducts.map((product) => (
                     <ProductCard key={product._id} product={product} />
                   ))}
