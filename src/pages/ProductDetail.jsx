@@ -759,7 +759,7 @@ const ProductDetail = () => {
                           className="flex items-center gap-2 text-primary-600 hover:text-primary-800 transition-colors"
                         >
                           <FiPhone className="w-4 h-4" />
-                          +91 98291 32777
+                          +91 9896915524
                         </a>
                       </div>
                     </div>
