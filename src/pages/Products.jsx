@@ -389,34 +389,42 @@ const Products = () => {
 
                       return (
                         <div key={category._id}>
-                          <div className="flex items-center gap-1">
-                            {hasChildren && (
+                          <div className={`flex items-stretch rounded-lg transition-all duration-300 ${
+                            selectedCategory?._id === category._id
+                              ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+                              : "bg-primary-50 text-primary-700 hover:bg-primary-100"
+                          }`}>
+                            {hasChildren ? (
                               <button
-                                onClick={() => toggleCategory(category._id)}
-                                className="p-1 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
+                                onClick={(e) => { e.stopPropagation(); toggleCategory(category._id); }}
+                                className={`px-2 flex items-center justify-center transition-colors rounded-l-lg ${
+                                  selectedCategory?._id === category._id
+                                    ? "hover:bg-white/20 text-white border-r border-white/20"
+                                    : "hover:bg-primary-200 text-primary-600 border-r border-primary-200/50"
+                                }`}
                               >
                                 <FiChevronRight
-                                  className={`text-gray-400 text-xs transition-transform duration-200 ${
+                                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
                                     isExpanded ? "rotate-90" : ""
                                   }`}
                                 />
                               </button>
+                            ) : (
+                              <div className="w-8 flex-shrink-0" />
                             )}
                             <button
-                              className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 text-xs ${
-                                selectedCategory?._id === category._id
-                                  ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
-                                  : "bg-primary-50 text-primary-700 hover:bg-primary-100"
-                              } ${hasChildren ? "" : "ml-6"}`}
+                              className={`flex-1 text-left py-2 pr-3 pl-2 text-xs font-semibold leading-relaxed ${
+                                hasChildren ? "rounded-r-lg" : "rounded-lg"
+                              }`}
                               onClick={() => handleCategoryFilter(category._id)}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">
+                                <span className="break-words">
                                   {category.name}
                                 </span>
                                 {selectedCategory?._id === category._id &&
                                   !hasChildren && (
-                                    <FiChevronRight className="w-4 h-4" />
+                                    <FiChevronRight className="w-3.5 h-3.5 flex-shrink-0 ml-1" />
                                   )}
                               </div>
                             </button>
@@ -433,28 +441,33 @@ const Products = () => {
 
                                   return (
                                     <div key={subcat._id}>
-                                      <div className="flex items-center gap-1">
-                                        {subcatHasProducts && (
+                                      <div className={`flex items-stretch rounded-md transition-all duration-300 ${
+                                        selectedCategory?._id === subcat._id
+                                          ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+                                          : "bg-primary-50/50 text-primary-600 hover:bg-primary-100"
+                                      }`}>
+                                        {subcatHasProducts ? (
                                           <button
-                                            onClick={() =>
-                                              toggleProducts(`products-${subcat._id}`)
-                                            }
-                                            className="p-0.5 hover:bg-primary-100 rounded transition-colors flex-shrink-0"
+                                            onClick={(e) => { e.stopPropagation(); toggleProducts(`products-${subcat._id}`); }}
+                                            className={`px-1.5 flex items-center justify-center transition-colors rounded-l-md ${
+                                              selectedCategory?._id === subcat._id
+                                                ? "hover:bg-white/20 text-white border-r border-white/20"
+                                                : "hover:bg-primary-200 text-primary-500 border-r border-primary-200/50"
+                                            }`}
                                           >
                                             <FiChevronRight
-                                              className={`text-gray-400 transition-transform duration-200 ${
+                                              className={`w-3 h-3 transition-transform duration-200 ${
                                                 subcatProductsExpanded ? "rotate-90" : ""
                                               }`}
-                                              size={10}
                                             />
                                           </button>
+                                        ) : (
+                                          <div className="w-6 flex-shrink-0" />
                                         )}
                                         <button
-                                          className={`w-full text-left px-3 py-1.5 rounded-md transition-all duration-300 text-xs ${
-                                            selectedCategory?._id === subcat._id
-                                              ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
-                                              : "bg-primary-50/50 text-primary-600 hover:bg-primary-100"
-                                          } ${subcatHasProducts ? "" : "ml-4"}`}
+                                          className={`flex-1 text-left py-1.5 pr-2 pl-1.5 text-xs ${
+                                            subcatHasProducts ? "rounded-r-md" : "rounded-md"
+                                          }`}
                                           onClick={() => {
                                             setSelectedCategory(subcat);
                                             setExpandedCategories(
@@ -464,9 +477,11 @@ const Products = () => {
                                             fetchProducts(subcat._id);
                                           }}
                                         >
-                                          <div className="flex items-center gap-2">
-                                            <span className="w-1 h-1 rounded-full bg-primary-400"></span>
-                                            <span className="font-medium">
+                                          <div className="flex items-center gap-1.5">
+                                            <span className={`w-1 h-1 rounded-full flex-shrink-0 ${
+                                              selectedCategory?._id === subcat._id ? "bg-white" : "bg-primary-400"
+                                            }`}></span>
+                                            <span className="font-medium break-words">
                                               {subcat.name}
                                             </span>
                                           </div>
@@ -682,31 +697,47 @@ const Products = () => {
 
                         return (
                           <div key={category._id}>
-                            <div className="flex items-center gap-2">
-                              {hasSubcategories && (
+                            <div className={`flex items-stretch rounded-lg transition-all duration-300 ${
+                              selectedCategory?._id === category._id
+                                ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
+                                : "bg-primary-50 text-primary-700 hover:bg-primary-100"
+                            }`}>
+                              {hasSubcategories ? (
                                 <button
-                                  onClick={() => toggleCategory(category._id)}
-                                  className="p-1 hover:bg-primary-100 rounded transition-colors"
+                                  onClick={(e) => { e.stopPropagation(); toggleCategory(category._id); }}
+                                  className={`px-3 flex items-center justify-center transition-colors rounded-l-lg ${
+                                    selectedCategory?._id === category._id
+                                      ? "hover:bg-white/20 text-white border-r border-white/20"
+                                      : "hover:bg-primary-200 text-primary-600 border-r border-primary-200/50"
+                                  }`}
                                 >
                                   <FiChevronRight
-                                    className={`text-gray-400 transition-transform duration-200 ${
+                                    className={`w-4 h-4 transition-transform duration-200 ${
                                       isExpanded ? "rotate-90" : ""
                                     }`}
-                                    size={14}
                                   />
                                 </button>
+                              ) : (
+                                <div className="w-10 flex-shrink-0" />
                               )}
                               <button
-                                className={`flex-1 text-left px-3 py-2 rounded-lg transition-all duration-300 text-sm ${
-                                  selectedCategory?._id === category._id
-                                    ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
-                                    : "bg-primary-50 text-primary-700 hover:bg-primary-100"
-                                } ${hasSubcategories ? "" : "ml-8"}`}
-                                onClick={() =>
-                                  handleCategoryFilter(category._id)
-                                }
+                                className={`flex-1 text-left py-2.5 pr-4 pl-2 text-sm font-semibold leading-relaxed ${
+                                  hasSubcategories ? "rounded-r-lg" : "rounded-lg"
+                                }`}
+                                onClick={() => {
+                                  handleCategoryFilter(category._id);
+                                  setShowMobileFilters(false);
+                                }}
                               >
-                                {category.name}
+                                <div className="flex items-center justify-between">
+                                  <span className="break-words">
+                                    {category.name}
+                                  </span>
+                                  {selectedCategory?._id === category._id &&
+                                    !hasSubcategories && (
+                                      <FiChevronRight className="w-4 h-4 flex-shrink-0 ml-1" />
+                                    )}
+                                </div>
                               </button>
                             </div>
                             {hasSubcategories && isExpanded && (
@@ -714,7 +745,7 @@ const Products = () => {
                                 {category.subcategories.map((subcat) => (
                                   <button
                                     key={subcat._id}
-                                    className={`w-full text-left px-3 py-1.5 rounded-md transition-all duration-300 text-xs ${
+                                    className={`w-full text-left py-2 pr-3 pl-3 rounded-md transition-all duration-300 text-xs ${
                                       selectedCategory?._id === subcat._id
                                         ? "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-md"
                                         : "bg-primary-50/50 text-primary-600 hover:bg-primary-100"
@@ -730,8 +761,10 @@ const Products = () => {
                                     }}
                                   >
                                     <div className="flex items-center gap-2">
-                                      <span className="w-1 h-1 rounded-full bg-primary-400"></span>
-                                      <span className="font-medium">
+                                      <span className={`w-1 h-1 rounded-full flex-shrink-0 ${
+                                        selectedCategory?._id === subcat._id ? "bg-white" : "bg-primary-400"
+                                      }`}></span>
+                                      <span className="font-medium break-words">
                                         {subcat.name}
                                       </span>
                                     </div>
