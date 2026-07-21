@@ -93,13 +93,13 @@ const ContactButton = ({
 }) => (
   <a
     href={href}
-    className={`group flex items-center gap-3 px-4 py-2 rounded-xl backdrop-blur-sm transition-all duration-300 border hover:scale-[1.02] ${className}`}
+    className={`group flex items-center gap-2 px-3 py-1 rounded-xl backdrop-blur-sm transition-all duration-300 border hover:scale-[1.02] ${className}`}
     {...props}
   >
     <div
-      className={`p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${iconClass}`}
+      className={`p-1.5 rounded-md shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 ${iconClass}`}
     >
-      <Icon size={12} className="text-white" />
+      <Icon size={10} className="text-white" />
     </div>
     <div className="text-left min-w-0">
       <p className="text-xs font-semibold text-white group-hover:text-opacity-90 truncate transition-colors">
@@ -137,20 +137,20 @@ const CompactCategoryItem = ({
       <Link
         to={`/category/${category.slug}`}
         onClick={handleClick}
-        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 min-w-0 group/item ${
+        className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-200 min-w-0 group/item ${
           isActive || isHovered
             ? "bg-primary-50 border border-primary-200"
-            : "hover:bg-primary-50 hover:border hover:border-primary-100"
+            : "hover:bg-primary-50 border border-transparent"
         }`}
       >
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center flex-shrink-0">
-          <span className="text-xs font-bold text-primary-700">
+        <div className="w-6 h-6 rounded bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center flex-shrink-0">
+          <span className="text-[10px] font-bold text-primary-700">
             {index + 1}
           </span>
         </div>
         <div className="flex-1 min-w-0">
           <span
-            className={`font-semibold text-sm block truncate ${
+            className={`font-semibold text-xs block truncate ${
               isActive || isHovered
                 ? "text-primary-800"
                 : "text-gray-800 group-hover/item:text-primary-800"
@@ -159,14 +159,14 @@ const CompactCategoryItem = ({
             {category.name}
           </span>
           {hasSubcategories || hasProducts ? (
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-1 mt-0.5">
               {hasSubcategories && (
-                <span className="text-[10px] px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded">
+                <span className="text-[9px] px-1 py-0.5 bg-blue-50 text-blue-600 rounded">
                   {category.subcategories.length} sub
                 </span>
               )}
               {hasProducts && (
-                <span className="text-[10px] px-1.5 py-0.5 bg-green-50 text-green-600 rounded">
+                <span className="text-[9px] px-1 py-0.5 bg-green-50 text-green-600 rounded">
                   {category.products.length} items
                 </span>
               )}
@@ -174,7 +174,7 @@ const CompactCategoryItem = ({
           ) : null}
         </div>
         {(hasSubcategories || hasProducts) && (
-          <FiChevronRight className="text-gray-400 text-xs flex-shrink-0" />
+          <FiChevronRight className="text-gray-400 text-[10px] flex-shrink-0" />
         )}
       </Link>
     </div>
@@ -195,25 +195,25 @@ const CompactSubMenu = ({ category, onClose }) => {
   };
 
   return (
-    <div className="absolute left-[12px] top-0 ml-1 w-80 bg-white rounded-xl border border-gray-200 overflow-hidden z-50">
+    <div className="absolute left-[8px] top-0 ml-1 w-72 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
       {/* Submenu Header */}
-      <div className="bg-gradient-to-r from-primary-50 to-primary-100 px-4 py-3 border-b border-primary-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-200 to-primary-300 flex items-center justify-center">
-            <FiPackage className="text-primary-700" size={18} />
+      <div className="bg-gradient-to-r from-primary-50 to-primary-100 px-3 py-2 border-b border-primary-200">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-200 to-primary-300 flex items-center justify-center">
+            <FiPackage className="text-primary-700" size={16} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-primary-900 text-sm truncate">
+            <h3 className="font-bold text-primary-900 text-xs truncate">
               {category.name}
             </h3>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-1.5 mt-0.5">
               {hasSubcategories && (
-                <span className="text-[10px] px-2 py-0.5 bg-white text-primary-600 rounded-full">
+                <span className="text-[9px] px-1.5 py-0.5 bg-white text-primary-600 rounded-full font-medium shadow-sm">
                   {category.subcategories.length} Subcategories
                 </span>
               )}
               {hasProducts && (
-                <span className="text-[10px] px-2 py-0.5 bg-white text-primary-600 rounded-full">
+                <span className="text-[9px] px-1.5 py-0.5 bg-white text-primary-600 rounded-full font-medium shadow-sm">
                   {category.products.length} Products
                 </span>
               )}
@@ -223,53 +223,48 @@ const CompactSubMenu = ({ category, onClose }) => {
       </div>
 
       {/* Submenu Content */}
-      <div className="max-h-[400px] overflow-y-auto">
+      <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
         {/* View All Button */}
         <Link
           to={`/category/${category.slug}`}
           onClick={handleLinkClick}
-          className="flex items-center justify-between px-4 py-3 border-b border-gray-100 hover:bg-primary-50 transition-colors group"
+          className="flex items-center justify-between px-3 py-2 border-b border-gray-50 hover:bg-primary-50 transition-colors group"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-md bg-primary-100 flex items-center justify-center">
-              <FiGrid className="text-primary-600" size={14} />
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-primary-100 flex items-center justify-center">
+              <FiGrid className="text-primary-600" size={12} />
             </div>
-            <span className="font-medium text-sm text-primary-800">
+            <span className="font-semibold text-xs text-primary-800">
               View All in {category.name}
             </span>
           </div>
-          <HiOutlineArrowRight className="text-primary-500 text-sm group-hover:translate-x-1 transition-transform" />
+          <HiOutlineArrowRight className="text-primary-500 text-[10px] group-hover:translate-x-1 transition-transform" />
         </Link>
 
         {/* Subcategories Section */}
         {hasSubcategories && (
-          <div className="px-4 py-3 border-b border-gray-100">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-              <h4 className="font-semibold text-gray-800 text-sm">
+          <div className="px-3 py-2 border-b border-gray-50">
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+              <h4 className="font-semibold text-gray-800 text-[11px] uppercase tracking-wider">
                 Subcategories
               </h4>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {category.subcategories.map((subcat) => (
                 <Link
                   key={subcat._id}
                   to={`/category/${subcat.slug}`}
                   onClick={handleLinkClick}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors group/subcat"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-blue-50 transition-colors group/subcat"
                 >
-                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-800 truncate group-hover/subcat:text-blue-700">
+                    <p className="text-[11px] font-medium text-gray-700 truncate group-hover/subcat:text-blue-700">
                       {subcat.name}
                     </p>
-                    {subcat.description && (
-                      <p className="text-xs text-gray-500 truncate mt-0.5">
-                        {subcat.description}
-                      </p>
-                    )}
                   </div>
-                  <FiChevronRight className="text-gray-400 text-xs group-hover/subcat:text-blue-500" />
+                  <FiChevronRight className="text-gray-400 text-[10px] group-hover/subcat:text-blue-500" />
                 </Link>
               ))}
             </div>
@@ -278,35 +273,35 @@ const CompactSubMenu = ({ category, onClose }) => {
 
         {/* Products Section */}
         {hasProducts && (
-          <div className="px-4 py-3">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-green-500"></div>
-              <h4 className="font-semibold text-gray-800 text-sm">Products</h4>
+          <div className="px-3 py-2">
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+              <h4 className="font-semibold text-gray-800 text-[11px] uppercase tracking-wider">Products</h4>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1">
               {category.products.slice(0, 6).map((product) => (
                 <Link
                   key={product._id}
                   to={`/products/${product.slug}`}
                   onClick={handleLinkClick}
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-green-50 transition-colors group/product"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-green-50 transition-colors group/product"
                 >
                   {product.images && product.images[0] ? (
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-8 h-8 rounded object-cover flex-shrink-0"
+                      className="w-6 h-6 rounded object-cover flex-shrink-0 border border-gray-100"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <FiPackage className="text-gray-400" size={14} />
+                    <div className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <FiPackage className="text-gray-400" size={12} />
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-800 truncate group-hover/product:text-green-700">
+                    <p className="text-[11px] font-medium text-gray-700 truncate group-hover/product:text-green-700">
                       {product.name}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-[9px] text-gray-400 truncate">
                       Code: {product.orderCode}
                     </p>
                   </div>
@@ -322,7 +317,7 @@ const CompactSubMenu = ({ category, onClose }) => {
         <Link
           to={`/category/${category.slug}`}
           onClick={handleLinkClick}
-          className="block px-4 py-3 text-center text-sm font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 border-t border-gray-100 transition-colors"
+          className="block px-3 py-2 text-center text-[11px] font-semibold text-primary-600 hover:text-primary-700 hover:bg-primary-50 border-t border-gray-50 transition-colors"
         >
           View {category.products.length - 6} more products →
         </Link>
@@ -493,15 +488,15 @@ const Header = () => {
         </div>
 
         <div className="container mx-auto px-4 relative">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-1.5">
-            <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-0">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-1">
+            <div className="flex flex-wrap items-center gap-2 mb-1 sm:mb-0">
               {contactInfo.map((info, index) => (
                 <ContactButton key={index} {...info} />
               ))}
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-3 bg-gradient-to-r from-primary-800/40 to-secondary-800/40 px-4 py-1.5 rounded-xl border border-white/20 backdrop-blur-sm shadow-lg">
+              <div className="flex items-center gap-2 bg-gradient-to-r from-primary-800/40 to-secondary-800/40 px-3 py-1 rounded-xl border border-white/20 backdrop-blur-sm shadow-lg">
                 <div className="relative">
                   <div className="w-2.5 h-2.5 bg-gradient-to-br from-secondary-400 to-secondary-500 rounded-full animate-pulse shadow-lg" />
                   <div className="absolute inset-0 bg-secondary-500 rounded-full animate-ping opacity-50" />
@@ -640,20 +635,20 @@ const Header = () => {
 
                     {/* Main Products Dropdown */}
                     {dropdownOpen && (
-                      <div className="absolute left-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-40">
-                        <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-4 py-3">
+                      <div className="absolute left-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-40">
+                        <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 px-3 py-2.5">
                           <div className="flex items-center gap-2">
                             <div className="p-1.5 bg-white/10 rounded-lg">
                               <TbBrandGoogleAnalytics
                                 className="text-white"
-                                size={18}
+                                size={14}
                               />
                             </div>
                             <div>
-                              <p className="text-white font-bold text-xs">
+                              <p className="text-white font-bold text-[11px] tracking-wide">
                                 PRODUCT CATEGORIES
                               </p>
-                              <p className="text-primary-200 text-[10px]">
+                              <p className="text-primary-200 text-[9px]">
                                 Premium Laboratory Solutions
                               </p>
                             </div>
@@ -684,11 +679,11 @@ const Header = () => {
                         <Link
                           to="/products"
                           onClick={handleSubmenuClose}
-                          className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-4 py-3 text-xs font-semibold transition-all duration-300"
+                          className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 hover:from-primary-800 hover:via-primary-700 hover:to-primary-600 text-white px-3 py-2.5 text-[11px] font-semibold transition-all duration-300"
                         >
-                          <FiGrid size={14} />
+                          <FiGrid size={12} />
                           <span>Browse All Products</span>
-                          <HiOutlineArrowRight size={14} />
+                          <HiOutlineArrowRight size={12} />
                         </Link>
                       </div>
                     )}

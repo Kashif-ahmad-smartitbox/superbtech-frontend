@@ -25,6 +25,7 @@ import {
   FiPrinter,
   FiBookOpen,
 } from "react-icons/fi";
+import ScrollAnimatedItem from "../components/ScrollAnimatedItem";
 
 const getYouTubeVideoId = (url) => {
   if (!url) return null;
@@ -71,6 +72,7 @@ const ProductDetail = () => {
   const productId = extractProductId(slugId);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchProduct();
   }, [productId]);
 
@@ -303,21 +305,23 @@ const ProductDetail = () => {
 
             {/* Left Column: Images - Desktop */}
             <div className="hidden lg:flex lg:w-2/5 flex-col">
-              <div className="bg-white rounded-2xl border border-primary-100 p-6 sticky top-24">
-                <div className="relative aspect-square bg-white rounded-2xl mb-6 overflow-hidden">
+              <ScrollAnimatedItem animationType="fade-up" className="bg-white/80 backdrop-blur-md rounded-2xl border border-primary-100 p-4 sticky top-24 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-shadow">
+                <div className="relative aspect-[4/3] bg-gradient-to-br from-primary-50 to-white rounded-2xl mb-4 overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] border border-primary-100/50 group flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-400/20 to-secondary-400/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+                  
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={getImageUrl(product.images[activeImage])}
                       alt={product.name}
-                      className="w-full h-full object-contain p-8 hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain p-6 hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center p-8">
-                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center mx-auto mb-4">
-                          <FiPackage className="w-12 h-12 text-primary-400" />
+                    <div className="w-full h-full flex items-center justify-center relative z-10">
+                      <div className="text-center p-6">
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                          <FiPackage className="w-10 h-10 text-primary-400" />
                         </div>
-                        <span className="text-primary-600 font-semibold">
+                        <span className="text-primary-600 font-semibold text-sm">
                           Laboratory Equipment
                         </span>
                       </div>
@@ -393,21 +397,21 @@ const ProductDetail = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </ScrollAnimatedItem>
             </div>
 
             {/* Right Column: Details */}
             <div className="lg:w-3/5">
-              <div className="bg-white rounded-2xl border border-primary-100 p-4 lg:p-8">
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl border border-primary-100 p-5 lg:p-6 shadow-sm">
                 {/* Product Header */}
-                <div className="mb-6">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+                <div className="mb-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-3">
                     <div className="flex-1">
-                      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                      <h1 className="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">
                         {product.name}
                       </h1>
                       {product.category?.name && (
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200/50 text-primary-700 rounded-full text-xs font-bold uppercase tracking-wider">
                           <FiTag className="w-3 h-3" />
                           {product.category.name}
                         </div>
@@ -416,16 +420,16 @@ const ProductDetail = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => window.print()}
-                        className="p-2 rounded-lg bg-primary-50 text-primary-600 hover:bg-primary-100 transition-colors"
+                        className="p-1.5 rounded-md bg-primary-50 text-primary-600 hover:bg-primary-100 hover:shadow-sm transition-all"
                         title="Print"
                       >
-                        <FiPrinter className="w-5 h-5" />
+                        <FiPrinter className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setShowModal(true)}
-                        className="hidden lg:flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                        className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-semibold rounded-md shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-primary-600"
                       >
-                        <FiMail className="w-4 h-4" />
+                        <FiMail className="w-3.5 h-3.5" />
                         Request Quote
                       </button>
                     </div>
@@ -488,197 +492,209 @@ const ProductDetail = () => {
                 {/* Content Sections */}
                 <div className="space-y-6">
                   {/* Description */}
-                  <section id="description">
-                    <div className="lg:hidden mb-4">
-                      <button
-                        onClick={() => toggleSection("description")}
-                        className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
-                      >
-                        <span>Description</span>
-                        {expandedSections.description ? (
-                          <FiChevronUp className="w-5 h-5" />
-                        ) : (
-                          <FiChevronDown className="w-5 h-5" />
-                        )}
-                      </button>
-                    </div>
-                    <div
-                      className={`${
-                        expandedSections.description ? "block" : "hidden"
-                      } lg:block`}
-                    >
-                      <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
-                        Description
-                      </h2>
-                      <div className="prose prose-sm max-w-none text-gray-600 bg-primary-50 rounded-xl p-4 border border-primary-100">
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: product.description,
-                          }}
-                          className="leading-relaxed"
-                        />
+                  <ScrollAnimatedItem animationType="fade-up" delay={0.1}>
+                    <section id="description" className="group">
+                      <div className="lg:hidden mb-3">
+                        <button
+                          onClick={() => toggleSection("description")}
+                          className="flex items-center justify-between w-full text-left text-base font-bold text-primary-800"
+                        >
+                          <span>Description</span>
+                          {expandedSections.description ? (
+                            <FiChevronUp className="w-4 h-4" />
+                          ) : (
+                            <FiChevronDown className="w-4 h-4" />
+                          )}
+                        </button>
                       </div>
-                    </div>
-                  </section>
+                      <div
+                        className={`${
+                          expandedSections.description ? "block" : "hidden"
+                        } lg:block`}
+                      >
+                        <h2 className="hidden lg:block text-base font-bold text-primary-800 mb-2 border-l-4 border-primary-500 pl-2">
+                          Description
+                        </h2>
+                        <div className="prose prose-sm max-w-none text-gray-700 bg-gradient-to-br from-gray-50 to-white rounded-xl p-4 border border-gray-100 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-colors group-hover:border-primary-100">
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: product.description,
+                            }}
+                            className="leading-relaxed"
+                          />
+                        </div>
+                      </div>
+                    </section>
+                  </ScrollAnimatedItem>
 
                   {/* Specifications */}
                   {product.specifications && (
-                    <section id="specifications">
-                      <div className="lg:hidden mb-4">
-                        <button
-                          onClick={() => toggleSection("specifications")}
-                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
-                        >
-                          <span>Key Features</span>
-                          {expandedSections.specifications ? (
-                            <FiChevronUp className="w-5 h-5" />
-                          ) : (
-                            <FiChevronDown className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                      <div
-                        className={`${
-                          expandedSections.specifications ? "block" : "hidden"
-                        } lg:block`}
-                      >
-                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
-                          Key Features
-                        </h2>
-                        <div
-                          className="prose prose-sm max-w-none text-gray-600 bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100"
-                          dangerouslySetInnerHTML={{
-                            __html: product.specifications,
-                          }}
-                        />
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Experimentation */}
-                  {product.experimentation && (
-                    <section id="experimentation">
-                      <div className="lg:hidden mb-4">
-                        <button
-                          onClick={() => toggleSection("experimentation")}
-                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
-                        >
-                          <span>Experimentation</span>
-                          {expandedSections.experimentation ? (
-                            <FiChevronUp className="w-5 h-5" />
-                          ) : (
-                            <FiChevronDown className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                      <div
-                        className={`${
-                          expandedSections.experimentation ? "block" : "hidden"
-                        } lg:block`}
-                      >
-                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
-                          Experimentation
-                        </h2>
-                        <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
-                          {product.experimentation
-                            .split("\n")
-                            .filter((line) => line.trim())
-                            .map((line, index) => (
-                              <div key={index} className="text-gray-600 mb-2">
-                                {line.trim()}
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Services Required */}
-                  {product.servicesRequired && (
-                    <section id="services">
-                      <div className="lg:hidden mb-4">
-                        <button
-                          onClick={() => toggleSection("services")}
-                          className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
-                        >
-                          <span>Services Required</span>
-                          {expandedSections.services ? (
-                            <FiChevronUp className="w-5 h-5" />
-                          ) : (
-                            <FiChevronDown className="w-5 h-5" />
-                          )}
-                        </button>
-                      </div>
-                      <div
-                        className={`${
-                          expandedSections.services ? "block" : "hidden"
-                        } lg:block`}
-                      >
-                        <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3">
-                          Services Required
-                        </h2>
-                        <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
-                          {product.servicesRequired
-                            .split("\n")
-                            .filter((line) => line.trim())
-                            .map((line, index) => (
-                              <div key={index} className="text-gray-600 mb-2">
-                                {line.trim()}
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    </section>
-                  )}
-
-                  {/* YouTube Video */}
-                  {product.youtubeLink &&
-                    getYouTubeVideoId(product.youtubeLink) && (
-                      <section id="video">
-                        <div className="lg:hidden mb-4">
+                    <ScrollAnimatedItem animationType="fade-up" delay={0.2}>
+                      <section id="specifications" className="group">
+                        <div className="lg:hidden mb-3">
                           <button
-                            onClick={() => toggleSection("video")}
-                            className="flex items-center justify-between w-full text-left text-lg font-bold text-primary-800"
+                            onClick={() => toggleSection("specifications")}
+                            className="flex items-center justify-between w-full text-left text-base font-bold text-primary-800"
                           >
-                            <span className="flex items-center gap-2">
-                              <FiPlay className="text-red-600" />
-                              Product Video
-                            </span>
-                            {expandedSections.video ? (
-                              <FiChevronUp className="w-5 h-5" />
+                            <span>Key Features</span>
+                            {expandedSections.specifications ? (
+                              <FiChevronUp className="w-4 h-4" />
                             ) : (
-                              <FiChevronDown className="w-5 h-5" />
+                              <FiChevronDown className="w-4 h-4" />
                             )}
                           </button>
                         </div>
                         <div
                           className={`${
-                            expandedSections.video ? "block" : "hidden"
+                            expandedSections.specifications ? "block" : "hidden"
                           } lg:block`}
                         >
-                          <h2 className="hidden lg:block text-lg font-bold text-primary-800 mb-3 flex items-center gap-2">
-                            <FiPlay className="text-red-600" />
-                            Product Video
+                          <h2 className="hidden lg:block text-base font-bold text-primary-800 mb-2 border-l-4 border-secondary-500 pl-2">
+                            Key Features
                           </h2>
-                          <div className="bg-gradient-to-br from-primary-50 to-white rounded-xl p-4 border border-primary-100">
-                            <div
-                              className="relative w-full"
-                              style={{ paddingBottom: "56.25%" }}
-                            >
-                              <iframe
-                                className="absolute top-0 left-0 w-full h-full rounded-lg"
-                                src={`https://www.youtube.com/embed/${getYouTubeVideoId(
-                                  product.youtubeLink
-                                )}`}
-                                title="Product Video"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                              />
-                            </div>
+                          <div
+                            className="prose prose-sm max-w-none text-gray-700 bg-gradient-to-br from-primary-50/50 to-white rounded-xl p-4 border border-primary-100/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-colors group-hover:border-secondary-200"
+                            dangerouslySetInnerHTML={{
+                              __html: product.specifications,
+                            }}
+                          />
+                        </div>
+                      </section>
+                    </ScrollAnimatedItem>
+                  )}
+
+                  {/* Experimentation */}
+                  {product.experimentation && (
+                    <ScrollAnimatedItem animationType="fade-up" delay={0.3}>
+                      <section id="experimentation" className="group">
+                        <div className="lg:hidden mb-3">
+                          <button
+                            onClick={() => toggleSection("experimentation")}
+                            className="flex items-center justify-between w-full text-left text-base font-bold text-primary-800"
+                          >
+                            <span>Experimentation</span>
+                            {expandedSections.experimentation ? (
+                              <FiChevronUp className="w-4 h-4" />
+                            ) : (
+                              <FiChevronDown className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                        <div
+                          className={`${
+                            expandedSections.experimentation ? "block" : "hidden"
+                          } lg:block`}
+                        >
+                          <h2 className="hidden lg:block text-base font-bold text-primary-800 mb-2 border-l-4 border-indigo-500 pl-2">
+                            Experimentation
+                          </h2>
+                          <div className="bg-gradient-to-br from-indigo-50/30 to-white rounded-xl p-4 border border-indigo-100/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-colors group-hover:border-indigo-200">
+                            {product.experimentation
+                              .split("\n")
+                              .filter((line) => line.trim())
+                              .map((line, index) => (
+                                <div key={index} className="text-gray-700 mb-2 flex items-start gap-2">
+                                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></div>
+                                  <span>{line.trim()}</span>
+                                </div>
+                              ))}
                           </div>
                         </div>
                       </section>
+                    </ScrollAnimatedItem>
+                  )}
+
+                  {/* Services Required */}
+                  {product.servicesRequired && (
+                    <ScrollAnimatedItem animationType="fade-up" delay={0.4}>
+                      <section id="services" className="group">
+                        <div className="lg:hidden mb-3">
+                          <button
+                            onClick={() => toggleSection("services")}
+                            className="flex items-center justify-between w-full text-left text-base font-bold text-primary-800"
+                          >
+                            <span>Services Required</span>
+                            {expandedSections.services ? (
+                              <FiChevronUp className="w-4 h-4" />
+                            ) : (
+                              <FiChevronDown className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                        <div
+                          className={`${
+                            expandedSections.services ? "block" : "hidden"
+                          } lg:block`}
+                        >
+                          <h2 className="hidden lg:block text-base font-bold text-primary-800 mb-2 border-l-4 border-amber-500 pl-2">
+                            Services Required
+                          </h2>
+                          <div className="bg-gradient-to-br from-amber-50/30 to-white rounded-xl p-4 border border-amber-100/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-colors group-hover:border-amber-200">
+                            {product.servicesRequired
+                              .split("\n")
+                              .filter((line) => line.trim())
+                              .map((line, index) => (
+                                <div key={index} className="text-gray-700 mb-2 flex items-start gap-2">
+                                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></div>
+                                  <span>{line.trim()}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      </section>
+                    </ScrollAnimatedItem>
+                  )}
+
+                  {/* YouTube Video */}
+                  {product.youtubeLink &&
+                    getYouTubeVideoId(product.youtubeLink) && (
+                      <ScrollAnimatedItem animationType="fade-up" delay={0.5}>
+                        <section id="video" className="group">
+                          <div className="lg:hidden mb-3">
+                            <button
+                              onClick={() => toggleSection("video")}
+                              className="flex items-center justify-between w-full text-left text-base font-bold text-primary-800"
+                            >
+                              <span className="flex items-center gap-2">
+                                <FiPlay className="text-red-600" />
+                                Product Video
+                              </span>
+                              {expandedSections.video ? (
+                                <FiChevronUp className="w-4 h-4" />
+                              ) : (
+                                <FiChevronDown className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                          <div
+                            className={`${
+                              expandedSections.video ? "block" : "hidden"
+                            } lg:block`}
+                          >
+                            <h2 className="hidden lg:block text-base font-bold text-primary-800 mb-2 border-l-4 border-red-500 pl-2 flex items-center gap-2">
+                              <FiPlay className="text-red-600" />
+                              Product Video
+                            </h2>
+                            <div className="bg-gradient-to-br from-red-50/30 to-white rounded-xl p-4 border border-red-100/50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] transition-colors group-hover:border-red-200">
+                              <div
+                                className="relative w-full rounded-lg overflow-hidden shadow-sm"
+                                style={{ paddingBottom: "56.25%" }}
+                              >
+                                <iframe
+                                  className="absolute top-0 left-0 w-full h-full"
+                                  src={`https://www.youtube.com/embed/${getYouTubeVideoId(
+                                    product.youtubeLink
+                                  )}`}
+                                  title="Product Video"
+                                  frameBorder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+                      </ScrollAnimatedItem>
                     )}
                 </div>
 

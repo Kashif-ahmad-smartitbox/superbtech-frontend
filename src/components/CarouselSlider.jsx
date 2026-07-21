@@ -176,9 +176,7 @@ const CarouselSlider = () => {
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className={`w-full h-full object-cover transition-transform duration-[20000ms] ${
-                      index === currentSlide ? "scale-110" : "scale-100"
-                    }`}
+                    className="w-full h-full object-cover"
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchpriority={index === 0 ? "high" : "low"}
                     sizes="100vw"
@@ -208,9 +206,21 @@ const CarouselSlider = () => {
                     </h1>
 
                     {/* Description */}
-                    <p className="text-xs md:text-base text-white text-center md:text-left leading-relaxed">
+                    <p className="text-sm md:text-lg text-white/90 text-center md:text-left leading-relaxed mb-6 font-medium">
                       {slide.description}
                     </p>
+
+                    {/* CTA Button */}
+                    <div className="flex justify-center md:justify-start">
+                      <Link
+                        to={slide.ctaLink}
+                        className="group relative inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white font-bold rounded-full overflow-hidden shadow-lg hover:shadow-primary-500/40 transition-all duration-300 hover:scale-105"
+                      >
+                        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                        <span className="relative z-10">{slide.ctaText}</span>
+                        <HiChevronRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
